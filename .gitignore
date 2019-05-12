@@ -1,0 +1,6 @@
+tests/var/cache/
+tests/var/log/
+/var/log/
+/var/cache/
+vendor/
+composer.lock
