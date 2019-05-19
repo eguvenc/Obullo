@@ -4,3 +4,4 @@ tests/var/log/
 /var/cache/
 vendor/
 composer.lock
+.php_cs.cache
