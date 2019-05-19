@@ -3,22 +3,21 @@
 use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
-use function Zend\Diactoros\{
-    normalizeServer,
-    normalizeUploadedFiles,
-    marshalHeadersFromSapi,
-    parseCookieHeader,
-    marshalUriFromSapi,
-    marshalMethodFromSapi,
-    marshalProtocolVersionFromSapi
-};
+use function Zend\Diactoros\normalizeServer;
+use function Zend\Diactoros\normalizeUploadedFiles;
+use function Zend\Diactoros\marshalHeadersFromSapi;
+use function Zend\Diactoros\parseCookieHeader;
+use function Zend\Diactoros\marshalUriFromSapi;
+use function Zend\Diactoros\marshalMethodFromSapi;
+use function Zend\Diactoros\marshalProtocolVersionFromSapi;
 use Obullo\Http\ServerRequest;
 
 class ServerRequestTest extends TestCase
 {
-	public function setUp()
-	{
-        $server = normalizeServer($_SERVER,
+    public function setUp()
+    {
+        $server = normalizeServer(
+            $_SERVER,
             is_callable('apache_request_headers') ? 'apache_request_headers' : null
         );
         $files   = normalizeUploadedFiles($_FILES);
@@ -40,12 +39,12 @@ class ServerRequestTest extends TestCase
             $_POST,
             marshalProtocolVersionFromSapi($server)
         );
-	}
+    }
 
-	public function testRequest()
-	{
-		$this->assertInstanceOf('Zend\Diactoros\ServerRequest', $this->request);
-	}
+    public function testRequest()
+    {
+        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $this->request);
+    }
 
     public function testMethodIsOptions()
     {
@@ -112,5 +111,4 @@ class ServerRequestTest extends TestCase
         $request = $this->request->withHeader('x-requested-with', 'XMLHttpRequest');
         $this->assertTrue($request->isXmlHttpRequest());
     }
-
 }

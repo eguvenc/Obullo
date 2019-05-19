@@ -48,8 +48,12 @@ class Engine
     public function __construct($options = array())
     {
         $this->options = $options;
-        $this->directory = new Directory($options['default_directory']);
-        $this->fileExtension = new FileExtension($options['file_extension']);
+
+        $file_extension = isset($options['file_extension']) ? $options['file_extension'] : null;
+        $default_directory = isset($options['default_directory']) ? $options['default_directory'] : null;
+
+        $this->directory = new Directory($default_directory);
+        $this->fileExtension = new FileExtension($file_extension);
         $this->folders = new Folders;
     }
 

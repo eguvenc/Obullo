@@ -3,27 +3,25 @@
 use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 
-use function Zend\Diactoros\{
-    normalizeServer,
-    normalizeUploadedFiles,
-    marshalHeadersFromSapi,
-    parseCookieHeader,
-    marshalUriFromSapi,
-    marshalMethodFromSapi,
-    marshalProtocolVersionFromSapi
-};
-use Obullo\Http\{
-    ServerRequest,
-	RequestAwareTrait,
-	RequestAwareInterface
-};
+use function Zend\Diactoros\normalizeServer;
+use function Zend\Diactoros\normalizeUploadedFiles;
+use function Zend\Diactoros\marshalHeadersFromSapi;
+use function Zend\Diactoros\parseCookieHeader;
+use function Zend\Diactoros\marshalUriFromSapi;
+use function Zend\Diactoros\marshalMethodFromSapi;
+use function Zend\Diactoros\marshalProtocolVersionFromSapi;
+use Obullo\Http\ServerRequest;
+use Obullo\Http\RequestAwareTrait;
+use Obullo\Http\RequestAwareInterface;
+
 class RequestAwareTest extends TestCase
 {
-	use RequestAwareTrait;
+    use RequestAwareTrait;
 
-	public function setUp()
-	{
-        $server = normalizeServer($_SERVER,
+    public function setUp()
+    {
+        $server = normalizeServer(
+            $_SERVER,
             is_callable('apache_request_headers') ? 'apache_request_headers' : null
         );
         $files   = normalizeUploadedFiles($_FILES);
@@ -45,12 +43,12 @@ class RequestAwareTest extends TestCase
             $_POST,
             marshalProtocolVersionFromSapi($server)
         );
-	}
+    }
 
-	public function testRequest()
-	{
-		$this->setRequest($this->request);
+    public function testRequest()
+    {
+        $this->setRequest($this->request);
 
-		$this->assertInstanceOf('Zend\Diactoros\ServerRequest', $this->getRequest());
-	}
+        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $this->getRequest());
+    }
 }

@@ -20,35 +20,37 @@ class PageMiddlewareTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $request = new ServerRequest;
-		$request = $request->withUri(new Uri('http://example.com/test?a=b'));
+        $request = $request->withUri(new Uri('http://example.com/test?a=b'));
 
-        $container = new ServiceManager([
-            'factories' => [
-                  'router' => function (ContainerInterface $container, $requestedName) use($request) {
-                      $types = [
-                        new IntType('<int:id>'),
-                        new IntType('<int:page>'),
-                        new StrType('<str:name>'),
-                        new TranslationType('<locale:locale>'),
-                    ];
-                      $context = new RequestContext;
-                      $context->fromRequest($request);
+        $container = new ServiceManager(
+            [
+                'factories' => [
+                    'router' => function (ContainerInterface $container, $requestedName) use ($request) {
+                        $types = [
+                            new IntType('<int:id>'),
+                            new IntType('<int:page>'),
+                            new StrType('<str:name>'),
+                            new TranslationType('<locale:locale>'),
+                        ];
+                        $context = new RequestContext;
+                        $context->fromRequest($request);
 
-                      $collection = new RouteCollection(['types' => $types]);
-                      $collection->setContext($context);
+                        $collection = new RouteCollection(['types' => $types]);
+                        $collection->setContext($context);
 
-                      $builder = new Builder($collection);
-                      $routes  = [
+                        $builder = new Builder($collection);
+                        $routes  = [
                         'test' => [
                             'path'   => '/test',
                             'handler'=> 'test.phtml',
                             ],
                         ];
-                      $collection = $builder->build($routes);
-                      return new Router($collection);
-                  },
+                        $collection = $builder->build($routes);
+                        return new Router($collection);
+                    },
+                ]
             ]
-        ]);
+        );
         $this->pipeline = new MiddlewarePipe;
         $this->request = $request;
         $middleware = new Obullo\Pages\PageMiddleware($this->pipeline, $container);
@@ -57,10 +59,9 @@ class PageMiddlewareTest extends PHPUnit_Framework_TestCase
 
     public function testResponse()
     {
-    	$callback = [$this->pipeline, 'handle'];
+        $callback = [$this->pipeline, 'handle'];
         $response = $callback($this->request, new Response);
         
-   	    $this->assertEquals('test', $response->getBody());
+        $this->assertEquals('test', $response->getBody());
     }
-
 }
