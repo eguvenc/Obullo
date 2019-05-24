@@ -1,7 +1,7 @@
 {
     "name": "obullo/obullo",
     "type": "library",
-    "description": "Obullo is the name given to the core library created by combining many components that allow you to use the 'Obullo Pages' tool.",
+    "description": "Core components that allow you to use 'Obullo Pages' tool.",
     "keywords": [
         "obullo",
         "modular",
