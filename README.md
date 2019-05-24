@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/obullo/Obullo.svg?branch=master)](https://travis-ci.org/obullo/Obullo)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 
-> Create none-mvc applications with Obullo and Zend components.
+> Obullo is the name given to the core library created by combining many components that allow you to use the 'Obullo Pages' tool.
 
 ## Install
 

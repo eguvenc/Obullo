@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## 1.0.0 - YYYY-MM-DD
 
-First beta, and first relase as `obullo/mvc`.
+First beta, and first relase as `obullo/Obullo`.
 
 ### Added
 
