@@ -96,7 +96,7 @@ class Template implements ContainerAwareInterface
     {
         $name = new Name($this->_engine, $name);
 
-        // $this->data($data);
+        $this->data($data);
         if (false == $name->doesPathExist()) {
             throw new LogicException(
                 sprintf(
