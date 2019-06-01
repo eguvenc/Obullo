@@ -9,7 +9,7 @@ use Zend\Diactoros\ServerRequest as ZendServerRequest;
  */
 class ServerRequest extends ZendServerRequest
 {
-	const METHOD_OPTIONS  = 'OPTIONS';
+    const METHOD_OPTIONS  = 'OPTIONS';
     const METHOD_GET      = 'GET';
     const METHOD_HEAD     = 'HEAD';
     const METHOD_POST     = 'POST';
@@ -45,18 +45,18 @@ class ServerRequest extends ZendServerRequest
         $parsedBody = null,
         $protocol = '1.1'
     ) {
-    	Parent::__construct(
-    		$serverParams,
-    		$uploadedFiles,
-    		$uri,
-    		$method,
-    		$body,
-    		$headers,
-    		$cookies,
-    		$queryParams,
-    		$parsedBody,
-    		$protocol
-    	);
+        Parent::__construct(
+            $serverParams,
+            $uploadedFiles,
+            $uri,
+            $method,
+            $body,
+            $headers,
+            $cookies,
+            $queryParams,
+            $parsedBody,
+            $protocol
+        );
     }
 
     /**

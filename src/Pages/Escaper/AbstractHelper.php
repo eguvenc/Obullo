@@ -46,7 +46,7 @@ abstract class AbstractHelper
 
         if (is_array($value)) {
             if (!(self::RECURSE_ARRAY & $recurse)) {
-                throw new InvalidArgumentException (
+                throw new InvalidArgumentException(
                     'Array provided to Escape helper, but flags do not allow recursion'
                 );
             }

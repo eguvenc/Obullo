@@ -7,11 +7,11 @@ class EngineTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->engine = new Engine(
-        	[
-        		'file_extension' => 'phtml',
-        		'default_directory' => ROOT.'/var',
-    	    ]
-    	);
+            [
+                'file_extension' => 'phtml',
+                'default_directory' => ROOT.'/var',
+            ]
+        );
     }
 
     public function testDirectory()
@@ -22,10 +22,10 @@ class EngineTest extends PHPUnit_Framework_TestCase
 
     public function testOptions()
     {
-    	$options = $this->engine->getOptions();
+        $options = $this->engine->getOptions();
 
-    	$this->assertEquals('phtml', $options['file_extension']);
-    	$this->assertEquals(ROOT.'/var', $options['default_directory']);
+        $this->assertEquals('phtml', $options['file_extension']);
+        $this->assertEquals(ROOT.'/var', $options['default_directory']);
     }
 
     public function testFileExtensions()
@@ -67,6 +67,4 @@ class EngineTest extends PHPUnit_Framework_TestCase
         $this->engine->setFileExtension('phtml');
         $this->assertTrue($this->engine->exists('test'));
     }
-
-
 }

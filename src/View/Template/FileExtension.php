@@ -9,14 +9,14 @@ class FileExtension
 {
     /**
      * Template file extension.
-     * 
+     *
      * @var string
      */
     protected $fileExtension;
 
     /**
      * Create new FileExtension instance.
-     * 
+     *
      * @param null|string $fileExtension
      */
     public function __construct($fileExtension = 'php')
@@ -26,7 +26,7 @@ class FileExtension
 
     /**
      * Set the template file extension.
-     * 
+     *
      * @param  null|string   $fileExtension
      * @return FileExtension
      */
@@ -39,7 +39,7 @@ class FileExtension
 
     /**
      * Get the template file extension.
-     * 
+     *
      * @return string
      */
     public function get()

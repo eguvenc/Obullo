@@ -72,6 +72,5 @@ class TemplateTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Obullo\View\Engine', $this->name->getEngine());
         $this->assertTrue($this->name->doesPathExist());
-
     }
 }

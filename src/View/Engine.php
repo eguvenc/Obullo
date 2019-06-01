@@ -14,35 +14,35 @@ class Engine
 {
     /**
      * Configuration options
-     * 
+     *
      * @var array
      */
     protected $options = array();
 
     /**
      * Default template directory.
-     * 
+     *
      * @var Directory
      */
     protected $directory;
 
     /**
      * Template file extension.
-     * 
+     *
      * @var FileExtension
      */
     protected $fileExtension;
 
     /**
      * Collection of template folders.
-     * 
+     *
      * @var Folders
      */
     protected $folders;
 
     /**
      * Create & configure engine instance
-     * 
+     *
      * @param array $options config
      */
     public function __construct($options = array())
@@ -80,7 +80,7 @@ class Engine
 
     /**
      * Returns to configuration options
-     * 
+     *
      * @return array
      */
     public function getOptions() : array
@@ -111,7 +111,7 @@ class Engine
 
     /**
      * Add a new template folder for grouping templates under different namespaces.
-     * 
+     *
      * @param  string  $name
      * @param  string  $directory
      * @param  boolean $fallback
@@ -138,7 +138,7 @@ class Engine
 
     /**
      * Get collection of all template folders.
-     * 
+     *
      * @return Folders
      */
     public function getFolders()
@@ -148,7 +148,7 @@ class Engine
 
     /**
      * Get a template path.
-     * 
+     *
      * @param  string $name
      * @return string
      */
@@ -161,7 +161,7 @@ class Engine
 
     /**
      * Check if a template exists.
-     * 
+     *
      * @param  string  $name
      * @return boolean
      */

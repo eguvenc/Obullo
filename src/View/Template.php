@@ -67,7 +67,7 @@ class Template implements ContainerAwareInterface
 
     /**
      * Start buffer
-     * 
+     *
      * @return void
      */
     public function start()
@@ -77,7 +77,7 @@ class Template implements ContainerAwareInterface
 
     /**
      * Clean and return to buffer
-     * 
+     *
      * @return string
      */
     public function end()
@@ -87,7 +87,7 @@ class Template implements ContainerAwareInterface
 
     /**
      * Render view
-     * 
+     *
      * @param  string $name filename
      * @param  array  $data variables
      * @return void
@@ -96,7 +96,7 @@ class Template implements ContainerAwareInterface
     {
         $name = new Name($this->_engine, $name);
 
-        // $this->data($data);
+        $this->data($data);
         if (false == $name->doesPathExist()) {
             throw new LogicException(
                 sprintf(

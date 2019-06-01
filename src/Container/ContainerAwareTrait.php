@@ -10,7 +10,7 @@ trait ContainerAwareTrait
 
     /**
      * Set psr11 container
-     * 
+     *
      * @param ContainerInterface $container container
      */
     public function setContainer(ContainerInterface $container)
@@ -22,7 +22,7 @@ trait ContainerAwareTrait
 
     /**
      * Returns to psr11 container
-     * 
+     *
      * @return object
      */
     public function getContainer() : ContainerInterface

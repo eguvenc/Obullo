@@ -93,5 +93,4 @@ class DoctrineSQLLogger implements SQLLoggerInterface
             ]
         );
     }
-
 }

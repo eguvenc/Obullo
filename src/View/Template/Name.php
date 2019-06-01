@@ -104,7 +104,7 @@ class Name
 
     /**
      * Get the original name.
-     * 
+     *
      * @return string
      */
     public function getName()
@@ -127,7 +127,7 @@ class Name
 
     /**
      * Get the parsed template folder.
-     * 
+     *
      * @return string
      */
     public function getFolder()
@@ -166,7 +166,7 @@ class Name
 
     /**
      * Resolve template path.
-     * 
+     *
      * @return string
      */
     public function getPath()

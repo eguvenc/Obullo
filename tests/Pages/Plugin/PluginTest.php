@@ -1,30 +1,25 @@
 <?php
 
 use Obullo\Http\ServerRequest;
-use Obullo\Router\{
-    RouteCollection,
-    RequestContext,
-    Builder,
-    Router
-};
-use Obullo\Router\Types\{
-    StrType,
-    IntType,
-    TranslationType
-};
-use Obullo\Pages\Plugin\{
-	Asset,
-	EscapeHtml,
-	EscapeHtmlAttr,
-	EscapeCss,
-	EscapeJs,
-	EscapeUrl,
-	Url
-};
+use Obullo\Router\RouteCollection;
+use Obullo\Router\RequestContext;
+use Obullo\Router\Builder;
+use Obullo\Router\Router;
+use Obullo\Router\Types\StrType;
+use Obullo\Router\Types\IntType;
+use Obullo\Router\Types\TranslationType;
+use Obullo\Pages\Plugin\Asset;
+use Obullo\Pages\Plugin\EscapeHtml;
+use Obullo\Pages\Plugin\EscapeHtmlAttr;
+use Obullo\Pages\Plugin\EscapeCss;
+use Obullo\Pages\Plugin\EscapeJs;
+use Obullo\Pages\Plugin\EscapeUrl;
+use Obullo\Pages\Plugin\Url;
+
 class PluginTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
-    {   
+    {
         $types = [
             new IntType('<int:id>'),
             new IntType('<int:page>'),
@@ -96,9 +91,9 @@ body {
 
     public function testEscapeJs()
     {
-  		$escapeJs = new EscapeJs;
+        $escapeJs = new EscapeJs;
 
-$input = <<<INPUT
+        $input = <<<INPUT
 bar&quot;; alert(&quot;Meow!&quot;); var xss=&quot;true
 INPUT;
         $escapedJs = $escapeJs($input);
@@ -107,12 +102,11 @@ INPUT;
 
     public function testEscapeUrl()
     {
-    	$escapeUrl = new EscapeUrl;
-$input = <<<INPUT
+        $escapeUrl = new EscapeUrl;
+        $input = <<<INPUT
 " onmouseover="alert('test')
 INPUT;
         $escapedUrl = $escapeUrl($input);
         $this->assertEquals($escapedUrl, '%22%20onmouseover%3D%22alert%28%27test%27%29');
     }
-
 }

@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface as Logger;
  * @license   http://opensource.org/licenses/MIT MIT license
  */
 class ZendSQLLogger implements ProfilerInterface
-{    
+{
     /**
      * Logger
      *
@@ -22,7 +22,7 @@ class ZendSQLLogger implements ProfilerInterface
      */
     protected $logger;
 
-  	/**
+    /**
      * @var array
      */
     protected $profiles = [];

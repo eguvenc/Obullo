@@ -16,8 +16,7 @@
     "authors": [
         {
             "name": "Ersin Guvenc",
-            "email": "eguvenc@gmail.com",
-            "homepage": "http://obullo.com"
+            "email": "eguvenc@gmail.com"
         }
     ],
     "autoload": {

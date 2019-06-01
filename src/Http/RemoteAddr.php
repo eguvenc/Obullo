@@ -4,7 +4,7 @@ namespace Obullo\Http;
 
 /**
  * Borrowed from zend-http package.
- * 
+ *
  * Functionality for determining client IP address.
  */
 class RemoteAddr
