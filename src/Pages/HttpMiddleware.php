@@ -14,16 +14,22 @@ use Zend\Stratigility\MiddlewarePipeInterface;
 class HttpMiddleware implements MiddlewareInterface
 {
     /**
-     * Response
+     * Route
      * @var null|object
      */
-    private $response;
+    private $route;
 
     /**
      * Container
      * @var object
      */
     protected $container;
+
+    /**
+     * Page found
+     * @var boolean
+     */
+    protected $pageFound;
 
     /**
      * Constructor
@@ -34,22 +40,26 @@ class HttpMiddleware implements MiddlewareInterface
     public function __construct(MiddlewarePipeInterface $pipeline, ContainerInterface $container)
     {
         $this->container = $container;
-
         $router = $container->get('router');
-        $route  = $router->matchRequest();
+        $this->route = $router->matchRequest();
 
-        if ($route && file_exists(ROOT.'/src/'.$route->getHandler())) {
+        if ($this->route && file_exists(ROOT.'/src/'.$this->route->getHandler())) {
+            $this->pageFound = true;
             $pipeline->pipe(new HttpMethodMiddleware($router));
-            foreach ($router->getStack() as $middleware) {
+            foreach ($router->getStack() as $middleware) {  // Assign route middlewares
                 $pipeline->pipe($container->build($middleware));
             }
-            $this->response = require ROOT.'/src/'.$route->getHandler();
         }
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
-    {
-        return ($this->response) ? $this->response : $handler->handle($request);
+    {   
+        if ($this->pageFound) {
+            $route = $this->route;
+            $container = $this->container;
+            return require ROOT.'/src/'.$this->route->getHandler();
+        }
+        return $handler->handle($request);
     }
 
     /**

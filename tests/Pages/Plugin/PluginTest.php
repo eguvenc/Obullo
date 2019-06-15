@@ -20,7 +20,7 @@ class PluginTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $types = [
+        $patterns = [
             new IntType('<int:id>'),
             new IntType('<int:page>'),
             new StrType('<str:name>'),
@@ -29,7 +29,7 @@ class PluginTest extends PHPUnit_Framework_TestCase
         $context = new RequestContext;
         $context->fromRequest(new ServerRequest);
          
-        $collection = new RouteCollection(['types' => $types]);
+        $collection = new RouteCollection(['patterns' => $patterns]);
         $collection->setContext($context);
 
         $routes  = [

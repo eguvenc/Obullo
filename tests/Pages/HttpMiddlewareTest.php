@@ -26,7 +26,7 @@ class HttpMiddlewareTest extends PHPUnit_Framework_TestCase
             [
                 'factories' => [
                     'router' => function (ContainerInterface $container, $requestedName) use ($request) {
-                        $types = [
+                        $patterns = [
                             new IntType('<int:id>'),
                             new IntType('<int:page>'),
                             new StrType('<str:name>'),
@@ -35,7 +35,7 @@ class HttpMiddlewareTest extends PHPUnit_Framework_TestCase
                         $context = new RequestContext;
                         $context->fromRequest($request);
 
-                        $collection = new RouteCollection(['types' => $types]);
+                        $collection = new RouteCollection(['patterns' => $patterns]);
                         $collection->setContext($context);
 
                         $builder = new Builder($collection);
