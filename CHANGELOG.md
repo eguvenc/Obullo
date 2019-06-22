@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ## 1.0.0 - YYYY-MM-DD
 
-First beta, and first relase as `obullo/Obullo`.
+First beta, and first relase as `obullo/obullo`.
 
 ### Added
 
