@@ -14,12 +14,6 @@ use Zend\Stratigility\MiddlewarePipeInterface;
 class HttpMiddleware implements MiddlewareInterface
 {
     /**
-     * Route
-     * @var null|object
-     */
-    private $route;
-
-    /**
      * Container
      * @var object
      */
@@ -29,7 +23,7 @@ class HttpMiddleware implements MiddlewareInterface
      * Page found
      * @var boolean
      */
-    protected $pageFound;
+    private $pageFound;
 
     /**
      * Constructor
@@ -41,9 +35,12 @@ class HttpMiddleware implements MiddlewareInterface
     {
         $this->container = $container;
         $router = $container->get('router');
-        $this->route = $router->matchRequest();
+        $route  = $router->matchRequest();
 
-        if ($this->route && file_exists(ROOT.'/src/'.$this->route->getHandler())) {
+        $container->setService('route', $route);
+        $container->setService('pipeline', $pipeline);
+
+        if ($route && file_exists(ROOT.'/src/'.$route->getHandler())) {
             $this->pageFound = true;
             $pipeline->pipe(new HttpMethodMiddleware($router));
             foreach ($router->getStack() as $middleware) {  // Assign route middlewares
@@ -54,12 +51,26 @@ class HttpMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {   
+        /**
+         * We should process the pages here.
+         * 
+         * Middlewares must initialize before the process.
+         */
         if ($this->pageFound) {
-            $route = $this->route;
-            $container = $this->container;
-            return require ROOT.'/src/'.$this->route->getHandler();
+            $container = $this->getContainer();
+            return require ROOT.'/src/'.$container->get('route')->getHandler();
         }
         return $handler->handle($request);
+    }
+
+    /**
+     * Returns to containar
+     * 
+     * @return object
+     */
+    public function getContainer() : ContainerInterface
+    {
+        return $this->container;
     }
 
     /**
