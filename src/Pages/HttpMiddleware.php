@@ -37,11 +37,9 @@ class HttpMiddleware implements MiddlewareInterface
         $router = $container->get('router');
         $route  = $router->matchRequest();
 
-        $container->setService('route', $route);
-        $container->setService('pipeline', $pipeline);
-
         if ($route && file_exists(ROOT.'/src/'.$route->getHandler())) {
             $this->pageFound = true;
+            $container->setService('route', $route);
             $pipeline->pipe(new HttpMethodMiddleware($router));
             foreach ($router->getStack() as $middleware) {  // Assign route middlewares
                 $pipeline->pipe($container->build($middleware));
@@ -50,10 +48,10 @@ class HttpMiddleware implements MiddlewareInterface
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
-    {   
+    {
         /**
          * We should process the pages here.
-         * 
+         *
          * Middlewares must initialize before the process.
          */
         if ($this->pageFound) {
@@ -65,7 +63,7 @@ class HttpMiddleware implements MiddlewareInterface
 
     /**
      * Returns to containar
-     * 
+     *
      * @return object
      */
     public function getContainer() : ContainerInterface
