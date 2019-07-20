@@ -20,7 +20,7 @@ use Obullo\Http\ServerRequest;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
 
-class PageHandlerTest extends PHPUnit_Framework_TestCase
+class ValidatePageMiddlewareTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -45,10 +45,10 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
 
                         $builder = new Builder($collection);
                         $routes  = [
-                        'test' => [
-                                'path'   => '/test',
-                                'handler'=> 'test.phtml',
-                            ],
+                            'test' => [
+                                    'path'   => '/test',
+                                    'handler'=> 'test_.phtml',
+                                ],
                         ];
                         $collection = $builder->build($routes);
                         return new Router($collection);
@@ -56,12 +56,12 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         );
-        $container->get('router')->matchRequest();
-
-        $this->app = new MiddlewarePipe;
-        $this->request = $request;
-        $middleware = new Obullo\Middleware\PageHandler($container);
-        $this->app->pipe($middleware);
+        if ($container->get('router')->matchRequest()) {
+            $this->request = $request;
+            $this->app = new MiddlewarePipe;
+            $this->app->pipe(new Obullo\Middleware\ValidatePageMiddleware($container->get('router')));
+            $this->app->pipe(new Obullo\Middleware\PageHandler($container));
+        }
     }
 
     public function testResponse()
@@ -69,6 +69,6 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $callback = [$this->app, 'handle'];
         $response = $callback($this->request, new Response);
         
-        $this->assertEquals('test', $response->getBody());
+        $this->assertEquals('The page "test_.phtml" does not exists.', $response->getBody());
     }
 }

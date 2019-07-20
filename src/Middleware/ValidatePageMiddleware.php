@@ -26,16 +26,17 @@ class ValidatePageMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $handler = $this->route->getHandler();
+        $page = $this->route->getHandler();
 
-        if (! file_exists(ROOT.'/src/'.$handler)) {
+        if (! file_exists(ROOT.'/src/'.$page)) {
             return new TextResponse(
                 sprintf(
                     'The page "%s" does not exists.',
-                    $handler,
+                    $page,
                     405
                 )
             );
         }
+        return $handler->handle($request);
     }
 }
