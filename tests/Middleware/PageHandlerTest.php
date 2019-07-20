@@ -15,7 +15,7 @@ use Obullo\Http\ServerRequest;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
 
-class HttpMiddlewareTest extends PHPUnit_Framework_TestCase
+class PageHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -41,8 +41,8 @@ class HttpMiddlewareTest extends PHPUnit_Framework_TestCase
                         $builder = new Builder($collection);
                         $routes  = [
                         'test' => [
-                            'path'   => '/test',
-                            'handler'=> 'test.phtml',
+                                'path'   => '/test',
+                                'handler'=> 'test.phtml',
                             ],
                         ];
                         $collection = $builder->build($routes);
@@ -51,15 +51,15 @@ class HttpMiddlewareTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         );
-        $this->pipeline = new MiddlewarePipe;
+        $this->app = new MiddlewarePipe;
         $this->request = $request;
-        $middleware = new Obullo\Pages\HttpMiddleware($this->pipeline, $container);
-        $this->pipeline->pipe($middleware);
+        $middleware = new Obullo\Middleware\PageHandler($container);
+        $this->app->pipe($middleware);
     }
 
     public function testResponse()
     {
-        $callback = [$this->pipeline, 'handle'];
+        $callback = [$this->app, 'handle'];
         $response = $callback($this->request, new Response);
         
         $this->assertEquals('test', $response->getBody());
