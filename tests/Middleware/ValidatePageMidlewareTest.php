@@ -30,7 +30,7 @@ class ValidatePageMiddlewareTest extends PHPUnit_Framework_TestCase
         $container = new ServiceManager(
             [
                 'factories' => [
-                    'router' => function (ContainerInterface $container, $requestedName) use ($request) {
+                    Router::class => function (ContainerInterface $container, $requestedName) use ($request) {
                         $patterns = [
                             new IntType('<int:id>'),
                             new IntType('<int:page>'),
@@ -56,10 +56,10 @@ class ValidatePageMiddlewareTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         );
-        if ($container->get('router')->matchRequest()) {
+        if ($container->get(Router::class)->matchRequest()) {
             $this->request = $request;
             $this->app = new MiddlewarePipe;
-            $this->app->pipe(new Obullo\Middleware\ValidatePageMiddleware($container->get('router')));
+            $this->app->pipe(new Obullo\Middleware\ValidatePageMiddleware($container->get(Router::class)));
             $this->app->pipe(new Obullo\Middleware\PageHandler($container));
         }
     }

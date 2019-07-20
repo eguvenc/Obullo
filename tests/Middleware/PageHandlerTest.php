@@ -30,7 +30,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $container = new ServiceManager(
             [
                 'factories' => [
-                    'router' => function (ContainerInterface $container, $requestedName) use ($request) {
+                    Router::class => function (ContainerInterface $container, $requestedName) use ($request) {
                         $patterns = [
                             new IntType('<int:id>'),
                             new IntType('<int:page>'),
@@ -56,7 +56,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         );
-        $container->get('router')->matchRequest();
+        $container->get(Router::class)->matchRequest();
 
         $this->app = new MiddlewarePipe;
         $this->request = $request;
