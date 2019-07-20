@@ -51,6 +51,8 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                 ]
             ]
         );
+        $container->get('router')->matchRequest();
+
         $this->app = new MiddlewarePipe;
         $this->request = $request;
         $middleware = new Obullo\Middleware\PageHandler($container);
