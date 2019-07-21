@@ -9,6 +9,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 
+use Throwable;
 use Zend\Stratigility\MiddlewarePipeInterface;
 
 class PageHandler implements MiddlewareInterface
@@ -34,7 +35,22 @@ class PageHandler implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $container = $this->getContainer();
-        return require ROOT.'/src/'.$container->get('route')->getHandler();
+
+        try {
+            $level = ob_get_level();
+            return require ROOT.'/src/'.$container->get('route')->getHandler();
+
+        } catch (Throwable $e) {
+            while (ob_get_level() > $level) {
+                ob_end_clean();
+            }
+            throw $e;
+        } catch (Exception $e) {
+            while (ob_get_level() > $level) {
+                ob_end_clean();
+            }
+            throw $e;
+        }
     }
 
     /**
