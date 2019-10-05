@@ -23,7 +23,15 @@ class ValidatePageMiddleware implements MiddlewareInterface
     {
         $this->route = $router->getMatchedRoute();
     }
-
+    
+    /**
+     * Process
+     *
+     * @param  ServerRequestInterface  $request request
+     * @param  RequestHandlerInterface $handler request handler
+     *
+     * @return object|exception
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $page = $this->route->getHandler();

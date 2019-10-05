@@ -33,7 +33,8 @@
         "php": "^7.1"
     },
     "require-dev": {
-        "obullo/router": "^1.1",
+        "obullo/router": "^1.4",
+        "obullo/view": "dev-master",
         "monolog/monolog": "^1.24",
         "doctrine/dbal": "^2.9",
         "zendframework/zend-stratigility": "^3.1",

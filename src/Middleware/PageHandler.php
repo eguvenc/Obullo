@@ -70,6 +70,17 @@ class PageHandler implements MiddlewareInterface
     }
 
     /**
+     * Get class from plugin manager
+     *
+     * @param  string $class class
+     * @return object
+     */
+    public function plugin($class)
+    {
+        return $this->getContainer()->get('plugin')->get($class);
+    }
+
+    /**
      * Returns to container
      *
      * @return object
@@ -77,16 +88,5 @@ class PageHandler implements MiddlewareInterface
     public function getContainer() : ContainerInterface
     {
         return $this->container;
-    }
-
-    /**
-     * Container proxy
-     *
-     * @param  string $name requested name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->container->get($name);
     }
 }

@@ -1,0 +1,9 @@
+<?php
+
+$this->plugin('currencyFormat')
+	->setCurrencyCode('USD')
+	->setLocale('en_US');
+
+$result = $this->currencyFormat(1234.56); 
+
+return new Zend\Diactoros\Response\HtmlResponse($result);

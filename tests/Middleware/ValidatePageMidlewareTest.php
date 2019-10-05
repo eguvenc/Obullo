@@ -5,6 +5,7 @@ use Obullo\Router\{
     RouteCollection,
     RequestContext,
     Builder,
+    Pattern,
     Router
 };
 use Obullo\Router\Types\{
@@ -31,16 +32,16 @@ class ValidatePageMiddlewareTest extends PHPUnit_Framework_TestCase
             [
                 'factories' => [
                     Router::class => function (ContainerInterface $container, $requestedName) use ($request) {
-                        $patterns = [
+                        $pattern = new Pattern([
                             new IntType('<int:id>'),
                             new IntType('<int:page>'),
                             new StrType('<str:name>'),
                             new TranslationType('<locale:locale>'),
-                        ];
+                        ]);
                         $context = new RequestContext;
                         $context->fromRequest($request);
 
-                        $collection = new RouteCollection(['patterns' => $patterns]);
+                        $collection = new RouteCollection($pattern);
                         $collection->setContext($context);
 
                         $builder = new Builder($collection);
