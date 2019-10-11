@@ -2,7 +2,10 @@
 
 namespace Obullo\Middleware;
 
-use Obullo\Router\Router;
+use Obullo\Router\{
+    Router,
+    Route
+};
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -27,7 +30,7 @@ class PageHandler implements MiddlewareInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $container->setService('route', $container->get(Router::class)->getMatchedRoute());
+        $container->setService(Route::class, $container->get(Router::class)->getMatchedRoute());
     }
 
     /**
@@ -43,7 +46,7 @@ class PageHandler implements MiddlewareInterface
         $container = $this->getContainer();
         try {
             $level = ob_get_level();
-            return require ROOT.'/src/'.$container->get('route')->getHandler();
+            return require ROOT.'/src/'.$container->get(Route::class)->getHandler();
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
