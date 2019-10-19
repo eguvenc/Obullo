@@ -6,15 +6,16 @@ use Obullo\Router\RequestContext;
 use Obullo\Router\Builder;
 use Obullo\Router\Pattern;
 use Obullo\Router\Router;
+use Obullo\Middleware\PageHandler;
 use Obullo\Router\Types\StrType;
 use Obullo\Router\Types\IntType;
 use Obullo\Router\Types\TranslationType;
 use Zend\Diactoros\Uri;
 use Zend\Diactoros\Response;
 use Obullo\Http\ServerRequest;
+use Obullo\View\PluginManager;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
-use Obullo\View\PluginManager;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\I18n\View\Helper as ZendPlugin;
@@ -23,37 +24,18 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->container = new ServiceManager(
-            [
+        $this->container = new ServiceManager;
+        $this->container->addInitializer(function ($container, $instance) {
+            if ($instance instanceof Obullo\Container\ContainerAwareInterface) {
+                $instance->setContainer($container);
+            }
+        });
+        $this->container->configure([
                 'aliases' => [
                     'plugin' => PluginManager::class,
                 ],
                 'factories' => [
-                    Router::class => function (ContainerInterface $container, $requestedName) {
-                        $pattern = new Pattern([
-                            new IntType('<int:id>'),
-                            new IntType('<int:page>'),
-                            new StrType('<str:name>'),
-                            new TranslationType('<locale:locale>'),
-                        ]);
-                        $context = new RequestContext;
-                        $context->fromRequest($container->get('request'));
-
-                        $collection = new RouteCollection($pattern);
-                        $collection->setContext($context);
-
-                        $builder = new Builder($collection);
-                        $routes  = [
-                            '/test' => [
-                                'handler'=> 'test.phtml',
-                            ],
-                            'plugin/test/' => [
-                                'handler'=> 'plugin_test.phtml',
-                            ],
-                        ];
-                        $collection = $builder->build($routes);
-                        return new Router($collection);
-                    },
+                    Router::class => App\Factory\RouterFactory::class,
                     PluginManager::class => function (ContainerInterface $container, $requestedName) {
                         $config = [
                             'aliases' => [
@@ -67,9 +49,11 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                         $pluginManager->configure($config);
                         return $pluginManager;
                     },
-                ]
-            ]
-        );
+                ],
+                'abstract_factories' => [
+                    \App\Factory\LazyMiddlewareFactory::class,
+                ],
+        ]);
     }
 
     public function testResponse()
@@ -82,7 +66,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $router->matchRequest();
 
         $app = new MiddlewarePipe;
-        $middleware = new Obullo\Middleware\PageHandler($this->container);
+        $middleware = $this->container->get(PageHandler::class);
         $app->pipe($middleware);
 
         $callback = [$app, 'handle'];
@@ -101,7 +85,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $router->matchRequest();
 
         $app = new MiddlewarePipe;
-        $middleware = new Obullo\Middleware\PageHandler($this->container);
+        $middleware = $this->container->get(PageHandler::class);
         $app->pipe($middleware);
 
         $callback = [$app, 'handle'];

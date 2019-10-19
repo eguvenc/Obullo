@@ -1,22 +1,16 @@
 <?php
 
 use Interop\Container\ContainerInterface;
-use Obullo\Router\{
-    RouteCollection,
-    RequestContext,
-    Builder,
-    Pattern,
-    Router
-};
-use Obullo\Router\Types\{
-    StrType,
-    IntType,
-    TranslationType
-};
-use Zend\Diactoros\{
-    Uri,
-    Response
-};
+use Obullo\Router\RouteCollection;
+use Obullo\Router\RequestContext;
+use Obullo\Router\Builder;
+use Obullo\Router\Pattern;
+use Obullo\Router\Router;
+use Obullo\Router\Types\StrType;
+use Obullo\Router\Types\IntType;
+use Obullo\Router\Types\TranslationType;
+use Zend\Diactoros\Uri;
+use Zend\Diactoros\Response;
 use Obullo\Http\ServerRequest;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
@@ -54,14 +48,22 @@ class ValidatePageMiddlewareTest extends PHPUnit_Framework_TestCase
                         $collection = $builder->build($routes);
                         return new Router($collection);
                     },
-                ]
+                ],
+                'abstract_factories' => [
+                    \App\Factory\LazyMiddlewareFactory::class,
+                ],
             ]
         );
+        $container->addInitializer(function ($container, $instance) {
+            if ($instance instanceof Obullo\Container\ContainerAwareInterface) {
+                $instance->setContainer($container);
+            }
+        });
         if ($container->get(Router::class)->matchRequest()) {
             $this->request = $request;
             $this->app = new MiddlewarePipe;
             $this->app->pipe(new Obullo\Middleware\ValidatePageMiddleware($container->get(Router::class)));
-            $this->app->pipe(new Obullo\Middleware\PageHandler($container));
+            $this->app->pipe(new Obullo\Middleware\PageHandler($container->get(Router::class)));
         }
     }
 

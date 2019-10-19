@@ -6,15 +6,14 @@ use Obullo\Http\ServerRequest;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-use function Zend\Diactoros\{
-    normalizeServer,
-    normalizeUploadedFiles,
-    marshalHeadersFromSapi,
-    parseCookieHeader,
-    marshalUriFromSapi,
-    marshalMethodFromSapi,
-    marshalProtocolVersionFromSapi
-};
+use function Zend\Diactoros\normalizeServer;
+use function Zend\Diactoros\normalizeUploadedFiles;
+use function Zend\Diactoros\marshalHeadersFromSapi;
+use function Zend\Diactoros\parseCookieHeader;
+use function Zend\Diactoros\marshalUriFromSapi;
+use function Zend\Diactoros\marshalMethodFromSapi;
+use function Zend\Diactoros\marshalProtocolVersionFromSapi;
+
 class RequestFactory implements FactoryInterface
 {
     /**
@@ -27,7 +26,8 @@ class RequestFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $server = normalizeServer($_SERVER,
+        $server = normalizeServer(
+            $_SERVER,
             is_callable('apache_request_headers') ? 'apache_request_headers' : null
         );
         $files   = normalizeUploadedFiles($_FILES);

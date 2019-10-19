@@ -2,10 +2,9 @@
 
 namespace Obullo\Middleware;
 
-use Obullo\Router\{
-    Router,
-    Route
-};
+use Obullo\Router\Router;
+use Obullo\Container\ContainerAwareInterface;
+use Obullo\Container\ContainerAwareTrait;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,24 +12,27 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Container\ContainerInterface;
 
 use Throwable;
+use Exception;
 
-class PageHandler implements MiddlewareInterface
+class PageHandler implements MiddlewareInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * Container
+     *
      * @var object
      */
-    protected $container;
+    protected $route;
 
     /**
      * Constructor
      *
      * @param ContainerInterface $container container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(Router $router)
     {
-        $this->container = $container;
-        $container->setService(Route::class, $container->get(Router::class)->getMatchedRoute());
+        $this->route = $router->getMatchedRoute();
     }
 
     /**
@@ -46,7 +48,7 @@ class PageHandler implements MiddlewareInterface
         $container = $this->getContainer();
         try {
             $level = ob_get_level();
-            return require ROOT.'/src/'.$container->get(Route::class)->getHandler();
+            return require ROOT.'/src/'.$this->route->getHandler();
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
@@ -81,15 +83,5 @@ class PageHandler implements MiddlewareInterface
     public function plugin($class)
     {
         return $this->getContainer()->get('plugin')->get($class);
-    }
-
-    /**
-     * Returns to container
-     *
-     * @return object
-     */
-    public function getContainer() : ContainerInterface
-    {
-        return $this->container;
     }
 }
