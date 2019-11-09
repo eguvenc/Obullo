@@ -48,7 +48,22 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
         $container = $this->getContainer();
         try {
             $level = ob_get_level();
-            return require ROOT.'/src/'.$this->route->getHandler();
+            
+            $handlerClass = $this->route->getHandler();
+            $pageModel = new $handlerClass;
+
+            $method = $request->getMethod();
+            $methodName = 'on'.ucfirst(strtolower($method));
+            return $pageModel->$methodName($request);
+
+            // return new TextResponse(
+            //     sprintf(
+            //         'The page "%s" does not exists.',
+            //         $page,
+            //         405
+            //     )
+            // );
+
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
