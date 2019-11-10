@@ -3,6 +3,8 @@
 namespace Obullo\Middleware;
 
 use Obullo\Router\Router;
+use Zend\View\View;
+use Zend\View\Model\ViewModel;
 use Obullo\Container\ContainerAwareInterface;
 use Obullo\Container\ContainerAwareTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -54,7 +56,19 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
 
             $method = $request->getMethod();
             $methodName = 'on'.ucfirst(strtolower($method));
-            return $pageModel->$methodName($request);
+            $response = $pageModel->$methodName($request);
+
+            if ($response instanceof ViewModel) {
+                $view = $container->get(View::class);
+                $templateName = $response->getTemplate();
+                if (empty($templateName)) {
+                    $templateName = substr(strrchr(get_class($pageModel), "\\"), 1).'.phtml';
+                    $response->setTemplate($templateName);
+                }
+                return $view->render($response);
+            }
+
+            return $response;
 
             // return new TextResponse(
             //     sprintf(
@@ -63,7 +77,6 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
             //         405
             //     )
             // );
-
         } catch (Throwable $e) {
             while (ob_get_level() > $level) {
                 ob_end_clean();
