@@ -3,8 +3,6 @@
 namespace Obullo\Middleware;
 
 use Obullo\Router\Router;
-use Zend\View\View;
-use Zend\View\Model\ViewModel;
 use Obullo\Container\ContainerAwareInterface;
 use Obullo\Container\ContainerAwareTrait;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,6 +13,8 @@ use Psr\Container\ContainerInterface;
 
 use Throwable;
 use Exception;
+use ReflectionClass;
+use ReflectionMethod;
 
 class PageHandler implements MiddlewareInterface, ContainerAwareInterface
 {
@@ -48,46 +48,29 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $container = $this->getContainer();
-        try {
-            $level = ob_get_level();
-            
-            $handlerClass = $this->route->getHandler();
-            $pageModel = new $handlerClass;
+        $handlerClass = $this->route->getHandler();
+        $pageModel = $container->build($handlerClass);
 
-            $method = $request->getMethod();
-            $methodName = 'on'.ucfirst(strtolower($method));
-            $response = $pageModel->$methodName($request);
-
-            if ($response instanceof ViewModel) {
-                $view = $container->get(View::class);
-                $templateName = $response->getTemplate();
-                if (empty($templateName)) {
-                    $templateName = substr(strrchr(get_class($pageModel), "\\"), 1).'.phtml';
-                    $response->setTemplate($templateName);
-                }
-                return $view->render($response);
+        $usedTraits = class_uses($pageModel);
+        foreach ($usedTraits as $trait) {
+            if (strstr($trait, '_Layout')) {
+                $layoutName = substr(strrchr($trait, "\\"), 1);
+                $layoutName = substr($layoutName, 0, -6);
+                $pageModel->layoutModel->setTemplate('_Layout/'.$layoutName);
             }
-
-            return $response;
-
-            // return new TextResponse(
-            //     sprintf(
-            //         'The page "%s" does not exists.',
-            //         $page,
-            //         405
-            //     )
-            // );
-        } catch (Throwable $e) {
-            while (ob_get_level() > $level) {
-                ob_end_clean();
-            }
-            throw $e;
-        } catch (Exception $e) {
-            while (ob_get_level() > $level) {
-                ob_end_clean();
-            }
-            throw $e;
         }
+        $method = $request->getMethod();
+        $queryParams = $request->getQueryParams();
+        $reflection = new ReflectionClass($pageModel);
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $classMethod) {
+            if (isset($queryParams[$classMethod->name])) {
+                $method = substr($classMethod->name, 2);
+            }
+        }
+        $methodName = 'on'.ucfirst($method);
+        $response = $pageModel->$methodName($request);
+
+        return $response;
     }
 
     /**

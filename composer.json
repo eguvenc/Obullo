@@ -20,6 +20,9 @@
         }
     ],
     "autoload": {
+        "files": [
+            "src/functions/page_helper.php"
+        ],
         "psr-4": {
             "Obullo\\": "src/"
         }
