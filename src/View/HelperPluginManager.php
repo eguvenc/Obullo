@@ -235,47 +235,6 @@ class HelperPluginManager extends AbstractPluginManager
     }
 
     /**
-     * Inject a helper instance with the registered translator
-     *
-     * @param ContainerInterface|Helper\HelperInterface $first helper instance
-     *     under zend-servicemanager v2, ContainerInterface under v3.
-     * @param ContainerInterface|Helper\HelperInterface $second
-     *     ContainerInterface under zend-servicemanager v3, helper instance
-     *     under v2. Ignored regardless.
-     */
-    public function injectTranslator($first, $second)
-    {
-        if ($first instanceof ContainerInterface) {
-            // v3 usage
-            $container = $first;
-            $helper = $second;
-        }
-        // Allow either direct implementation or duck-typing.
-        if (! $helper instanceof TranslatorAwareInterface
-            && ! method_exists($helper, 'setTranslator')
-        ) {
-            return;
-        }
-        if (! $container) {
-            // Under zend-navigation v2.5, the navigation PluginManager is
-            // always lazy-loaded, which means it never has a parent
-            // container.
-            return;
-        }
-        if (method_exists($helper, 'hasTranslator') && $helper->hasTranslator()) {
-            return;
-        }
-        if ($container->has(TranslatorInterface::class)) {
-            $helper->setTranslator($container->get(TranslatorInterface::class));
-            return;
-        }
-        if ($container->has('translator')) {
-            $helper->setTranslator($container->get('translator'));
-            return;
-        }
-    }
-
-    /**
      * Call page plugins
      *
      * @param  string $plugin     method name
