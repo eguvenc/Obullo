@@ -28,7 +28,7 @@ trait PageTrait
         $names = explode('\\', $class);
         array_shift($names);
         $pageModelName = implode('//', $names);
-        $templateName  = substr($pageModelName, 0, -5); // Remove "Model" word from end
+        $templateName  = substr($pageModelName, 0, -5); // Remove "Model" word
         $container = $this->getContainer();
         $renderer = $container->get(RendererInterface::class);
         $view = $container->get(View::class);

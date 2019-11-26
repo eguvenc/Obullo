@@ -478,5 +478,4 @@ class HelperPluginManager extends AbstractPluginManager
             throw new InvalidHelperException($e->getMessage(), $e->getCode(), $e);
         }
     }
-
 }
