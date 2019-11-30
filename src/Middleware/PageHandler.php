@@ -50,6 +50,7 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
         $container = $this->getContainer();
         $handlerClass = $this->route->getHandler();
         $pageModel = $container->build($handlerClass);
+        $pageModel->request = $request;
 
         $usedTraits = class_uses($pageModel);
         foreach ($usedTraits as $trait) {
