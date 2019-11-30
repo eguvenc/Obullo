@@ -16,11 +16,21 @@ class Asset extends AbstractHelper
     protected $path;
 
     /**
-     * @param string $asset
+     * Set base path
+     * 
+     * @param string $path base path
+     */
+    public function setPath($path)
+    {
+        $this->path = rtrim($path, '/');
+    }
+
+    /**
+     * @param string $url
      * @return string
      * @throws Exception\InvalidArgumentException
      */
-    public function __invoke($asset)
+    public function __invoke($url)
     {
         $filePath = $this->path . '/' .  ltrim($url, '/');
 
@@ -41,15 +51,5 @@ class Asset extends AbstractHelper
         }
 
         return $directory . $pathInfo['filename'] . '.' . $pathInfo['extension'] . '?v=' . $lastUpdated;
-    }
-
-    /**
-     * Set base path
-     * 
-     * @param string $path base path
-     */
-    public function setPath($path)
-    {
-        $this->path = rtrim($path, '/');
     }
 }
