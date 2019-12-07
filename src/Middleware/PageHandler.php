@@ -75,18 +75,6 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
     }
 
     /**
-     * Call plugin methods
-     *
-     * @param  string $method name
-     * @param  array  $args   arguments
-     * @return mixed
-     */
-    public function __call($method, $args)
-    {
-        return $this->getContainer()->get('plugin')->$method(...$args);
-    }
-
-    /**
      * Get class from plugin manager
      *
      * @param  string $class class

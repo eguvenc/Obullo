@@ -22,9 +22,9 @@ trait PageTrait
     public $viewModel;
 
     /**
-     * Get request
+     * Return request
      * 
-     * @return object 
+     * @return object
      */
     public function getRequest()
     {
@@ -50,14 +50,17 @@ trait PageTrait
 
         $model->request = $this->getRequest();
 
+        if ($model->getTemplate() == 'Default.phtml') {  // If developer don't want to use layout
+            $this->viewModel->setTemplate($templateName);
+            $this->viewModel->setOption('has_parent', true);
+            return $view->render($model);
+        }
+        $model->setOption('has_parent', true);
+
         $this->viewModel->request = $this->getRequest();
         $this->viewModel->setTemplate($templateName);
         $this->viewModel->setOption('has_parent', true);
 
-        if ($model->getTemplate() == 'Default.phtml') {  // If developer don't want to use layout
-            return $view->render($model);                // render current view model
-        }
-        $model->setOption('has_parent', true);
         $model->addChild($this->viewModel);
 
         return $view->render($model);

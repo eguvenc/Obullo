@@ -241,16 +241,16 @@ class HelperPluginManager extends AbstractPluginManager
      * @param  array  $parameters method parameters
      * @return mixed
      */
-    public function __call(string $plugin, $parameters = array())
-    {
-        if (false == isset($this->aliases[$plugin]) && false == isset($this->factories[$plugin])) {
-            throw new LogicException(
-                sprintf("The plugin %s not defined in %s.", $plugin, __CLASS__)
-            );
-        }
-        $callable = $this->get($plugin);
-        return $callable(...$parameters);
-    }
+    // public function __call(string $plugin, $parameters = array())
+    // {
+    //     if (false == isset($this->aliases[$plugin]) && false == isset($this->factories[$plugin])) {
+    //         throw new LogicException(
+    //             sprintf("The plugin %s not defined in %s.", $plugin, __CLASS__)
+    //         );
+    //     }
+    //     $callable = $this->get($plugin);
+    //     return $callable(...$parameters);
+    // }
 
     /**
      * Set renderer

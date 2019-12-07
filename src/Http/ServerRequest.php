@@ -170,4 +170,14 @@ class ServerRequest extends ZendServerRequest
         
         return isset($headers['x-requested-with'][0]) && $headers['x-requested-with'][0] == 'XMLHttpRequest';
     }
+
+    /**
+     * Alias of isXMLHttpRequest
+     * 
+     * @return bool
+     */
+    public function isAjax() : bool
+    {
+        return $this->isXmlHttpRequest();
+    }
 }
