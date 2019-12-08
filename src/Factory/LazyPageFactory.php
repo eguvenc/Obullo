@@ -69,15 +69,11 @@ class LazyPageFactory implements AbstractFactoryInterface
         if (property_exists($pageModel, 'container')) {
             $pageModel->setContainer($container);
         }
-        if (property_exists($pageModel, 'viewModel') && empty($pageModel->viewModel)) {
-
+        if (property_exists($pageModel, 'viewModel')) {
             $renderer = $container->get(RendererInterface::class);
             $plugin = $renderer->getHelperPluginManager();
             $callable = $plugin->get('model');
             $callable->setContainer($container);
-
-            // $pageModel->viewModel = new ViewModel;
-            // $pageModel->viewModel->setTemplate('Default.phtml'); // We need to understand this is a content model
         }
         return $pageModel;
     }
