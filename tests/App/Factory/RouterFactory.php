@@ -45,7 +45,7 @@ class RouterFactory implements FactoryInterface
         $builder = new Builder($collection);
         $routes  = [
             '/test' => [
-                'handler'=> 'TestModel',
+                'handler'=> 'Tests\Pages\TestModel',
             ],
             'plugin/test/' => [
                 'handler'=> 'plugin_test.phtml',

@@ -3,10 +3,12 @@
 namespace App\Factory;
 
 use ReflectionClass;
+use Zend\View\Model\ViewModel;
 use Interop\Container\ContainerInterface;
+use Zend\View\Renderer\RendererInterface;
 use Zend\ServiceManager\Factory\AbstractFactoryInterface;
 
-class LazyMiddlewareFactory implements AbstractFactoryInterface
+class LazyPageFactory implements AbstractFactoryInterface
 {
     /**
      * Determine if we can create a service with name
@@ -19,18 +21,18 @@ class LazyMiddlewareFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        return strstr($requestedName, 'Middleware\\') !== false;
+        return strstr($requestedName, 'Tests\Pages\\') !== false;
     }
 
     /**
      * These aliases work to substitute class names with Service Manager types that are buried in framework
-     *
+     * 
      * @var array
      */
     protected $aliases = [
+        'Zend\EventManager\EventManager' => 'events',
         'Zend\I18n\Translator\Translator' => 'translator',
-        'Zend\I18n\Translator\TranslatorInterface' => 'translator',
-        'Psr\Container\ContainerInterface' => 'container',
+        'Zend\I18n\Translator\TranslatorInterface' => 'translator'
     ];
 
     /**
@@ -48,7 +50,7 @@ class LazyMiddlewareFactory implements AbstractFactoryInterface
         $injectedParameters = array();
         if ($constructor = $class->getConstructor()) {
             if ($params = $constructor->getParameters()) {
-                foreach ($params as $param) {
+                foreach($params as $param) {
                     if ($param->getClass()) {
                         $name = $param->getClass()->getName();
                         if (array_key_exists($name, $this->aliases)) {
@@ -62,6 +64,21 @@ class LazyMiddlewareFactory implements AbstractFactoryInterface
                 $injectedParameters[] = $options;
             }
         }
-        return new $requestedName(...$injectedParameters);
+        $pageModel = new $requestedName(...$injectedParameters);
+
+        if (property_exists($pageModel, 'container')) {
+            $pageModel->setContainer($container);
+        }
+        if (property_exists($pageModel, 'viewModel') && empty($pageModel->viewModel)) {
+
+            $renderer = $container->get(RendererInterface::class);
+            $plugin = $renderer->getHelperPluginManager();
+            $callable = $plugin->get('model');
+            $callable->setContainer($container);
+
+            $pageModel->viewModel = new ViewModel;
+            $pageModel->viewModel->setTemplate('Default.phtml'); // We need to understand this is a content model
+        }
+        return $pageModel;
     }
 }

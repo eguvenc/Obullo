@@ -6,6 +6,7 @@ use Obullo\Router\RequestContext;
 use Obullo\Router\Builder;
 use Obullo\Router\Pattern;
 use Obullo\Router\Router;
+use Obullo\View\PluginManager;
 use Obullo\Middleware\PageHandler;
 use Obullo\Router\Types\StrType;
 use Obullo\Router\Types\IntType;
@@ -13,12 +14,15 @@ use Obullo\Router\Types\TranslationType;
 use Zend\Diactoros\Uri;
 use Zend\Diactoros\Response;
 use Obullo\Http\ServerRequest;
-use Obullo\View\PluginManager;
+use Zend\View\View;
+use Zend\View\HelperPluginManager;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use Zend\I18n\View\Helper as ZendPlugin;
+use Obullo\Factory\LazyMiddlewareFactory;
+use Zend\View\Renderer\RendererInterface;
 
 class PageHandlerTest extends PHPUnit_Framework_TestCase
 {
@@ -32,11 +36,13 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         });
         $this->container->configure([
                 'aliases' => [
-                    'plugin' => PluginManager::class,
+                    'plugin' => HelperPluginManager::class,
                 ],
                 'factories' => [
                     Router::class => App\Factory\RouterFactory::class,
-                    PluginManager::class => function (ContainerInterface $container, $requestedName) {
+                    RendererInterface::class => App\Factory\RendererFactory::class,
+                    View::class => App\Factory\ViewFactory::class,
+                    HelperPluginManager::class => function (ContainerInterface $container, $requestedName) {
                         $config = [
                             'aliases' => [
                                 'currencyFormat' => ZendPlugin\CurrencyFormat::class,
@@ -45,13 +51,14 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                                 ZendPlugin\CurrencyFormat::class => InvokableFactory::class,
                             ],
                         ];
-                        $pluginManager = new PluginManager($container);
+                        $pluginManager = new HelperPluginManager($container);
                         $pluginManager->configure($config);
                         return $pluginManager;
                     },
                 ],
                 'abstract_factories' => [
-                    \App\Factory\LazyMiddlewareFactory::class,
+                    LazyMiddlewareFactory::class,
+                    App\Factory\LazyPageFactory::class,
                 ],
         ]);
     }
