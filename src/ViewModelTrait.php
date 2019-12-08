@@ -7,7 +7,7 @@ use Zend\View\Model\ModelInterface;
 use Zend\View\Renderer\RendererInterface;
 use Obullo\Container\ContainerAwareTrait;
 
-trait PageTrait
+trait ViewModelTrait
 {
     use ContainerAwareTrait;
 
@@ -49,17 +49,19 @@ trait PageTrait
         $view = $container->get(View::class);
 
         $model->request = $this->getRequest();
+        $this->viewModel->setOption('has_parent', true);
 
-        if ($model->getTemplate() == 'Default.phtml') {  // If developer don't want to use layout
+        if ($model->getTemplate() == '') {  // If developer don't want to use layout
             $this->viewModel->setTemplate($templateName);
-            $this->viewModel->setOption('has_parent', true);
+            return $view->render($model);
+        }
+        if (strpos($model->getTemplate(), '_Layout') === false) { // if view model is not a layout file
             return $view->render($model);
         }
         $model->setOption('has_parent', true);
 
         $this->viewModel->request = $this->getRequest();
         $this->viewModel->setTemplate($templateName);
-        $this->viewModel->setOption('has_parent', true);
 
         $model->addChild($this->viewModel);
 

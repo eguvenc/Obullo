@@ -7,14 +7,14 @@ use Zend\View\Model\ViewModel;
 use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class TestModel
+class PluginModel
 {
     use ViewModelTrait;
 
     public function __construct()
     {
     	$this->viewModel = new ViewModel;
-    	$this->viewModel->setTemplate('Test');
+    	$this->viewModel->setTemplate('Plugin');
     }
 
     public function onGet(Request $request)

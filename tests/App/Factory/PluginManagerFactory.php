@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use Obullo\View\Helper as Plugin;
+use Zend\I18n\View\Helper as ZendPlugin;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -26,11 +27,13 @@ class PluginManagerFactory implements FactoryInterface
                 'asset' => Plugin\Asset::class,
                 'url' => Plugin\Url::class,
                 'model' => Plugin\Model::class,
+                'currencyFormat' => ZendPlugin\CurrencyFormat::class,
             ],
             'factories' => [
                 Plugin\Asset::class => AssetFactory::class,
                 Plugin\Url::class => UrlFactory::class,
                 Plugin\Model::class => InvokableFactory::class,
+                ZendPlugin\CurrencyFormat::class => InvokableFactory::class,
             ],
         ];
     	$pluginManager = new HelperPluginManager($container);

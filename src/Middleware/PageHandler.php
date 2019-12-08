@@ -51,15 +51,7 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
         $handlerClass = $this->route->getHandler();
         $pageModel = $container->build($handlerClass);
         $pageModel->request = $request;
-
-        $usedTraits = class_uses($pageModel);
-        foreach ($usedTraits as $trait) {
-            if (strstr($trait, '_Layout')) {
-                $layoutName = substr(strrchr($trait, "\\"), 1);
-                $layoutName = substr($layoutName, 0, -6);
-                $pageModel->layoutModel->setTemplate('_Layout/'.$layoutName);
-            }
-        }
+        
         $method = $request->getMethod();
         $queryParams = $request->getQueryParams();
         $reflection = new ReflectionClass($pageModel);

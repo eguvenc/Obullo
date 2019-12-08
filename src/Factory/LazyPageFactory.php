@@ -76,8 +76,8 @@ class LazyPageFactory implements AbstractFactoryInterface
             $callable = $plugin->get('model');
             $callable->setContainer($container);
 
-            $pageModel->viewModel = new ViewModel;
-            $pageModel->viewModel->setTemplate('Default.phtml'); // We need to understand this is a content model
+            // $pageModel->viewModel = new ViewModel;
+            // $pageModel->viewModel->setTemplate('Default.phtml'); // We need to understand this is a content model
         }
         return $pageModel;
     }
