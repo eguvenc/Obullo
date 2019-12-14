@@ -21,7 +21,7 @@ class LazyPageFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        return strstr($requestedName, 'Pages\\') !== false;
+        return (strstr($requestedName, 'Pages\\') !== false OR strstr($requestedName, 'Templates\\') !== false)
     }
 
     /**
