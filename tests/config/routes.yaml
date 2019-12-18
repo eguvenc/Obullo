@@ -1,0 +1,9 @@
+
+
+# /: 
+#     method: GET
+#     handler: App\Pages\WelcomeModel
+
+/: 
+    handler: App\Pages\WelcomeModel
+    middleware: App\Middleware\LocaleMiddleware
