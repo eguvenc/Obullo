@@ -11,14 +11,21 @@ class TestModel
 {
     use ModelTrait;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
+        $this->testRequest = $request;
     	$this->viewModel = new ViewModel;
-    	$this->viewModel->setTemplate('Test');
+    	$this->viewModel->setTemplate('Pages/Test');
     }
 
     public function onGet(Request $request)
     {
         return new HtmlResponse($this->render($this->viewModel));
     }
+
+    public function getTestRequest()
+    {
+        return $this->testRequest;    
+    }
+
 }

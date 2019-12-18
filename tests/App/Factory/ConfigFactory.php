@@ -1,6 +1,6 @@
 <?php
 
-namespace Obullo\Factory;
+namespace App\Factory;
 
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
 use Zend\Config\{

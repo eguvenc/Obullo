@@ -14,7 +14,7 @@ class PluginModel
     public function __construct()
     {
     	$this->viewModel = new ViewModel;
-    	$this->viewModel->setTemplate('Plugin');
+    	$this->viewModel->setTemplate('Pages/Plugin');
     }
 
     public function onGet(Request $request)

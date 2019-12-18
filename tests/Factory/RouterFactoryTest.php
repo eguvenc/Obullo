@@ -12,7 +12,7 @@ class RouterFactoryTest extends TestCase
     {
         $this->container = new ServiceManager;
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
-        $this->container->setFactory(Config::class, 'Obullo\Factory\ConfigFactory');
+        $this->container->setFactory(Config::class, 'App\Factory\ConfigFactory');
         $this->container->setFactory(Router::class, 'Obullo\Factory\RouterFactory');
     }
 

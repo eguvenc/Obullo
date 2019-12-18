@@ -30,7 +30,8 @@ class LazyMiddlewareFactory implements AbstractFactoryInterface
     protected $aliases = [
         'Zend\EventManager\EventManager' => 'events',
         'Zend\I18n\Translator\Translator' => 'translator',
-        'Zend\I18n\Translator\TranslatorInterface' => 'translator'
+        'Zend\I18n\Translator\TranslatorInterface' => 'translator',
+        'Psr\Http\Message\ServerRequestInterface' => 'request',
     ];
 
     /**

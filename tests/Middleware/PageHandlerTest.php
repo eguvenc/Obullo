@@ -17,6 +17,8 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new ServiceManager;
+        $this->container->setAlias('request', ServerRequest::class);
+        $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
         $this->container->addInitializer(function ($container, $instance) {
             if ($instance instanceof Obullo\Container\ContainerAwareInterface) {
                 $instance->setContainer($container);
@@ -34,7 +36,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                 ],
                 'abstract_factories' => [
                     LazyMiddlewareFactory::class,
-                    App\Factory\LazyPageFactory::class,
+                    Obullo\Factory\LazyPageFactory::class,
                 ],
         ]);
     }

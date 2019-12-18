@@ -21,7 +21,7 @@ class LazyPageFactory implements AbstractFactoryInterface
      */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        return (strstr($requestedName, 'Pages\\') !== false OR strstr($requestedName, 'Templates\\') !== false)
+        return (strstr($requestedName, 'Pages\\') !== false OR strstr($requestedName, 'Templates\\') !== false);
     }
 
     /**
@@ -32,7 +32,8 @@ class LazyPageFactory implements AbstractFactoryInterface
     protected $aliases = [
         'Zend\EventManager\EventManager' => 'events',
         'Zend\I18n\Translator\Translator' => 'translator',
-        'Zend\I18n\Translator\TranslatorInterface' => 'translator'
+        'Zend\I18n\Translator\TranslatorInterface' => 'translator',
+        'Psr\Http\Message\ServerRequestInterface' => 'request',
     ];
 
     /**

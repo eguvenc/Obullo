@@ -24,14 +24,10 @@ class PluginManagerFactory implements FactoryInterface
     {
         $config = [
             'aliases' => [
-                'asset' => Plugin\Asset::class,
-                'url' => Plugin\Url::class,
                 'model' => Plugin\Model::class,
                 'currencyFormat' => ZendPlugin\CurrencyFormat::class,
             ],
             'factories' => [
-                Plugin\Asset::class => AssetFactory::class,
-                Plugin\Url::class => UrlFactory::class,
                 Plugin\Model::class => InvokableFactory::class,
                 ZendPlugin\CurrencyFormat::class => InvokableFactory::class,
             ],
