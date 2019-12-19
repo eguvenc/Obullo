@@ -3,18 +3,16 @@
 namespace Obullo\View;
 
 use Zend\View\View;
+use Obullo\View\LayoutModel;
 use Zend\View\Model\ModelInterface;
 use Zend\View\Renderer\RendererInterface;
+use Obullo\Http\RequestAwareTrait;
 use Obullo\Container\ContainerAwareTrait;
 
 trait ModelTrait
 {
     use ContainerAwareTrait;
-
-    /**
-     * @var object
-     */
-    public $request;
+    use RequestAwareTrait;
 
     /**
      * @var object
@@ -25,16 +23,6 @@ trait ModelTrait
      * @var object
      */
     public $layoutModel;
-
-    /**
-     * Return request
-     *
-     * @return object
-     */
-    public function getRequest()
-    {
-        return $this->request;
-    }
 
     /**
      * Render view
@@ -52,27 +40,32 @@ trait ModelTrait
         $renderer = $container->get(RendererInterface::class);
         $view = $container->get(View::class);
 
-        $model->request = $this->getRequest();
-        $this->viewModel->setOption('has_parent', true);
-
-        $currentTemplate = $model->getTemplate();
-
-        if ($currentTemplate == '') {  // If developer don't want to use layout
-            $this->viewModel->setTemplate($templateName);
-            return $view->render($model);
-        }
-        // if view model is not a layout file
-        // 
-        if (strpos($currentTemplate, 'Templates') == 0 && stripos($currentTemplate, 'Layout') === false) {
-            return $view->render($model);
-        }
+        $model->request = $this->request;
         $model->setOption('has_parent', true);
 
-        $this->viewModel->request = $this->getRequest();
-        $this->viewModel->setTemplate($templateName);
+        if (false == ($model instanceof LayoutModel)) { // If developer don't want to use layout
+            $this->setViewModelTemplate($templateName);
+            return $view->render($model);
+        }
+        $this->viewModel->request = $this->request;
+        $this->viewModel->setOption('has_parent', true);
+        $this->setViewModelTemplate($templateName);
 
         $model->addChild($this->viewModel);
 
         return $view->render($model);
+    }
+
+    /**
+     * Set view model template name
+     * 
+     * @param string $templateName name
+     */
+    private function setViewModelTemplate($templateName)
+    {
+        $currentTemplate = $this->viewModel->getTemplate();
+        if ($currentTemplate == '') {
+            $this->viewModel->setTemplate($templateName);
+        }
     }
 }

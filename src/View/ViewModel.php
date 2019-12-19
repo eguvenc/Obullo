@@ -2,7 +2,7 @@
 
 namespace Obullo\View;
 
-use Zend\View\ViewModel as ZendViewModel;
+use Zend\View\Model\ViewModel as ZendViewModel;
 
 class ViewModel extends ZendViewModel
 {

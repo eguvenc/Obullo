@@ -29,12 +29,7 @@ class LazyPageFactory implements AbstractFactoryInterface
      * 
      * @var array
      */
-    protected $aliases = [
-        'Zend\EventManager\EventManager' => 'events',
-        'Zend\I18n\Translator\Translator' => 'translator',
-        'Zend\I18n\Translator\TranslatorInterface' => 'translator',
-        'Psr\Http\Message\ServerRequestInterface' => 'request',
-    ];
+    protected $aliases = [];
 
     /**
      * Create service with name
