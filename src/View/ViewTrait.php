@@ -9,7 +9,7 @@ use Zend\View\Renderer\RendererInterface;
 use Obullo\Http\RequestAwareTrait;
 use Obullo\Container\ContainerAwareTrait;
 
-trait ModelTrait
+trait ViewTrait
 {
     use ContainerAwareTrait;
     use RequestAwareTrait;
@@ -17,12 +17,12 @@ trait ModelTrait
     /**
      * @var object
      */
-    public $viewModel;
+    public $view;
 
     /**
      * @var object
      */
-    public $layoutModel;
+    public $layout;
 
     /**
      * Render view
@@ -38,22 +38,22 @@ trait ModelTrait
         
         $container = $this->getContainer();
         $renderer = $container->get(RendererInterface::class);
-        $view = $container->get(View::class);
+        $viewClass = $container->get(View::class);
 
         $model->request = $this->request;
         $model->setOption('has_parent', true);
 
         if (false == ($model instanceof LayoutModel)) { // If developer don't want to use layout
             $this->setViewModelTemplate($templateName);
-            return $view->render($model);
+            return $viewClass->render($model);
         }
-        $this->viewModel->request = $this->request;
-        $this->viewModel->setOption('has_parent', true);
+        $this->view->request = $this->request;
+        $this->view->setOption('has_parent', true);
         $this->setViewModelTemplate($templateName);
 
-        $model->addChild($this->viewModel);
+        $model->addChild($this->view);
 
-        return $view->render($model);
+        return $viewClass->render($model);
     }
 
     /**
@@ -63,9 +63,9 @@ trait ModelTrait
      */
     private function setViewModelTemplate($templateName)
     {
-        $currentTemplate = $this->viewModel->getTemplate();
+        $currentTemplate = $this->view->getTemplate();
         if ($currentTemplate == '') {
-            $this->viewModel->setTemplate($templateName);
+            $this->view->setTemplate($templateName);
         }
     }
 }

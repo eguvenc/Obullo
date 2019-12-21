@@ -2,23 +2,23 @@
 
 namespace Tests\Pages;
 
-use Obullo\View\ModelTrait;
+use Obullo\View\ViewTrait;
 use Zend\View\Model\ViewModel;
 use Zend\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PluginModel
 {
-    use ModelTrait;
+    use ViewTrait;
 
     public function __construct()
     {
-        $this->viewModel = new ViewModel;
-        $this->viewModel->setTemplate('Pages/Plugin');
+        $this->view = new ViewModel;
+        $this->view->setTemplate('Pages/Plugin');
     }
 
     public function onGet(Request $request)
     {
-        return new HtmlResponse($this->render($this->viewModel));
+        return new HtmlResponse($this->render($this->view));
     }
 }
