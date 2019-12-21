@@ -6,4 +6,12 @@
 
 /: 
     handler: App\Pages\WelcomeModel
-    middleware: App\Middleware\LocaleMiddleware
+    middleware: App\Middleware\LocaleMiddleware@onGet
+
+/test:
+    handler: App\Pages\TestModel
+    middleware: App\Middleware\AuthMiddleware@onPost
+
+/test_multi:
+    handler: App\Pages\TestModel
+    middleware: App\Middleware\AuthMiddleware@onGet|onPost

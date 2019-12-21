@@ -11,13 +11,14 @@ use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
 use Obullo\Factory\LazyMiddlewareFactory;
 use Zend\View\Renderer\RendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class PageHandlerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
         $this->container = new ServiceManager;
-        $this->container->setAlias('request', ServerRequest::class);
+        $this->container->setAlias(Psr\Http\Message\ServerRequestInterface::class, ServerRequest::class);
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
         $this->container->addInitializer(function ($container, $instance) {
             if ($instance instanceof Obullo\Container\ContainerAwareInterface) {

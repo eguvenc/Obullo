@@ -14,8 +14,8 @@ class TestModel
     public function __construct(Request $request)
     {
         $this->testRequest = $request;
-    	$this->viewModel = new ViewModel;
-    	$this->viewModel->setTemplate('Pages/Test');
+        $this->viewModel = new ViewModel;
+        $this->viewModel->setTemplate('Pages/Test');
     }
 
     public function onGet(Request $request)
@@ -25,7 +25,6 @@ class TestModel
 
     public function getTestRequest()
     {
-        return $this->testRequest;    
+        return $this->testRequest;
     }
-
 }

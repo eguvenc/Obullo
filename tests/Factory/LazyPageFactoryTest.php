@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Obullo\Http\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 class LazyPageFactoryTest extends TestCase
 {
@@ -11,7 +12,7 @@ class LazyPageFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $this->container->addAbstractFactory(new Obullo\Factory\LazyPageFactory);
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
-        $this->container->setAlias('request', ServerRequest::class);
+        $this->container->setAlias(Psr\Http\Message\ServerRequestInterface::class, ServerRequest::class);
         $this->container->setFactory(Zend\View\HelperPluginManager::class, 'App\Factory\PluginManagerFactory');
         $this->container->setFactory(Zend\View\Renderer\RendererInterface::class, 'App\Factory\RendererFactory');
     }

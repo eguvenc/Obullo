@@ -13,8 +13,8 @@ class PluginModel
 
     public function __construct()
     {
-    	$this->viewModel = new ViewModel;
-    	$this->viewModel->setTemplate('Pages/Plugin');
+        $this->viewModel = new ViewModel;
+        $this->viewModel->setTemplate('Pages/Plugin');
     }
 
     public function onGet(Request $request)

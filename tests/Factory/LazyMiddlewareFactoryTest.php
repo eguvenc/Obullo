@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Zend\ServiceManager\ServiceManager;
 use Obullo\Http\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 class LazyMiddlewareFactoryTest extends TestCase
 {
@@ -11,7 +12,7 @@ class LazyMiddlewareFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
-        $this->container->setAlias('request', ServerRequest::class);
+        $this->container->setAlias(Psr\Http\Message\ServerRequestInterface::class, ServerRequest::class);
 
         $this->container->setFactory(Zend\Config\Config::class, 'App\Factory\ConfigFactory');
         $this->container->setFactory(Obullo\Router\Router::class, 'Obullo\Factory\RouterFactory');

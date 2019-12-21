@@ -21,13 +21,16 @@
     ],
     "autoload": {
         "files": [
-            "src/functions/page_helper.php"
+            "src/functions/obullo.php"
         ],
         "psr-4": {
             "Obullo\\": "src/"
         }
     },
     "autoload-dev": {
+        "files": [
+            "src/functions/obullo.php"
+        ],
         "psr-4": { 
             "App\\": "tests/App/"
         }
@@ -36,8 +39,7 @@
         "php": "^7.1"
     },
     "require-dev": {
-        "obullo/router": "^1.4",
-        "obullo/view": "dev-master",
+        "obullo/router": "^1.7",
         "monolog/monolog": "^1.24",
         "doctrine/dbal": "^2.9",
         "zendframework/zend-stratigility": "^3.1",
