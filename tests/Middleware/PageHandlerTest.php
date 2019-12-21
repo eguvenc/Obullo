@@ -10,6 +10,7 @@ use Zend\View\HelperPluginManager;
 use Zend\Stratigility\MiddlewarePipe;
 use Zend\ServiceManager\ServiceManager;
 use Obullo\Factory\LazyMiddlewareFactory;
+use Obullo\Factory\LazyPageFactory;
 use Zend\View\Renderer\RendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -37,7 +38,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
                 ],
                 'abstract_factories' => [
                     LazyMiddlewareFactory::class,
-                    Obullo\Factory\LazyPageFactory::class,
+                    LazyPageFactory::class,
                 ],
         ]);
     }

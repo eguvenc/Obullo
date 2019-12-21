@@ -56,7 +56,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
         $middlewares = parseMiddlewares($router);
 
         $this->assertEquals($context->getMethod(), 'POST');
-        $this->assertEquals($middlewares, ['App\Middleware\AuthMiddleware']);        
+        $this->assertEquals($middlewares, ['App\Middleware\AuthMiddleware']);
     }
 
     public function testParseMiddlewareOnGet()
