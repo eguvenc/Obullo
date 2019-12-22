@@ -43,10 +43,10 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testResponse()
+    public function testDependenciesOnGet()
     {
         $request = new ServerRequest;
-        $request = $request->withUri(new Uri('http://example.com/test?a=b'));
+        $request = $request->withUri(new Uri('http://example.com/test'));
         $this->container->setService('request', $request);
 
         $router = $this->container->get(Router::class);
@@ -59,10 +59,10 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $callback = [$app, 'handle'];
         $response = $callback($request, new Response);
 
-        $this->assertEquals('test', $response->getBody());
+        $this->assertEquals('Tests\Pages\TestModel', $response->getBody());
     }
 
-    public function testPlugin()
+    public function testZendCurrencyFormatHelper()
     {
         $request = new ServerRequest;
         $request = $request->withUri(new Uri('http://example.com/plugin'));

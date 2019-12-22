@@ -14,17 +14,12 @@ class Model extends AbstractHelper implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * @var object
-     */
-    protected $model;
-
-    /**
      * Return model
      * 
      * @return 
      */
-    public function __invoke($model)
+    public function __invoke($model, array $options = null)
     {
-        return $this->container->build($model);    
+        return $this->container->build($model, $options);
     }
 }

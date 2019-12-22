@@ -2,6 +2,7 @@
 
 namespace Tests\Pages;
 
+use Obullo\Router\Router;
 use Obullo\View\ViewTrait;
 use Zend\View\Model\ViewModel;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -18,12 +19,14 @@ class TestModel
         $this->view->setTemplate('Pages/Test');
     }
 
-    public function onGet(Request $request)
+    public function onGet(Request $request, Router $router)
     {
+        $this->view->handler = $router->getMatchedRoute()->getHandler();
+
         return new HtmlResponse($this->render($this->view));
     }
 
-    public function getTestRequest()
+    public function getRequestObject()
     {
         return $this->testRequest;
     }

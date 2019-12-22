@@ -21,7 +21,7 @@ class LazyPageFactoryTest extends TestCase
     {
         $instance = $this->container->build('Tests\Pages\TestModel');
     
-        $this->assertInstanceOf(ServerRequest::class, $instance->getTestRequest());
+        $this->assertInstanceOf(ServerRequest::class, $instance->getRequestObject());
         $this->assertInstanceOf('Tests\Pages\TestModel', $instance);
     }
 }

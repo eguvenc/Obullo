@@ -61,8 +61,20 @@ class PageHandler implements MiddlewareInterface, ContainerAwareInterface
             }
         }
         $methodName = 'on'.ucfirst($method);
-        $response = $pageModel->$methodName($request);
-
+        $injectedParameters[] = $request;
+        $params = $reflection->getMethod($methodName)->getParameters();
+        if (count($params) > 1) {
+            unset($params[0]);  // remove request object
+            foreach ($params as $param) {
+                if ($param->getClass()) {
+                    $name = $param->getClass()->getName();
+                    if ($container->has($name)) {
+                        $injectedParameters[] = $container->get($name);
+                    }
+                }
+            }
+        }
+        $response = $pageModel->$methodName(...$injectedParameters);
         return $response;
     }
 }

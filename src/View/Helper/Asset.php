@@ -3,11 +3,8 @@
 namespace Obullo\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
-use Zend\View\Exception;
+use Obullo\View\Exception\AssetNotFoundException;
 
-/**
- * View helper plugin to fetch asset from asset directory.
- */
 class Asset extends AbstractHelper
 {
     /**
@@ -17,26 +14,38 @@ class Asset extends AbstractHelper
 
     /**
      * Set base path
-     * 
+     *
      * @param string $path base path
      */
-    public function setPath($path)
+    public function setPath(string $path)
     {
         $this->path = rtrim($path, '/');
     }
 
     /**
-     * @param string $url
+     * Returns to asset path
+     *
      * @return string
-     * @throws Exception\InvalidArgumentException
      */
-    public function __invoke($url)
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Create asset url
+     *
+     * @param  string  $url       url
+     * @param  boolean $timestamp timestamp
+     * @return
+     */
+    public function __invoke(string $url, $timestamp = true)
     {
         $filePath = $this->path . '/' .  ltrim($url, '/');
 
-        if (!file_exists($filePath)) {
-            throw new Exception\RuntimeException(
-                'Unable to locate the asset "' . $url . '" in the "' . $this->path . '" directory.'
+        if (false == file_exists($filePath)) {
+            throw new AssetNotFoundException(
+                'Unable to locate "' . ltrim($url, '/') . '" in the asset directory.'
             );
         }
         $lastUpdated = filemtime($filePath);
@@ -49,7 +58,10 @@ class Asset extends AbstractHelper
         } else {
             $directory = $pathInfo['dirname'] . '/';
         }
-
-        return $directory . $pathInfo['filename'] . '.' . $pathInfo['extension'] . '?v=' . $lastUpdated;
+        $url = $directory . $pathInfo['filename'] . '.' . $pathInfo['extension'];
+        if ($timestamp) {
+            $url.='?v=' . $lastUpdated;
+        }
+        return $url;
     }
 }

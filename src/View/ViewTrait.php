@@ -3,8 +3,8 @@
 namespace Obullo\View;
 
 use Zend\View\View;
-use Obullo\View\LayoutModel;
 use Zend\View\Model\ModelInterface;
+use Obullo\View\LayoutModelInterface;
 use Zend\View\Renderer\RendererInterface;
 use Obullo\Http\RequestAwareTrait;
 use Obullo\Container\ContainerAwareTrait;
@@ -43,7 +43,7 @@ trait ViewTrait
         $model->request = $this->request;
         $model->setOption('has_parent', true);
 
-        if (false == ($model instanceof LayoutModel)) { // If developer don't want to use layout
+        if (false == ($model instanceof LayoutModelInterface)) { // If developer don't want to use layout
             $this->setViewModelTemplate($templateName);
             return $viewClass->render($model);
         }
