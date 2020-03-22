@@ -2,11 +2,11 @@
 
 namespace App\Factory;
 
-use Zend\View\View;
-use Zend\View\ViewEvent;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\View;
+use Laminas\View\ViewEvent;
+use Laminas\View\Renderer\RendererInterface;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ViewFactory implements FactoryInterface
 {

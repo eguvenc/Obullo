@@ -2,12 +2,12 @@
 
 namespace Obullo\Http;
 
-use Zend\Diactoros\ServerRequest as ZendServerRequest;
+use Laminas\Diactoros\ServerRequest as LaminasServerRequest;
 
 /**
  * Server request proxy
  */
-class ServerRequest extends ZendServerRequest
+class ServerRequest extends LaminasServerRequest
 {
     const METHOD_OPTIONS  = 'OPTIONS';
     const METHOD_GET      = 'GET';

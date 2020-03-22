@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Container\ContainerAwareTrait;
 use Obullo\Container\ContainerAwareInterface;
 
@@ -18,6 +18,6 @@ class ContainerAwareTest extends TestCase
     {
         $this->setContainer($this->container);
         
-        $this->assertInstanceOf('Zend\ServiceManager\ServiceManager', $this->getContainer());
+        $this->assertInstanceOf('Laminas\ServiceManager\ServiceManager', $this->getContainer());
     }
 }

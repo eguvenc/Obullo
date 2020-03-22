@@ -2,16 +2,16 @@
 
 use Obullo\Router\Router;
 use Obullo\Middleware\PageHandler;
-use Zend\Diactoros\Uri;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Uri;
+use Laminas\Diactoros\Response;
 use Obullo\Http\ServerRequest;
-use Zend\View\View;
-use Zend\View\HelperPluginManager;
-use Zend\Stratigility\MiddlewarePipe;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\View\View;
+use Laminas\View\HelperPluginManager;
+use Laminas\Stratigility\MiddlewarePipe;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Factory\LazyMiddlewareFactory;
 use Obullo\Factory\LazyPageFactory;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\Renderer\RendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PageHandlerTest extends PHPUnit_Framework_TestCase
@@ -62,7 +62,7 @@ class PageHandlerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Tests\Pages\TestModel', $response->getBody());
     }
 
-    public function testZendCurrencyFormatHelper()
+    public function testLaminasCurrencyFormatHelper()
     {
         $request = new ServerRequest;
         $request = $request->withUri(new Uri('http://example.com/plugin'));

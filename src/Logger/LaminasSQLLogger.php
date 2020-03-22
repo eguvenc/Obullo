@@ -2,18 +2,18 @@
 
 namespace Obullo\Logger;
 
-use Zend\Db\Adapter\Profiler\ProfilerInterface;
-use Zend\Db\Adapter\StatementContainerInterface;
-use Zend\Db\Adapter\Exception;
+use Laminas\Db\Adapter\Profiler\ProfilerInterface;
+use Laminas\Db\Adapter\StatementContainerInterface;
+use Laminas\Db\Adapter\Exception;
 use Psr\Log\LoggerInterface as Logger;
 
 /**
- * SQLLogger for Zend DB
+ * SQLLogger for Laminas DB
  *
  * @copyright 2018 Obullo
  * @license   http://opensource.org/licenses/MIT MIT license
  */
-class ZendSQLLogger implements ProfilerInterface
+class LaminasSQLLogger implements ProfilerInterface
 {
     /**
      * Logger
@@ -45,7 +45,7 @@ class ZendSQLLogger implements ProfilerInterface
     /**
      * @param string|StatementContainerInterface $target
      * @return self Provides a fluent interface
-     * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
+     * @throws \Laminas\Db\Adapter\Exception\InvalidArgumentException
      */
     public function profilerStart($target)
     {

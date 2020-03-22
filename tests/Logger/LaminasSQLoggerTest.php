@@ -2,23 +2,21 @@
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Obullo\Logger\ZendSQLLogger;
+use Obullo\Logger\LaminasSQLLogger;
 
-use Zend\Db\Adapter\StatementContainer;
-use Zend\Db\Adapter\ParameterContainer;
+use Laminas\Db\Adapter\StatementContainer;
+use Laminas\Db\Adapter\ParameterContainer;
 
-class ZendSQLLoggerTest extends PHPUnit_Framework_TestCase
+class LaminasSQLLoggerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if (file_exists(ROOT .'/var/log/debug.log')) {
-            unlink(ROOT .'/var/log/debug.log');
-        }
+        $this->file = ROOT.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'log'.DIRECTORY_SEPARATOR.'debug.log';
         $logger = new Logger('tests');
-        $logger->pushHandler(new StreamHandler(ROOT .'/var/log/debug.log', Logger::DEBUG, true, 0666));
+        $logger->pushHandler(new StreamHandler($this->file, Logger::DEBUG, true, 0666));
         
         $this->logger = $logger;
-        $this->sqlLogger = new ZendSQLLogger($this->logger);
+        $this->sqlLogger = new LaminasSQLLogger($this->logger);
     }
 
     public function testProfiler()
@@ -47,12 +45,16 @@ class ZendSQLLoggerTest extends PHPUnit_Framework_TestCase
         $this->sqlLogger->profilerStart($container, array(6,'test'));
         $this->sqlLogger->profilerFinish();
 
-        $debugLog = file_get_contents(ROOT .'/var/log/debug.log');
+        $debugLog = file_get_contents($this->file);
 
         $sql1 = '] tests.DEBUG: SQL-1: SELECT * FROM users WHERE id = ? AND name = ? {"params":[5,"test"],';
         $sql2 = '] tests.DEBUG: SQL-2: SELECT * FROM users WHERE id = :id AND name = :name {"params":{"id":6,"name":"test"},';
 
         $this->assertContains($sql1, $debugLog);
         $this->assertContains($sql2, $debugLog);
+
+        if (file_exists($this->file)) {
+            unlink($this->file);
+        }
     }
 }

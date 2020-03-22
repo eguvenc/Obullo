@@ -1,7 +1,7 @@
 <?php
 
 use Obullo\Router\Types\IntType;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'route_types' => [

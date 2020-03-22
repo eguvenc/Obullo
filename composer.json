@@ -1,7 +1,7 @@
 {
     "name": "obullo/obullo",
     "type": "library",
-    "description": "Core components that allow you to use 'Obullo-Pages' tool.",
+    "description": "Core components that allow you to use 'Obullo-Pages'.",
     "keywords": [
         "obullo",
         "modular",
@@ -42,18 +42,18 @@
         "obullo/router": "^1.7",
         "monolog/monolog": "^1.24",
         "doctrine/dbal": "^2.9",
-        "zendframework/zend-stratigility": "^3.1",
-        "zendframework/zend-db": "^2.9",
-        "zendframework/zend-config": "^3.1",
-        "zendframework/zend-config-aggregator": "^1.1",
-        "zendframework/zend-validator": "^2.12",
-        "zendframework/zend-diactoros": "^1.7",
-        "zendframework/zend-servicemanager": "^3.3",
-        "zendframework/zend-session": "^2.8",
-        "zendframework/zend-i18n-resources": "^2.5",
-        "zendframework/zend-i18n": "^2.7",
-        "zendframework/zend-view": "^2.11",
-        "zendframework/zend-escaper": "^2.6",
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^4.8",
+        "laminas/laminas-diactoros": "^2.2",
+        "laminas/laminas-stratigility": "^3.2",
+        "laminas/laminas-db": "^2.11",
+        "laminas/laminas-config": "^3.3",
+        "laminas/laminas-config-aggregator": "^1.2",
+        "laminas/laminas-validator": "^2.13",
+        "laminas/laminas-servicemanager": "^3.4",
+        "laminas/laminas-session": "^2.9",
+        "laminas/laminas-i18n-resources": "^2.6",
+        "laminas/laminas-i18n": "^2.10",
+        "laminas/laminas-view": "^2.11",
+        "laminas/laminas-escaper": "^2.6"
     }
 }

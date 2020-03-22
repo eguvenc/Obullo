@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Config\Config;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Config\Config;
 use Obullo\Router\Router;
 use Obullo\Http\ServerRequest;
 

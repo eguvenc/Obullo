@@ -5,11 +5,11 @@ use Obullo\View\Helper\Model;
 use Obullo\Router\Router;
 use Obullo\Http\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Factory\LazyPageFactory;
-use Zend\View\View;
-use Zend\View\HelperPluginManager;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\View;
+use Laminas\View\HelperPluginManager;
+use Laminas\View\Renderer\RendererInterface;
 
 class ModelHelperTest extends TestCase
 {

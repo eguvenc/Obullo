@@ -4,8 +4,8 @@ namespace Tests\Pages;
 
 use Obullo\Router\Router;
 use Obullo\View\ViewTrait;
-use Zend\View\Model\ViewModel;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\View\Model\ViewModel;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestModel

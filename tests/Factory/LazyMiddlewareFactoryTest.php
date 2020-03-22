@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Http\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -14,10 +14,10 @@ class LazyMiddlewareFactoryTest extends TestCase
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');
         $this->container->setAlias(Psr\Http\Message\ServerRequestInterface::class, ServerRequest::class);
 
-        $this->container->setFactory(Zend\Config\Config::class, 'App\Factory\ConfigFactory');
+        $this->container->setFactory(Laminas\Config\Config::class, 'App\Factory\ConfigFactory');
         $this->container->setFactory(Obullo\Router\Router::class, 'Obullo\Factory\RouterFactory');
-        $this->container->setFactory(Zend\View\HelperPluginManager::class, 'App\Factory\PluginManagerFactory');
-        $this->container->setFactory(Zend\View\Renderer\RendererInterface::class, 'App\Factory\RendererFactory');
+        $this->container->setFactory(Laminas\View\HelperPluginManager::class, 'App\Factory\PluginManagerFactory');
+        $this->container->setFactory(Laminas\View\Renderer\RendererInterface::class, 'App\Factory\RendererFactory');
     }
 
     public function testFactory()

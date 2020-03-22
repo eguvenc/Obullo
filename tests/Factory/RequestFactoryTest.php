@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Http\ServerRequest;
 
 class RequestFactoryTest extends TestCase
@@ -17,6 +17,6 @@ class RequestFactoryTest extends TestCase
         $instance = $this->container->get(ServerRequest::class);
         
         $this->assertInstanceOf('Obullo\Http\ServerRequest', $instance);
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $instance);
+        $this->assertInstanceOf('Laminas\Diactoros\ServerRequest', $instance);
     }
 }

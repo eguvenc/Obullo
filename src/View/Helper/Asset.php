@@ -2,7 +2,7 @@
 
 namespace Obullo\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 use Obullo\View\Exception\AssetNotFoundException;
 
 class Asset extends AbstractHelper
@@ -50,10 +50,9 @@ class Asset extends AbstractHelper
         }
         $lastUpdated = filemtime($filePath);
         $pathInfo = pathinfo($url);
-
         if ($pathInfo['dirname'] === '.') {
             $directory = '';
-        } elseif ($pathInfo['dirname'] === '/') {
+        } elseif ($pathInfo['dirname'] === '/' || $pathInfo['dirname'] === '\\') {
             $directory = '/';
         } else {
             $directory = $pathInfo['dirname'] . '/';

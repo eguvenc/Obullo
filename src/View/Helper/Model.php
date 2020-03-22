@@ -2,7 +2,7 @@
 
 namespace Obullo\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 use Obullo\Container\ContainerAwareInterface;
 use Obullo\Container\ContainerAwareTrait;
 

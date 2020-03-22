@@ -2,10 +2,10 @@
 
 namespace Obullo\View;
 
-use Zend\View\View;
-use Zend\View\Model\ModelInterface;
+use Laminas\View\View;
+use Laminas\View\Model\ModelInterface;
 use Obullo\View\LayoutModelInterface;
-use Zend\View\Renderer\RendererInterface;
+use Laminas\View\Renderer\RendererInterface;
 use Obullo\Http\RequestAwareTrait;
 use Obullo\Container\ContainerAwareTrait;
 

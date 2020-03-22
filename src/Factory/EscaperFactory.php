@@ -2,9 +2,9 @@
 
 namespace Obullo\Factory;
 
-use Zend\Escaper\Escaper;
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\Escaper\Escaper;
+use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class EscaperFactory implements FactoryInterface
 {

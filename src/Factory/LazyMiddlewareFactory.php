@@ -3,8 +3,8 @@
 namespace Obullo\Factory;
 
 use ReflectionClass;
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\AbstractFactoryInterface;
+use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 
 class LazyMiddlewareFactory implements AbstractFactoryInterface
 {

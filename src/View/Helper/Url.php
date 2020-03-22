@@ -2,7 +2,7 @@
 
 namespace Obullo\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
+use Laminas\View\Helper\AbstractHelper;
 use Obullo\Router\Router;
 
 class Url extends AbstractHelper

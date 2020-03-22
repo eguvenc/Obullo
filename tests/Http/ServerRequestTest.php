@@ -1,15 +1,15 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 
-use function Zend\Diactoros\normalizeServer;
-use function Zend\Diactoros\normalizeUploadedFiles;
-use function Zend\Diactoros\marshalHeadersFromSapi;
-use function Zend\Diactoros\parseCookieHeader;
-use function Zend\Diactoros\marshalUriFromSapi;
-use function Zend\Diactoros\marshalMethodFromSapi;
-use function Zend\Diactoros\marshalProtocolVersionFromSapi;
+use function Laminas\Diactoros\normalizeServer;
+use function Laminas\Diactoros\normalizeUploadedFiles;
+use function Laminas\Diactoros\marshalHeadersFromSapi;
+use function Laminas\Diactoros\parseCookieHeader;
+use function Laminas\Diactoros\marshalUriFromSapi;
+use function Laminas\Diactoros\marshalMethodFromSapi;
+use function Laminas\Diactoros\marshalProtocolVersionFromSapi;
 use Obullo\Http\ServerRequest;
 
 class ServerRequestTest extends TestCase
@@ -43,7 +43,7 @@ class ServerRequestTest extends TestCase
 
     public function testRequest()
     {
-        $this->assertInstanceOf('Zend\Diactoros\ServerRequest', $this->request);
+        $this->assertInstanceOf('Laminas\Diactoros\ServerRequest', $this->request);
     }
 
     public function testMethodIsOptions()

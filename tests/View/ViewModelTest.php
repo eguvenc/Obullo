@@ -12,6 +12,6 @@ class ViewModelTest extends TestCase
 
     public function testLayoutModel()
     {
-        $this->assertInstanceOf('Zend\View\Model\ViewModel', $this->view);
+        $this->assertInstanceOf('Laminas\View\Model\ViewModel', $this->view);
     }
 }

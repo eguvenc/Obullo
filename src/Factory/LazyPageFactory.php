@@ -3,10 +3,10 @@
 namespace Obullo\Factory;
 
 use ReflectionClass;
-use Zend\View\Model\ViewModel;
-use Interop\Container\ContainerInterface;
-use Zend\View\Renderer\RendererInterface;
-use Zend\ServiceManager\Factory\AbstractFactoryInterface;
+use Laminas\View\Model\ViewModel;
+use Psr\Container\ContainerInterface;
+use Laminas\View\Renderer\RendererInterface;
+use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
 
 class LazyPageFactory implements AbstractFactoryInterface
 {

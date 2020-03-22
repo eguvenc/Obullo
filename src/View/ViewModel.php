@@ -2,8 +2,8 @@
 
 namespace Obullo\View;
 
-use Zend\View\Model\ViewModel as ZendViewModel;
+use Laminas\View\Model\ViewModel as LaminasViewModel;
 
-class ViewModel extends ZendViewModel
+class ViewModel extends LaminasViewModel
 {
 }

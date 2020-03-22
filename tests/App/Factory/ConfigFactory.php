@@ -3,18 +3,18 @@
 namespace App\Factory;
 
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
-use Zend\Config\{
+use Laminas\Config\{
     Config,
     Factory,
     Reader\Yaml as YamlReader
 };
-use Zend\ConfigAggregator\{
+use Laminas\ConfigAggregator\{
     ArrayProvider,
     ConfigAggregator,
     PhpFileProvider
 };
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ConfigFactory implements FactoryInterface
 {

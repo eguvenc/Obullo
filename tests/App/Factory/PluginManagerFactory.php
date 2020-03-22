@@ -3,12 +3,12 @@
 namespace App\Factory;
 
 use Obullo\View\Helper as Plugin;
-use Zend\I18n\View\Helper as ZendPlugin;
+use Laminas\I18n\View\Helper as LaminasPlugin;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\Factory\InvokableFactory;
-use Zend\I18n\View\Helper;
-use Zend\View\HelperPluginManager;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\I18n\View\Helper;
+use Laminas\View\HelperPluginManager;
 
 class PluginManagerFactory implements FactoryInterface
 {
@@ -25,11 +25,11 @@ class PluginManagerFactory implements FactoryInterface
         $config = [
             'aliases' => [
                 'model' => Plugin\Model::class,
-                'currencyFormat' => ZendPlugin\CurrencyFormat::class,
+                'currencyFormat' => LaminasPlugin\CurrencyFormat::class,
             ],
             'factories' => [
                 Plugin\Model::class => InvokableFactory::class,
-                ZendPlugin\CurrencyFormat::class => InvokableFactory::class,
+                LaminasPlugin\CurrencyFormat::class => InvokableFactory::class,
             ],
         ];
     	$pluginManager = new HelperPluginManager($container);

@@ -5,7 +5,7 @@ use Obullo\Router\Router;
 use Obullo\Http\ServerRequest;
 use Obullo\View\Helper\Url;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 
 class UrlHelperTest extends TestCase
 {

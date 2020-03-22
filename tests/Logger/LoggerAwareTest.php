@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Monolog\Logger;
-use Zend\ServiceManager\ServiceManager;
+use Laminas\ServiceManager\ServiceManager;
 use Obullo\Logger\LoggerAwareTrait;
 
 class LoggerAwareTest extends TestCase

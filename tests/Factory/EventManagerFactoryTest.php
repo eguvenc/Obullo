@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
-use Zend\EventManager\EventManager;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\EventManager\EventManager;
 
 class EventManagerFactoryTest extends TestCase
 {
@@ -16,6 +16,6 @@ class EventManagerFactoryTest extends TestCase
     {
         $instance = $this->container->get(EventManager::class);
         
-        $this->assertInstanceOf('Zend\EventManager\EventManager', $instance);
+        $this->assertInstanceOf('Laminas\EventManager\EventManager', $instance);
     }
 }

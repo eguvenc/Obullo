@@ -2,11 +2,10 @@
 
 namespace Obullo\Factory;
 
-use Interop\Container\ContainerInterface;
-use Zend\Config\Config;
+use Psr\Container\ContainerInterface;
+use Laminas\Config\Config;
 use Obullo\Http\ServerRequest;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\I18n\Translator\Translator;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Obullo\Router\{
     Pattern,
     RouteCollection,

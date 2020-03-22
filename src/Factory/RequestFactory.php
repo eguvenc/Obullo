@@ -3,16 +3,16 @@
 namespace Obullo\Factory;
 
 use Obullo\Http\ServerRequest;
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
-use function Zend\Diactoros\normalizeServer;
-use function Zend\Diactoros\normalizeUploadedFiles;
-use function Zend\Diactoros\marshalHeadersFromSapi;
-use function Zend\Diactoros\parseCookieHeader;
-use function Zend\Diactoros\marshalUriFromSapi;
-use function Zend\Diactoros\marshalMethodFromSapi;
-use function Zend\Diactoros\marshalProtocolVersionFromSapi;
+use function Laminas\Diactoros\normalizeServer;
+use function Laminas\Diactoros\normalizeUploadedFiles;
+use function Laminas\Diactoros\marshalHeadersFromSapi;
+use function Laminas\Diactoros\parseCookieHeader;
+use function Laminas\Diactoros\marshalUriFromSapi;
+use function Laminas\Diactoros\marshalMethodFromSapi;
+use function Laminas\Diactoros\marshalProtocolVersionFromSapi;
 
 class RequestFactory implements FactoryInterface
 {

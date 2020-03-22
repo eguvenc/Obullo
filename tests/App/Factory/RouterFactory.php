@@ -3,9 +3,9 @@
 namespace App\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\Config\Config;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\I18n\Translator\Translator;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\I18n\Translator\Translator;
 use Obullo\Router\{
     Pattern,
     RouteCollection,

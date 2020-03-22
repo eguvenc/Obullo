@@ -2,9 +2,9 @@
 
 namespace Obullo\Factory;
 
-use Zend\EventManager\EventManager;
-use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Laminas\EventManager\EventManager;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class EventManagerFactory implements FactoryInterface
 {
@@ -18,9 +18,8 @@ class EventManagerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $container->setAlias('EventManager', $requestedName);
+        $shared = $container->has('SharedEventManager') ? $container->get('SharedEventManager') : null;
 
-        $events = new EventManager;
-        return $events;
+        return new EventManager($shared);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Zend\ServiceManager\ServiceManager;
-use Zend\Escaper\Escaper;
+use Laminas\ServiceManager\ServiceManager;
+use Laminas\Escaper\Escaper;
 
 class EscaperFactoryTest extends TestCase
 {
@@ -16,6 +16,6 @@ class EscaperFactoryTest extends TestCase
     {
         $instance = $this->container->get(Escaper::class);
         
-        $this->assertInstanceOf('Zend\Escaper\Escaper', $instance);
+        $this->assertInstanceOf('Laminas\Escaper\Escaper', $instance);
     }
 }
