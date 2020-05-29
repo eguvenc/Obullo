@@ -16,10 +16,10 @@ $ composer require obullo/pages-skeleton
 
 The following versions of PHP are supported by this version.
 
-* 7.0
 * 7.1
 * 7.2
 * 7.3
+* 7.4
 
 ## Testing
 

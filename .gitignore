@@ -1,5 +1,5 @@
-tests/var/cache/
-tests/var/log/
+tests/data/cache/
+tests/data/log/
 vendor/
 composer.lock
 .php_cs.cache

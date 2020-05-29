@@ -18,7 +18,7 @@ class LaminasSQLLoggerFactory implements FactoryInterface
      * @return object
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
-    {   
+    {
         return new LaminasSQLLogger($container->get(LoggerInterface::class));
     }
 }
