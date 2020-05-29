@@ -173,7 +173,7 @@ class ServerRequest extends LaminasServerRequest
 
     /**
      * Alias of isXMLHttpRequest
-     * 
+     *
      * @return bool
      */
     public function isAjax() : bool

@@ -2,24 +2,43 @@
 
 namespace Obullo\View\Helper;
 
+use Obullo\PageEvent;
+use Psr\Container\ContainerInterface;
 use Laminas\View\Helper\AbstractHelper;
-use Obullo\Container\ContainerAwareInterface;
-use Obullo\Container\ContainerAwareTrait;
 
-/**
- * Model helper plugin to fetch page models.
- */
-class Model extends AbstractHelper implements ContainerAwareInterface
+class Model extends AbstractHelper
 {
-    use ContainerAwareTrait;
+    private $container;
 
     /**
-     * Return model
-     * 
-     * @return 
+     * Set container
+     *
+     * @param object $container container
      */
-    public function __invoke($model, array $options = null)
+    public function setContainer(ContainerInterface $container)
     {
-        return $this->container->build($model, $options);
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Set handler class to render partial view
+     *
+     * @param  string     $handlerClass partial model name
+     * @param  array|null $options      options
+     * @return response
+     */
+    public function __invoke($handlerClass, array $options = null)
+    {
+        $application = $this->container->get('Application');
+        $event = $application->getPageEvent();
+        $events = $application->getEventManager();
+
+        $event->setName(PageEvent::EVENT_PARTIAL_VIEW);
+        $event->setHandler($handlerClass);
+        $response = $events->triggerEvent($event)->last();
+
+        return $response;
     }
 }

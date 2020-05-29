@@ -20,17 +20,11 @@
         }
     ],
     "autoload": {
-        "files": [
-            "src/functions/obullo.php"
-        ],
         "psr-4": {
             "Obullo\\": "src/"
         }
     },
     "autoload-dev": {
-        "files": [
-            "src/functions/obullo.php"
-        ],
         "psr-4": { 
             "App\\": "tests/App/"
         }
