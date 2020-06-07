@@ -1,20 +1,18 @@
 <?php
 
-namespace Tests\Pages;
+namespace App\Pages;
 
-use Obullo\View\ViewTrait;
+use Obullo\View\PageView;
 use Laminas\View\Model\ViewModel;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class PluginModel
+class PluginModel extends PageView
 {
-    use ViewTrait;
-
     public function __construct()
     {
         $this->view = new ViewModel;
-        $this->view->setTemplate('Pages/Plugin');
+        $this->view->setTemplate('App/Pages/Plugin');
     }
 
     public function onGet(Request $request)

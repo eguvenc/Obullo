@@ -24,7 +24,15 @@ class HttpMethodMiddleware implements MiddlewareInterface
     {
         $this->router = $router;
     }
-
+    
+    /**
+     * Process
+     *
+     * @param  ServerRequestInterface  $request request
+     * @param  RequestHandlerInterface $handler request handler
+     *
+     * @return object|exception
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $allowedMethods = $this->router->getMatchedRoute()

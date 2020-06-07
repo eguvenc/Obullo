@@ -26,7 +26,7 @@ class PartialView extends AbstractPageView
     {
         $class = get_class($this);
         $class = str_replace('\\', '/', $class);
-        $templateName  = substr($class, 0, -5); // Remove "Model" word from end
+        $templateName = substr($class, 0, -5); // Remove "Model" word from end
 
         $model->setOption('has_parent', true);
         $this->view->setTemplate($templateName);

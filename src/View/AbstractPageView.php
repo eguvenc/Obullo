@@ -81,7 +81,7 @@ abstract class AbstractPageView
      * 
      * @return object
      */
-    public function getReflection()
+    public function getReflectionClass()
     {
         return $this->reflection;
     }
@@ -92,7 +92,7 @@ abstract class AbstractPageView
      * @param  string $name plugin name
      * @return callable
      */
-    public function getPlugin($name)
+    public function plugin(string $name)
     {
         $plugin = $this->getViewPhpRenderer()->getHelperPluginManager();
 
@@ -107,7 +107,7 @@ abstract class AbstractPageView
      */
     public function model(string $name)
     {
-        return $this->getPlugin('model')($name);
+        return $this->plugin('model')($name);
     }
 
     /**

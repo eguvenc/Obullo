@@ -2,12 +2,16 @@
 
 namespace Obullo\Factory;
 
-use Psr\Log\LoggerInterface;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Obullo\Logger\LaminasSQLLogger;
 
-class LaminasSQLLoggerFactory implements FactoryInterface
+/**
+ * Sql logger factory for development mode
+ */
+class SQLDevelopmentLoggerFactory implements FactoryInterface
 {
     /**
      * Create an object
@@ -19,6 +23,9 @@ class LaminasSQLLoggerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new LaminasSQLLogger($container->get(LoggerInterface::class));
+        $logger = new Logger('database');
+        $logger->pushHandler(new StreamHandler(ROOT .'/data/log/debug.log', Logger::DEBUG, true, 0666));
+
+        return new LaminasSQLLogger($logger);
     }
 }

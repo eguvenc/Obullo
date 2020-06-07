@@ -1,33 +1,23 @@
 <?php
 
-namespace Tests\Pages;
+namespace App\Pages;
 
 use Obullo\Router\Router;
-use Obullo\View\ViewTrait;
+use Obullo\View\PageView;
 use Laminas\View\Model\ViewModel;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class TestModel
+class TestModel extends PageView
 {
-    use ViewTrait;
-
     public function __construct(Request $request)
     {
-        $this->testRequest = $request;
         $this->view = new ViewModel;
-        $this->view->setTemplate('Pages/Test');
+        $this->view->setTemplate('App/Pages/Test');
     }
 
     public function onGet(Request $request, Router $router)
     {
-        $this->view->handler = $router->getMatchedRoute()->getHandler();
-
         return new HtmlResponse($this->render($this->view));
-    }
-
-    public function getRequestObject()
-    {
-        return $this->testRequest;
     }
 }

@@ -3,6 +3,7 @@
 namespace Obullo;
 
 use Obullo\Dispatcher;
+use ReflectionClass;
 use ReflectionMethod;
 use Laminas\View\View;
 use Laminas\EventManager\AbstractListenerAggregate;
@@ -63,24 +64,32 @@ class DispatchListener extends AbstractListenerAggregate
         $events = $application->getEventManager();
         $container = $application->getContainer();
 
-        $pageModel  = $container->build($handlerClass);
+        $pageModel = $container->build($handlerClass);
         $pageModel->setView($container->get(View::class));
         $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
 
-        $reflection = $pageModel->getReflection();
+        $reflection = new ReflectionClass($pageModel);
         $method = $request->getMethod();
         $queryParams = $request->getQueryParams();
 
+        $queryMethod = null;
         foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $classMethod) {
-            if (isset($queryParams[$classMethod->name])) {
-                $method = substr($classMethod->name, 2);
+            $name = $classMethod->getName();
+            if (array_key_exists($name, $queryParams)) {  // check query method is available
+                $method = substr($name, 2);
+                $queryMethod = 'on'.ucfirst($method);
             }
         }
-        // The keyword 'on' prevents access to our private methods 
+        // the keyword 'on' prevents access to our special methods
         // that we use in the page model
-        // 
-        $methodName = 'on'.ucfirst($method); 
+        //
+        $methodName = 'on'.ucfirst($method);
 
+        // let's inject query method name to page model
+        // 
+        if (method_exists($pageModel, 'setQueryMethod')) {
+            $pageModel->setQueryMethod($queryMethod);
+        }
         $dispatcher = new Dispatcher;
         $dispatcher->setContainer($container);
         $dispatcher->setMethod($methodName);

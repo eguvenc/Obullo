@@ -155,12 +155,12 @@ class Application
 
         $moduleName = $this->event->getResolvedModuleName(); // App, Blog, Forum etc..
         $config = $this->getConfig();
-
+        
         $errorGeneratorClass = 'App\Middleware\ErrorResponseGenerator';
+        $errorNotFoundHandler = 'App\Middleware\ErrorNotFoundHandler';
         if (! empty($config['error_handlers'][$moduleName]['error_generator'])) {
             $errorGeneratorClass = $config['error_handlers'][$moduleName]['error_generator'];
         }
-        $errorNotFoundHandler = 'App\Middleware\ErrorNotFoundHandler';
         if (! empty($config['error_handlers'][$moduleName]['error_404'])) {
             $errorNotFoundHandler = $config['error_handlers'][$moduleName]['error_404'];
         }
@@ -207,23 +207,13 @@ class Application
      * @param  object $router Router
      * @return array
      */
-    private function parseRouteMiddlewares()
+    private function parseRouteMiddlewares() : array
     {
-        $middlewares = $this->router->getMiddlewares();
-        $newMiddlewares = array();
-        foreach ($middlewares as $middlewareString) {
-            if (strpos($middlewareString, '@') > 0) {
-                list($middleware, $methodString) = explode('@', $middlewareString);
-                $middlewareMethods = explode('|', $methodString);
-                $method = ucfirst(strtolower($this->request->getMethod()));
-                if (in_array('on'.$method, $middlewareMethods)) {
-                    $newMiddlewares[] = $middleware;
-                }
-            } else {
-                $newMiddlewares[] = $middlewareString;
-            }
-        }
-        return $newMiddlewares;
+        $middlewares = MiddlewareParser::parse(
+            $this->router->getMiddlewares(),
+            $this->request->getMethod()
+        );
+        return $middlewares;
     }
 
     /**
@@ -286,6 +276,20 @@ class Application
     public function getPageEvent()
     {
         return $this->event;
+    }
+
+    /**
+     * Run application and return response
+     * without emmitting
+     * 
+     * @return response
+     */
+    public function runWithoutEmit()
+    {
+        $callback = [$this->app, 'handle'];
+        $response = $callback($this->request);
+
+        return $response;
     }
 
     /**

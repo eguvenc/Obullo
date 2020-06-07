@@ -6,12 +6,22 @@
 
 /: 
     handler: App\Pages\WelcomeModel
-    middleware: App\Middleware\LocaleMiddleware@onGet
+    # middleware: Obullo\Middleware\SetLocaleMiddleware@onGet
 
 /test:
     handler: App\Pages\TestModel
     middleware: App\Middleware\AuthMiddleware@onPost
 
+/test_view:
+    handler: App\Pages\TestViewModel
+
 /test_multi:
     handler: App\Pages\TestModel
     middleware: App\Middleware\AuthMiddleware@onGet|onPost
+
+/plugin_test:
+    handler: App\Pages\PluginModel
+
+/set_locale:
+    handler: App\Pages\SetLocaleModel
+    middleware: Obullo\Middleware\SetLocaleMiddleware

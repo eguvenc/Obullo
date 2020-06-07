@@ -11,7 +11,7 @@ class LaminasSQLLoggerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->file = ROOT.DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'log'.DIRECTORY_SEPARATOR.'debug.log';
+        $this->file = ROOT.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'log'.DIRECTORY_SEPARATOR.'debug.log';
         $logger = new Logger('tests');
         $logger->pushHandler(new StreamHandler($this->file, Logger::DEBUG, true, 0666));
         

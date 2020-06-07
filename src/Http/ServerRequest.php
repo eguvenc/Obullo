@@ -4,9 +4,6 @@ namespace Obullo\Http;
 
 use Laminas\Diactoros\ServerRequest as LaminasServerRequest;
 
-/**
- * Server request proxy
- */
 class ServerRequest extends LaminasServerRequest
 {
     const METHOD_OPTIONS  = 'OPTIONS';

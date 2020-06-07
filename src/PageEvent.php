@@ -115,7 +115,7 @@ class PageEvent extends Event
 
     /**
      * Set handler class
-     * 
+     *
      * @param string $handler class name
      */
     public function setHandler($handler)
@@ -127,7 +127,7 @@ class PageEvent extends Event
 
     /**
      * Returns to handler
-     * 
+     *
      * @return string
      */
     public function getHandler()
@@ -137,7 +137,7 @@ class PageEvent extends Event
     
     /**
      * Set resolved http module name
-     * 
+     *
      * @param string $handler class name
      */
     public function setResolvedModuleName()
@@ -150,7 +150,7 @@ class PageEvent extends Event
 
     /**
      * Returns to resolved module name
-     * 
+     *
      * @return string
      */
     public function getResolvedModuleName()

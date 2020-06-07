@@ -4,8 +4,6 @@ namespace Obullo\Factory;
 
 use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Laminas\Config\Config;
-use Obullo\Http\ServerRequest;
 use Obullo\Router\Pattern;
 use Obullo\Router\RequestContext;
 use Obullo\Router\Builder;
@@ -24,11 +22,11 @@ class RouterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $container->get(Config::class);
+        $config = $container->get('Config');
 
         $pattern = new Pattern($config['router']['types']);
         $context = new RequestContext;
-        $context->fromRequest($container->get(ServerRequest::class));
+        $context->fromRequest($container->get('Request'));
 
         $collection = $container->build(RouteCollectionInterface::class, ['pattern' => $pattern, 'config' => $config]);
         $collection->setContext($context);

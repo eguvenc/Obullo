@@ -23,7 +23,7 @@ class RouteListener extends AbstractListenerAggregate
 
     /**
      * Listen to the "route" event and attempt to route the request
-     * 
+     *
      * @param  PageEvent $event
      * @return null|Obullo\Router\Route
      */

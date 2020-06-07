@@ -34,7 +34,7 @@ class ServiceManagerConfig extends Config
         'abstract_factories' => [
             LazyDefaultFactory::class,
         ],
-        'aliases'            => [
+        'aliases' => [
             'EventManagerInterface'            => EventManager::class,
             EventManagerInterface::class       => 'EventManager',
             ModuleManager::class               => 'ModuleManager',

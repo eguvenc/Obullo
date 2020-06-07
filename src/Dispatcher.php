@@ -41,14 +41,14 @@ final class Dispatcher
 
     /**
      * Dispatch options
-     * 
+     *
      * @var array
      */
     private $options;
 
     /**
      * Constructor
-     * 
+     *
      * @param array $options options
      */
     public function __construct(array $options = array())
@@ -88,7 +88,7 @@ final class Dispatcher
 
     /**
      * Returns to container
-     * 
+     *
      * @return object
      */
     private function getContainer()
@@ -177,8 +177,8 @@ final class Dispatcher
     }
 
     /**
-     * Check response 
-     * 
+     * Check response
+     *
      * @param  object  $response response
      * @param  string  $requestedName model name
      * @return void
