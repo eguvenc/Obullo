@@ -4,7 +4,7 @@ namespace Obullo\Factory;
 
 use Laminas\View\View;
 use Laminas\View\ViewEvent;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ViewFactory implements FactoryInterface

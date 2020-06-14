@@ -3,7 +3,7 @@
 namespace Obullo\Factory;
 
 use Obullo\Http\ServerRequest;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 use function Laminas\Diactoros\normalizeServer;

@@ -2,13 +2,13 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
-use Laminas\ServiceManager\Factory\FactoryInterface;
 use Obullo\Router\Pattern;
 use Obullo\Router\RequestContext;
 use Obullo\Router\Builder;
 use Obullo\Router\Router;
 use Obullo\Router\RouteCollectionInterface;
+use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RouterFactory implements FactoryInterface
 {

@@ -2,8 +2,8 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
 use Laminas\EventManager\EventManager;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class EventManagerFactory implements FactoryInterface

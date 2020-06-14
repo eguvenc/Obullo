@@ -3,7 +3,7 @@
 namespace Obullo\Factory;
 
 use Obullo\Router\Router;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Obullo\View\Helper as ObulloViewHelper;
 use Laminas\View\Helper as LaminasViewHelper;
 use Laminas\View\HelperPluginManager;

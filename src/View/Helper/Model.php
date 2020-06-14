@@ -3,7 +3,7 @@
 namespace Obullo\View\Helper;
 
 use Obullo\PageEvent;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\View\Helper\AbstractHelper;
 
 class Model extends AbstractHelper

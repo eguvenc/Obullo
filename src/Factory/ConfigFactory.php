@@ -2,7 +2,7 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ModuleManager\ModuleManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 

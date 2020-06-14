@@ -2,7 +2,7 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Obullo\Router\RouteCollection;
 use Obullo\Router\TranslatableRouteCollection;
 use Laminas\ServiceManager\Factory\FactoryInterface;

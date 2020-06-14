@@ -2,7 +2,7 @@
 
 namespace Obullo\Container;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\I18n\Translator\TranslatorInterface;
 use Laminas\I18n\Translator\TranslatorAwareInterface;
 use Laminas\EventManager\EventManager;

@@ -2,7 +2,7 @@
 
 namespace App\Middleware;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;

@@ -2,7 +2,7 @@
 
 namespace Obullo\Container;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 
 interface ContainerAwareInterface
 {

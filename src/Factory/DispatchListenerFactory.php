@@ -2,8 +2,8 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
 use Obullo\DispatchListener;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class DispatchListenerFactory implements FactoryInterface

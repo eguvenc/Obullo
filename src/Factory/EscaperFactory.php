@@ -3,7 +3,7 @@
 namespace Obullo\Factory;
 
 use Laminas\Escaper\Escaper;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class EscaperFactory implements FactoryInterface

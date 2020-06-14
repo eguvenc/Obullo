@@ -4,7 +4,7 @@ namespace Obullo;
 
 use ReflectionClass;
 use ReflectionParameter;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Obullo\Exception\PageMethodNotExistsException;
 use Obullo\Exception\PageNullResponseException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;

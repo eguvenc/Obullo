@@ -4,7 +4,7 @@ namespace Obullo\Factory;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Obullo\Logger\LaminasSQLLogger;
 

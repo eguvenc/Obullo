@@ -5,7 +5,7 @@ namespace Obullo\Factory;
 use Laminas\View\View;
 use Laminas\View\Renderer\PhpRenderer;
 use Laminas\View\Resolver\TemplatePathStack;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ViewPhpRendererFactory implements FactoryInterface
