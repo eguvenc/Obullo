@@ -2,7 +2,7 @@
 
 namespace Obullo\Factory;
 
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ModuleManager\Listener\ServiceListener;
 use Laminas\ModuleManager\Listener\ServiceListenerInterface;
 use Laminas\ServiceManager\Exception\ServiceNotCreatedException;
