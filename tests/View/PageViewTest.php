@@ -82,4 +82,50 @@ class PageViewTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('App/Pages/MethodQuery', $response->getBody());
     }
+
+    public function testPlugin()
+    {
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test_view'),
+            $method = null,
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = ['onPlugin' => null],
+            $parsedBody = null,
+            $protocol = '1.1'
+        );
+        $this->container->setService('Request', $request);
+
+        $application = $this->container->get('Application');
+        $application->bootstrap();
+        $response = $application->runWithoutEmit();
+
+        $this->assertEquals('/test_view', $response->getBody());
+    }
+
+    public function testModel()
+    {
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test_view'),
+            $method = null,
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = ['onModel' => null],
+            $parsedBody = null,
+            $protocol = '1.1'
+        );
+        $this->container->setService('Request', $request);
+
+        $application = $this->container->get('Application');
+        $application->bootstrap();
+        $response = $application->runWithoutEmit();
+
+        $this->assertEquals('Header', $response->getBody());
+    }
 }

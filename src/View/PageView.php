@@ -60,7 +60,6 @@ class PageView extends AbstractPageView
     {
         $class = get_class($this);
         $class = str_replace('\\', '/', $class);
-
         $templateName = substr($class, 0, -5); // remove "Model" word from the end
 
         if ($this->_queryMethod) {  // change template name for method queries

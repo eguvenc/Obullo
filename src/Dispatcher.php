@@ -107,6 +107,16 @@ final class Dispatcher
     }
 
     /**
+     * Returns to page model
+     * 
+     * @return object
+     */
+    public function getPageModel()
+    {
+        return $this->pageModel;
+    }
+
+    /**
      * Set reflection object
      *
      * @param ReflectionClass $reflection reflection class
@@ -163,17 +173,7 @@ final class Dispatcher
                 )
             );
         }
-        $config = $container->get('config');
-        if (! empty($config['view_manager']['display_exceptions'])) {
-            throw new PageMethodNotExistsException(
-                sprintf(
-                    'The method %s does not exists in %s.',
-                    $methodName,
-                    $reflection->getName()
-                )
-            );
-        }
-        return null;
+        return null; // 404 not found
     }
 
     /**

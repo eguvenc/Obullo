@@ -20,4 +20,9 @@ class TestModel extends PageView
     {
         return new HtmlResponse($this->render($this->view));
     }
+
+	public function onQueryMethod(Request $request)
+    {
+        return new HtmlResponse('Ok');
+    }
 }

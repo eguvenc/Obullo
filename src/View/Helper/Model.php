@@ -35,7 +35,7 @@ class Model extends AbstractHelper
         $event = $application->getPageEvent();
         $events = $application->getEventManager();
 
-        $event->setName(PageEvent::EVENT_PARTIAL_VIEW);
+        $event->setName(PageEvent::EVENT_DISPATCH_PARTIAL_PAGE);
         $event->setHandler($handlerClass);
         $response = $events->triggerEvent($event)->last();
 

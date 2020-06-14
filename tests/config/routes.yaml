@@ -15,6 +15,9 @@
 /test_view:
     handler: App\Pages\TestViewModel
 
+/test_partial_view:
+    handler: App\Pages\TestPartialViewModel
+
 /test_multi:
     handler: App\Pages\TestModel
     middleware: App\Middleware\AuthMiddleware@onGet|onPost

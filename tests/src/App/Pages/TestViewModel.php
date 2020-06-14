@@ -11,7 +11,7 @@ class TestViewModel extends PageView
 {
     public function onGet(Request $request)
     {
-    	$this->view->view = $this->view;
+        $this->view->view = $this->view;
 
         return new HtmlResponse($this->render($this->view));
     }
@@ -23,8 +23,21 @@ class TestViewModel extends PageView
 
     public function onMethodQuery(Request $request)
     {
-    	$this->view->view = $this->view;
+        $this->view->view = $this->view;
 
         return new HtmlResponse($this->render($this->view));
+    }
+
+    public function onPlugin(Request $request)
+    {
+        $url = $this->plugin('url');
+        $result = $url('/test_view');
+
+        return new HtmlResponse($result);
+    }
+
+    public function onModel(Request $request)
+    {
+        return $this->model('App\Pages\Templates\HeaderModel');
     }
 }

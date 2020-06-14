@@ -29,7 +29,7 @@ class PageHandlerMiddleware implements MiddlewareInterface, ContainerAwareInterf
         $event = $application->getPageEvent();
         $events = $application->getEventManager();
 
-        $event->setName(PageEvent::EVENT_PAGE_VIEW);
+        $event->setName(PageEvent::EVENT_DISPATCH_PAGE);
         $event->setRequest($request);
         $response = $events->triggerEvent($event)->last();
 

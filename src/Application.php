@@ -7,13 +7,9 @@ use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stratigility\MiddlewarePipe;
-use Laminas\Stratigility\Middleware\ErrorHandler;
-use Laminas\Diactoros\Response;
 
 use Throwable;
 use Obullo\Router\Router;
-use Obullo\Router\RouteInterface;
-use Obullo\Middleware\PageHandlerMiddleware;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Stratigility\MiddlewarePipeInterface;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -144,76 +140,40 @@ class Application
         // setup default listeners
         //
         $listeners = array_unique(array_merge($this->defaultListeners, $listeners));
-
         foreach ($listeners as $listener) {
             $this->serviceManager->get($listener)->attach($this->events);
         }
         // trigger route event
         //
-        $result = $this->events->triggerEvent($this->event);
-        $eventRouteResponse = $result->last();
+        $routeResult = $this->events->triggerEvent($this->event);
 
-        $moduleName = $this->event->getResolvedModuleName(); // App, Blog, Forum etc..
-        $config = $this->getConfig();
-        
-        $errorGeneratorClass = 'App\Middleware\ErrorResponseGenerator';
-        $errorNotFoundHandler = 'App\Middleware\ErrorNotFoundHandler';
-        if (! empty($config['error_handlers'][$moduleName]['error_generator'])) {
-            $errorGeneratorClass = $config['error_handlers'][$moduleName]['error_generator'];
-        }
-        if (! empty($config['error_handlers'][$moduleName]['error_404'])) {
-            $errorNotFoundHandler = $config['error_handlers'][$moduleName]['error_404'];
-        }
-        // set error handler
+        // trigger error handlers event
         //
-        $errorHandler = new ErrorHandler(
-            function () {
-                return new Response;
-            },
-            new $errorGeneratorClass($this->serviceManager)
-        );
-        $this->app->pipe($errorHandler);
+        $this->event->setName(PageEvent::EVENT_ERROR_HANDLERS);
+        $errorResult = $this->events->triggerEvent($this->event);
+        $errorHandlers = $errorResult->last();
 
-        // if we have route match
+        // set error generator handler
         //
-        if ($eventRouteResponse instanceof RouteInterface) {
-            foreach ((array)$this->appConfig['middlewares'] as $appMiddleware) {
-                $this->app->pipe($this->serviceManager->build($appMiddleware));
-            }
-            $routeMiddlewares = $this->parseRouteMiddlewares();
-            foreach ($routeMiddlewares as $routeMiddleware) {
-                $this->app->pipe($this->serviceManager->build($routeMiddleware));
-            }
-            $this->app->pipe($this->serviceManager->get(PageHandlerMiddleware::class));
-        }
+        $this->app->pipe($errorHandlers['error_generator']);
 
-        // set 404 not found handler
+        // trigger middlewares event
         //
-        $this->app->pipe(new $errorNotFoundHandler($this->serviceManager));
+        $this->event->setName(PageEvent::EVENT_MIDDLEWARES);
+        $this->event->setParam('middlewares', $this->appConfig['middlewares']);
+        $this->event->setParam('app', $this->app);
+        $this->event->setParam('route_result', $routeResult->last());
+        $this->events->triggerEvent($this->event);
 
-        // set bootstrap event
+        // set not found handler
         //
-        $this->event->setName(PageEvent::EVENT_BOOTSTRAP);
+        $this->app->pipe($errorHandlers['error_404']);
 
         // trigger bootstrap event
         //
+        $this->event->setName(PageEvent::EVENT_BOOTSTRAP);
         $this->events->triggerEvent($this->event);
         return $this;
-    }
-
-    /**
-     * Parse route middlewares
-     *
-     * @param  object $router Router
-     * @return array
-     */
-    private function parseRouteMiddlewares() : array
-    {
-        $middlewares = MiddlewareParser::parse(
-            $this->router->getMiddlewares(),
-            $this->request->getMethod()
-        );
-        return $middlewares;
     }
 
     /**
@@ -281,7 +241,7 @@ class Application
     /**
      * Run application and return response
      * without emmitting
-     * 
+     *
      * @return response
      */
     public function runWithoutEmit()
