@@ -1,7 +1,7 @@
 
 # Obullo
 
-[![Build Status](https://travis-ci.com/obullo/Obullo.svg?branch=master)](https://travis-ci.org/obullo/Obullo)
+[![Build Status](https://travis-ci.org/obullo/Obullo.svg?branch=master)](https://travis-ci.org/obullo/Obullo)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
 
 > Obullo is the name given to the core library created by combining many components that allow you to use the 'Obullo Pages' tool.
@@ -29,4 +29,4 @@ $ vendor/bin/phpunit
 
 ## Documentation
 
-Documents are available at <a href="http://obullo.com/">http://obullo.com/</a>
+Documents are available soon at <a href="http://obullo.com/">http://obullo.com/</a>
