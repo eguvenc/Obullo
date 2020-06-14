@@ -3,7 +3,7 @@
 namespace Obullo\Factory;
 
 use ReflectionClass;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
 class LazyDefaultFactory extends ReflectionBasedAbstractFactory
