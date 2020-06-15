@@ -45,7 +45,7 @@ class ErrorHandlerManager
      *
      * @param string $module
      */
-    public function setResolvedModule(string $module)
+    public function setResolvedModule($module)
     {
         $this->module = $module;
     }
@@ -55,7 +55,7 @@ class ErrorHandlerManager
      *
      * @return string
      */
-    public function getResolvedModule() : string
+    public function getResolvedModule()
     {
         return $this->module;
     }
@@ -70,11 +70,12 @@ class ErrorHandlerManager
         $config = $this->getConfig();
         $module = $this->getResolvedModule();
 
+        $return['error_404'] = 'App\Middleware\ErrorNotFoundHandler';
         $return['error_generator'] = 'App\Middleware\ErrorResponseGenerator';
+        
         if (! empty($config['error_handlers'][$module]['error_generator'])) {
             $return['error_generator'] = $config['error_handlers'][$module]['error_generator'];
         }
-        $return['error_404'] = 'App\Middleware\ErrorNotFoundHandler';
         if (! empty($config['error_handlers'][$module]['error_404'])) {
             $return['error_404'] = $config['error_handlers'][$module]['error_404'];
         }
@@ -84,8 +85,8 @@ class ErrorHandlerManager
     }
 
     /**
-     * Create and return to error generator handler 
-     * 
+     * Create and return to error generator handler
+     *
      * @param  string $errorGeneratorHandler error generator class
      * @return object
      */
@@ -95,7 +96,7 @@ class ErrorHandlerManager
             function () {
                 return new Response;
             },
-			new $errorGeneratorHandler($this->getContainer())            
+            new $errorGeneratorHandler($this->getContainer())
         );
         return $errorHandler;
     }
