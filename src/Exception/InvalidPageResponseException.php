@@ -4,6 +4,6 @@ namespace Obullo\Exception;
 
 use RuntimeException;
 
-class PageNullResponseException extends RuntimeException
+class InvalidPageResponseException extends RuntimeException
 {
 }

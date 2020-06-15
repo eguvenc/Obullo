@@ -4,9 +4,10 @@ namespace Obullo;
 
 use ReflectionClass;
 use ReflectionParameter;
+use Psr\Http\Message\ResponseInterface;
 use Interop\Container\ContainerInterface;
 use Obullo\Exception\PageMethodNotExistsException;
-use Obullo\Exception\PageNullResponseException;
+use Obullo\Exception\InvalidPageResponseException;
 use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 
 final class Dispatcher
@@ -187,7 +188,7 @@ final class Dispatcher
     private function isResponse($response, $requestedName)
     {
         if (null == $response) {
-            throw new PageNullResponseException(
+            throw new InvalidPageResponseException(
                 sprintf(
                     'Return value of %s must be an instance of Psr\Http\Message\ResponseInterface, null returned',
                     $requestedName

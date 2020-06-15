@@ -6,8 +6,11 @@ use ReflectionClass;
 use ReflectionMethod;
 
 use Obullo\Dispatcher;
+use Laminas\Diactoros\Stream;
 use Obullo\Router\RouteInterface;
 use Obullo\Middleware\PageHandlerMiddleware;
+use Obullo\Exception\InvalidPageResponseException;
+use Psr\Http\Message\ResponseInterface;
 
 use Laminas\View\View;
 use Laminas\EventManager\AbstractListenerAggregate;
@@ -126,6 +129,14 @@ class DispatchListener extends AbstractListenerAggregate
         $dispatcher->setReflectionClass($reflection);
         $response = $dispatcher->dispatch();
         
+        if ($response instanceof Stream) {
+            throw new InvalidPageResponseException(
+                sprintf(
+                    'Return value of %s method must be an instance of Psr\Http\Message\ResponseInterface, Laminas\Diactoros\Stream returned.',
+                    $handlerClass.'::onGet'
+                )
+            );
+        }
         return $response;
     }
 
@@ -150,7 +161,7 @@ class DispatchListener extends AbstractListenerAggregate
         $dispatcher->setMethod('onGet');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
-        
+    
         return $response;
     }
 
