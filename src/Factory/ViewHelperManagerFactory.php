@@ -98,8 +98,9 @@ class ViewHelperManagerFactory
     private function createAssetHelperFactory(ContainerInterface $services)
     {
         return function () use ($services) {
+            $appConfig = $services->get('appConfig');
             $asset = new ObulloViewHelper\Asset;
-            $asset->setPath(ROOT.'/public/');
+            $asset->setPath($appConfig['root'].'/public/');
             return $asset;
         };
     }

@@ -41,7 +41,7 @@ class Asset extends AbstractHelper
      */
     public function __invoke(string $url, $timestamp = true)
     {
-        $filePath = $this->path . '/' .  ltrim($url, '/');
+        $filePath = $this->getPath() . '/' .  ltrim($url, '/');
 
         if (false == file_exists($filePath)) {
             throw new AssetNotFoundException(

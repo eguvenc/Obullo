@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Obullo\Middleware;
 
 use Psr\Http\Message\ServerRequestInterface;

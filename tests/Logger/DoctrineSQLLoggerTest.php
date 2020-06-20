@@ -8,11 +8,14 @@ class DoctrineSQLLoggerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        if (file_exists(ROOT .'/data/log/debug.log')) {
-            unlink(ROOT .'/data/log/debug.log');
+        $appConfig = require __DIR__ . '/../config/application.config.php';
+        $this->root = $appConfig['root'];
+
+        if (file_exists($this->root .'/data/log/debug.log')) {
+            unlink($this->root .'/data/log/debug.log');
         }
         $logger = new Logger('tests');
-        $logger->pushHandler(new StreamHandler(ROOT .'/data/log/debug.log', Logger::DEBUG, true, 0666));
+        $logger->pushHandler(new StreamHandler($this->root .'/data/log/debug.log', Logger::DEBUG, true, 0666));
         
         $this->logger = $logger;
         $this->sqlLogger = new DoctrineSQLLogger($this->logger);
@@ -28,7 +31,7 @@ class DoctrineSQLLoggerTest extends PHPUnit_Framework_TestCase
         $this->sqlLogger->startQuery("SELECT * FROM users WHERE id = :id AND name = :name", array('name' => 'test', 'id' => 6));
         $this->sqlLogger->stopQuery();
 
-        $debugLog = file_get_contents(ROOT .'/data/log/debug.log');
+        $debugLog = file_get_contents($this->root .'/data/log/debug.log');
 
         $sql1 = '] tests.DEBUG: SQL-1: SELECT * FROM users WHERE id = ? AND name = ? {"params":[5,"test"],';
         $sql2 = '] tests.DEBUG: SQL-2: SELECT * FROM users WHERE id = :id AND name = :name {"params":{"name":"test","id":6},';

@@ -106,7 +106,7 @@ class Application
         $this->serviceManager = $serviceManager;
         $this->setEventManager($events);
         $this->router = $router;
-        $this->request = $request;
+        $this->setRequest($request);
         $this->event = new PageEvent;
         $this->app = new MiddlewarePipe;
         $this->appConfig = $serviceManager->get('appConfig');
@@ -197,6 +197,26 @@ class Application
     }
 
     /**
+     * Set request
+     * 
+     * @param object $request
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * Returns to request
+     * 
+     * @return object
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
      * Set the event manager instance
      *
      * @param  EventManagerInterface $eventManager
@@ -249,6 +269,7 @@ class Application
         $callback = [$this->app, 'handle'];
         $response = $callback($this->request);
 
+        $this->event->setResponse($response);
         return $response;
     }
 
@@ -263,12 +284,13 @@ class Application
             function () {
                 return $this->serviceManager->get('Request');
             },
-            static function (Throwable $e) {
+            function (Throwable $e) {
                 $response = (new ResponseFactory())->createResponse(500);
                 $response->getBody()->write(sprintf(
                     'An error occurred: %s',
                     $e->getMessage
                 ));
+                $this->event->setResponse($response);
                 return $response;
             }
         );

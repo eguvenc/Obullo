@@ -30,13 +30,14 @@ class SetLocaleMiddlewareTest extends PHPUnit_Framework_TestCase
         $request = $request->withUri(new Uri('http://es.example.com/set_locale'));
         $this->container->setService('Request', $request);
         $config = $this->container->get('config');
+        $appConfig = $this->container->get('appConfig');
 
         $config['translator'] = [
             'locale' => 'en_US',
             'translation_file_patterns' => [
                 [
                     'type'     => 'phparray',
-                    'base_dir' => ROOT .  '/data/language',
+                    'base_dir' => $appConfig['root'] .  '/data/language',
                     'pattern'  => '%s/messages.php',
                 ],
             ],

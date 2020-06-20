@@ -1,8 +1,5 @@
 <?php
 
-// Define the root
-define('ROOT', dirname(__DIR__).DIRECTORY_SEPARATOR.'tests');
-
 // Prevent session cookies
 ini_set('session.use_cookies', 0);
 

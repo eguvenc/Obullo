@@ -48,6 +48,11 @@ class PageEvent extends Event
     protected $moduleName;
 
     /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
      * Set application instance
      *
      * @param  ApplicationInterface $application

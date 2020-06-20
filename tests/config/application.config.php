@@ -2,6 +2,8 @@
 
 return [
 
+    'root' =>  dirname(__DIR__).DIRECTORY_SEPARATOR,
+
     // Modules
     'modules' => [
         'Laminas\I18n',

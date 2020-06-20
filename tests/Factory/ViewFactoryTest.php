@@ -8,12 +8,15 @@ class ViewFactoryTest extends TestCase
 {
     public function setUp()
     {
-        $appConfig = require __DIR__.'/../config/application.config.php';
-
+        $appConfig = require __DIR__ . '/../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];
         $smConfig = new Obullo\Container\ServiceManagerConfig($smConfig);
+
+        // setup service manager
+        //
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
+        $this->container->setService('appConfig', $appConfig);
         $this->container->setFactory(View::class, 'Obullo\Factory\ViewFactory');
         $this->container->setFactory('ViewPhpRenderer', 'Obullo\Factory\ViewPhpRendererFactory');
         $this->container->setFactory('ViewHelperManager', 'Obullo\Factory\ViewHelperManagerFactory');
