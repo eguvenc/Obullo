@@ -15,12 +15,14 @@ class PageEvent extends Event
     /**
      * Page events triggered by eventmanager
      */
-    const EVENT_BOOTSTRAP      = 'bootstrap';
-    const EVENT_ROUTE          = 'route.match';
-    const EVENT_MIDDLEWARES    = 'middlewares';
-    const EVENT_ERROR_HANDLERS = 'error.handlers';
-    const EVENT_DISPATCH_PAGE  = 'dispatch.page';
+    const EVENT_BOOTSTRAP       = 'bootstrap';
+    const EVENT_ROUTE           = 'route.match';
+    const EVENT_MIDDLEWARES     = 'middlewares';
+    const EVENT_ERROR_HANDLERS  = 'error.handlers';
+    const EVENT_DISPATCH_PAGE   = 'dispatch.page';
     const EVENT_DISPATCH_PARTIAL_PAGE = 'dispatch.partial';
+    const EVENT_NOT_FOUND       = 'not.found';
+    const EVENT_EXCEPTION_ERROR = 'exception.error';
 
     /**
      * @var Application

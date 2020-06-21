@@ -54,6 +54,14 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($serviceManager, $this->container);
     }
 
+    public function testGetRequest()
+    {
+        $application = $this->container->get('Application');
+        $request = $application->getRequest();
+    
+        $this->assertInstanceOf('Obullo\Http\ServerRequest', $request);
+    }
+
     public function testGetEventManager()
     {
         $application = $this->container->get('Application');
@@ -69,4 +77,13 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
     
         $this->assertInstanceOf('Obullo\PageEvent', $pageEvent);
     }
+
+    public function testGetMvcEvent()
+    {
+        $application = $this->container->get('Application');
+        $pageEvent = $application->getMvcEvent();
+    
+        $this->assertInstanceOf('Obullo\PageEvent', $pageEvent);
+    }
+
 }

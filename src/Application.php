@@ -259,6 +259,16 @@ class Application
     }
 
     /**
+     * Alias of Page event instance
+     *
+     * @return PageEvent
+     */
+    public function getMvcEvent()
+    {
+        return $this->event;
+    }
+
+    /**
      * Run application and return response
      * without emmitting
      *

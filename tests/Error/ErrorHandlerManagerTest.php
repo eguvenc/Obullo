@@ -1,13 +1,13 @@
 <?php
 
-use Obullo\ErrorHandlerManager;
+use Obullo\Error\ErrorHandlerManager;
 use Laminas\ServiceManager\ServiceManager;
 
 class ErrorHandlerManagerTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $appConfig = require __DIR__ . '/config/application.config.php';
+        $appConfig = require __DIR__ . '/../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];
         $smConfig = new Obullo\Container\ServiceManagerConfig($smConfig);
 

@@ -5,8 +5,8 @@ namespace Obullo;
 use ReflectionClass;
 use ReflectionMethod;
 
-use Obullo\Dispatcher;
 use Laminas\Diactoros\Stream;
+use Obullo\Error\ErrorHandlerManager;
 use Obullo\Router\RouteInterface;
 use Obullo\Middleware\PageHandlerMiddleware;
 use Obullo\Exception\InvalidPageResponseException;

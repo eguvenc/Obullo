@@ -1,6 +1,6 @@
 <?php
 
-namespace Obullo;
+namespace Obullo\Error;
 
 use Laminas\Diactoros\Response;
 use Laminas\Stratigility\Middleware\ErrorHandler;
