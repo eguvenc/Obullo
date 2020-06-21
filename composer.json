@@ -62,6 +62,6 @@
         "laminas/laminas-view": "^2.11",
         "laminas/laminas-escaper": "^2.6",
         "laminas/laminas-modulemanager": "^2.8",
-        "phpunit/phpunit": "^9.2"
+        "phpunit/phpunit": "^7.5"
     }
 }
