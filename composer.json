@@ -32,6 +32,7 @@
     },
     "require": {
         "php": "^7.1",
+        "symfony/yaml": "^3.4",
         "obullo/router": "^1.7",
         "laminas/laminas-diactoros": "^2.2",
         "laminas/laminas-stratigility": "^3.2",
@@ -44,7 +45,7 @@
         "laminas/laminas-view": "^2.11"
     },
     "require-dev": {
-        "symfony/yaml": "^5.0",
+        "symfony/yaml": "^3.4",
         "monolog/monolog": "^1.24",
         "doctrine/dbal": "^2.9",
         "laminas/laminas-httphandlerrunner": "^1.1",
