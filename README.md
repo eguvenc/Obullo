@@ -2,7 +2,7 @@
 # Obullo
 
 [![Build Status](https://travis-ci.org/obullo/Obullo.svg?branch=master)](https://travis-ci.org/obullo/Obullo)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 > Obullo is the name given to the core library created by combining many components that allow you to use the 'Obullo Pages' tool.
 
