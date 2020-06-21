@@ -18,7 +18,7 @@ class RequestAwareTest extends TestCase
 {
     use RequestAwareTrait;
 
-    public function setUp()
+    public function setUp() : void
     {
         $server = normalizeServer(
             $_SERVER,

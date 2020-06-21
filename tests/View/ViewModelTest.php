@@ -5,7 +5,7 @@ use Obullo\View\ViewModel;
 
 class ViewModelTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->view = new ViewModel;
     }

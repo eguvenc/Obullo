@@ -9,7 +9,7 @@ class ContainerAwareTest extends TestCase
 {
     use ContainerAwareTrait;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->container = new ServiceManager;
     }

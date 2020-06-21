@@ -14,7 +14,7 @@ use Laminas\ModuleManager\ModuleManager;
 
 class RouterFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__.'/../config/application.config.php';
 

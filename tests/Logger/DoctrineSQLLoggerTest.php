@@ -1,12 +1,13 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Obullo\Logger\DoctrineSQLLogger;
 
-class DoctrineSQLLoggerTest extends PHPUnit_Framework_TestCase
+class DoctrineSQLLoggerTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../config/application.config.php';
         $this->root = $appConfig['root'];
@@ -36,7 +37,7 @@ class DoctrineSQLLoggerTest extends PHPUnit_Framework_TestCase
         $sql1 = '] tests.DEBUG: SQL-1: SELECT * FROM users WHERE id = ? AND name = ? {"params":[5,"test"],';
         $sql2 = '] tests.DEBUG: SQL-2: SELECT * FROM users WHERE id = :id AND name = :name {"params":{"name":"test","id":6},';
 
-        $this->assertContains($sql1, $debugLog);
-        $this->assertContains($sql2, $debugLog);
+        $this->assertStringContainsString($sql1, $debugLog);
+        $this->assertStringContainsString($sql2, $debugLog);
     }
 }

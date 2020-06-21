@@ -9,7 +9,7 @@ class LoggerAwareTest extends TestCase
 {
     use LoggerAwareTrait;
 
-    public function setUp()
+    public function setUp() : void
     {
         $this->logger = new Logger('tests');
     }

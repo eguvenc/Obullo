@@ -8,7 +8,7 @@ use Obullo\Router\Pattern;
 
 class RouteCollectionFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->container = new ServiceManager;
         $this->container->setFactory(RouteCollectionInterface::class, 'Obullo\Factory\RouteCollectionFactory');

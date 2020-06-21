@@ -6,7 +6,7 @@ use Laminas\Escaper\Escaper;
 
 class EscaperFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->container = new ServiceManager;
         $this->container->setFactory(Escaper::class, 'Obullo\Factory\EscaperFactory');

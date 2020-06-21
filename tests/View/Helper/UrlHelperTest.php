@@ -1,7 +1,6 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-
 use Obullo\View\Helper\Url;
 use Obullo\Http\ServerRequest;
 use Obullo\Container\ServiceManagerConfig;
@@ -10,7 +9,7 @@ use Laminas\ServiceManager\ServiceManager;
 
 class UrlHelperTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

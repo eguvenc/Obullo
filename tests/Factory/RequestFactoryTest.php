@@ -6,7 +6,7 @@ use Obullo\Http\ServerRequest;
 
 class RequestFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->container = new ServiceManager;
         $this->container->setFactory(ServerRequest::class, 'Obullo\Factory\RequestFactory');

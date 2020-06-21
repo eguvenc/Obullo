@@ -1,12 +1,13 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Laminas\Diactoros\Uri;
 use Obullo\Http\ServerRequest;
 use Laminas\ServiceManager\ServiceManager;
 
-class SetLocaleMiddlewareTest extends PHPUnit_Framework_TestCase
+class SetLocaleMiddlewareTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

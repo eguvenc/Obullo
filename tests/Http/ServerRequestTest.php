@@ -14,7 +14,7 @@ use Obullo\Http\ServerRequest;
 
 class ServerRequestTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $server = normalizeServer(
             $_SERVER,

@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Obullo\Logger\LaminasSQLLogger;
@@ -7,9 +8,9 @@ use Obullo\Logger\LaminasSQLLogger;
 use Laminas\Db\Adapter\StatementContainer;
 use Laminas\Db\Adapter\ParameterContainer;
 
-class LaminasSQLLoggerTest extends PHPUnit_Framework_TestCase
+class LaminasSQLLoggerTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../config/application.config.php';
         $this->root = $appConfig['root'];
@@ -53,8 +54,8 @@ class LaminasSQLLoggerTest extends PHPUnit_Framework_TestCase
         $sql1 = '] tests.DEBUG: SQL-1: SELECT * FROM users WHERE id = ? AND name = ? {"params":[5,"test"],';
         $sql2 = '] tests.DEBUG: SQL-2: SELECT * FROM users WHERE id = :id AND name = :name {"params":{"id":6,"name":"test"},';
 
-        $this->assertContains($sql1, $debugLog);
-        $this->assertContains($sql2, $debugLog);
+        $this->assertStringContainsString($sql1, $debugLog);
+        $this->assertStringContainsString($sql2, $debugLog);
 
         if (file_exists($this->file)) {
             unlink($this->file);

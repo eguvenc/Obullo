@@ -5,7 +5,7 @@ use Laminas\ServiceManager\ServiceManager;
 
 class DispatchListenerFactoryTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->container = new ServiceManager;
         $this->container->setFactory('DispatchListener', 'Obullo\Factory\DispatchListenerFactory');

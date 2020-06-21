@@ -5,7 +5,7 @@ use Obullo\View\LayoutModel;
 
 class LayoutModelTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $this->layout = new LayoutModel;
     }

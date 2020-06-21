@@ -1,12 +1,13 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Obullo\Dispatcher;
 use Laminas\View\View;
 use Laminas\ServiceManager\ServiceManager;
 
-class DispatcherTest extends PHPUnit_Framework_TestCase
+class DispatcherTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

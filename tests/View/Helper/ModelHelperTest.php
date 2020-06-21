@@ -11,7 +11,7 @@ use Laminas\View\Model\ViewModel;
 
 class ModelHelperTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

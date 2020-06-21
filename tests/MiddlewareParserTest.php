@@ -1,13 +1,14 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Obullo\MiddlewareParser;
 use Obullo\Router\Router;
 use Obullo\Container\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
 
-class MiddlewareParserTest extends PHPUnit_Framework_TestCase
+class MiddlewareParserTest extends TestCase
 {
-    public function setup()
+    public function setup() : void
     {
         $appConfig = require __DIR__.'/config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

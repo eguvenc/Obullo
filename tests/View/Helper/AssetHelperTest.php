@@ -5,7 +5,7 @@ use Obullo\View\Helper\Asset;
 
 class AssetHelperTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../../config/application.config.php';
 

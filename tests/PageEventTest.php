@@ -1,13 +1,14 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Obullo\PageEvent;
 use Laminas\Diactoros\Response;
 use Laminas\View\Model\ViewModel;
 use Laminas\ServiceManager\ServiceManager;
 
-class PageEventTest extends PHPUnit_Framework_TestCase
+class PageEventTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

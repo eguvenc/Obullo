@@ -1,11 +1,12 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Obullo\Error\ErrorHandlerManager;
 use Laminas\ServiceManager\ServiceManager;
 
-class ErrorHandlerManagerTest extends PHPUnit_Framework_TestCase
+class ErrorHandlerManagerTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require __DIR__ . '/../config/application.config.php';
         $smConfig = isset($appConfig['service_manager']) ? $appConfig['service_manager'] : [];

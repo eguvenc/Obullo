@@ -1,12 +1,13 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Laminas\Diactoros\Uri;
 use Obullo\Http\ServerRequest;
 use Laminas\ServiceManager\ServiceManager;
 
-class OnBootstrapListenerTest extends PHPUnit_Framework_TestCase
+class OnBootstrapListenerTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         $appConfig = require dirname(__DIR__) . '/../config/application.config.php';
         $appConfig['modules'][] = 'App';

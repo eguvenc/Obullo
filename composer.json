@@ -32,7 +32,7 @@
     },
     "require": {
         "php": "^7.1",
-        "obullo/router": "^1.7.4",
+        "obullo/router": "^1.7",
         "laminas/laminas-diactoros": "^2.2",
         "laminas/laminas-stratigility": "^3.2",
         "laminas/laminas-http": "^2.11",
@@ -44,9 +44,9 @@
         "laminas/laminas-view": "^2.11"
     },
     "require-dev": {
+        "symfony/yaml": "^5.0",
         "monolog/monolog": "^1.24",
         "doctrine/dbal": "^2.9",
-        "phpunit/phpunit": "^4.8",
         "laminas/laminas-httphandlerrunner": "^1.1",
         "laminas/laminas-diactoros": "^2.2",
         "laminas/laminas-stratigility": "^3.2",
@@ -61,6 +61,6 @@
         "laminas/laminas-view": "^2.11",
         "laminas/laminas-escaper": "^2.6",
         "laminas/laminas-modulemanager": "^2.8",
-        "obullo/router": "^1.7"
+        "phpunit/phpunit": "^9.2"
     }
 }
