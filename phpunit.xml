@@ -12,10 +12,13 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         bootstrap="tests/bootstrap.php"
+>
     <testsuites>
         <testsuite name="Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+    
 </phpunit>
