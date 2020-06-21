@@ -27,6 +27,7 @@ class AbstractErrorGeneratorTest extends TestCase
             AbstractErrorGenerator::class,
             [$this->container]
         );
+        $this->errorGenerator->setModuleName('App');
     }
 
     public function testGetContainer()

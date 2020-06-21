@@ -32,6 +32,11 @@ abstract class AbstractErrorGenerator
     private $exception;
 
     /**
+     * @var stirng Module name
+     */
+    private $module;
+
+    /**
      * Container
      *
      * @param ContainerInterface $container container
@@ -72,6 +77,16 @@ abstract class AbstractErrorGenerator
     }
 
     /**
+     * Set module name
+     * 
+     * @param string $module name
+     */
+    public function setModuleName(string $module)
+    {
+        $this->module = $module;
+    }
+
+    /**
      * Returns to module name
      *
      * Returns to 'App' by default for more friendly and testable codes.
@@ -80,10 +95,15 @@ abstract class AbstractErrorGenerator
      */
     public function getModuleName()
     {
+        if ($this->module) {
+            return $this->module;
+        }
         $reflection = new ReflectionClass($this);
-        $module = strstr($reflection->getNamespaceName(), '\\', true);
-
-        return ($module == false) ? 'App' : $module;
+        $namespace = $reflection->getNamespaceName();
+        if ($module = strstr($namespace, '\\', true)) {
+            return $module;
+        }
+        return 'App';
     }
 
     /**
