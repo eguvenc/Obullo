@@ -8,7 +8,6 @@ use Obullo\Router\Types\{
     BoolType,
     TranslationType
 };
-use Laminas\ServiceManager\Factory\InvokableFactory;
 use Symfony\Component\Yaml\Yaml;
 
 return [
@@ -29,7 +28,7 @@ return [
             new SlugType('<slug:slug>'),
             new TranslationType('<locale:locale>')
         ],
-        'routes' => Yaml::parseFile(dirname(__DIR__).'/routes.yaml'),
+        'routes' => Yaml::parseFile(__DIR__.'/../routes.yaml'),
         'translatable_routes' => false,
     ],
 
@@ -57,7 +56,7 @@ return [
         'factories'  => [
         ],
         'abstract_factories' => [
-            Obullo\Factory\LazyDefaultFactory::class,
+
         ],
     ],
 ];
