@@ -148,7 +148,7 @@ abstract class AbstractErrorGenerator
         $this->event = $this->container->get('Application')->getPageEvent();
         $this->event->setName(PageEvent::EVENT_NOT_FOUND);
         $this->event->setParam('error', $error);
-        $this->event->setParam('error_template', $module.'\Pages\Templates\ErrorNotFound');
+        $this->event->setParam('error_template', $module.'/Pages/Templates/ErrorNotFound');
 
         $this->container->get('EventManager')->triggerEvent($this->event);
     }
@@ -166,7 +166,7 @@ abstract class AbstractErrorGenerator
         $this->event = $this->container->get('Application')->getPageEvent();
         $this->event->setName(PageEvent::EVENT_EXCEPTION_ERROR);
         $this->event->setParam('exception', $exception);
-        $this->event->setParam('error_template', $module.'\Pages\Templates\ErrorsAndExceptions');
+        $this->event->setParam('error_template', $module.'/Pages/Templates/ErrorsAndExceptions');
 
         $this->container->get('EventManager')->triggerEvent($this->event);
     }
