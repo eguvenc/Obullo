@@ -2,7 +2,7 @@
 
 return [
 
-    'root' =>  dirname(__DIR__).DIRECTORY_SEPARATOR,
+    'root' =>  dirname(__DIR__),
 
     // Modules
     'modules' => [

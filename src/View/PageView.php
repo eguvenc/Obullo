@@ -34,10 +34,11 @@ class PageView extends AbstractPageView
         $namespace = $this->reflection->getNamespaceName();
 
         $module = strstr($namespace, '\Pages', true);
+        $module = str_replace('\\', '/', $module);
 
         // let's load a default template for each module by default
         //
-        $this->layout->setTemplate($module.'\Pages\Templates\DefaultLayout');
+        $this->layout->setTemplate($module.'/Pages/Templates/DefaultLayout');
     }
 
     /**

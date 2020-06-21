@@ -58,7 +58,7 @@ class PageViewTest extends TestCase
         $application->bootstrap();
         $response = $application->runWithoutEmit();
         
-        $this->assertEquals('App\Pages\Templates\DefaultLayout', $response->getBody());
+        $this->assertEquals('App/Pages/Templates/DefaultLayout', $response->getBody());
     }
 
     public function testMethodQuery()

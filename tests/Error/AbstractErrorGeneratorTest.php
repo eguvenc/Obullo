@@ -53,10 +53,6 @@ class AbstractErrorGeneratorTest extends TestCase
 
     public function testErrorTemplateForExceptions()
     {
-        $this->errorGenerator = $this->getMockForAbstractClass(
-            AbstractErrorGenerator::class,
-            [$this->container]
-        );
         $this->errorGenerator->triggerErrorEvent();
 
         $this->assertInstanceOf('Laminas\View\Model\ViewModel', $this->errorGenerator->getViewModel());
@@ -65,10 +61,6 @@ class AbstractErrorGeneratorTest extends TestCase
 
     public function testErrorTemplateFor404NotFound()
     {
-        $this->errorGenerator = $this->getMockForAbstractClass(
-            AbstractErrorGenerator::class,
-            [$this->container]
-        );
         $this->errorGenerator->trigger404Event();
 
         $this->assertInstanceOf('Laminas\View\Model\ViewModel', $this->errorGenerator->getViewModel());
@@ -77,18 +69,10 @@ class AbstractErrorGeneratorTest extends TestCase
 
     public function testRenderErrorsAndExceptions()
     {
-        $this->errorGenerator = $this->getMockForAbstractClass(
-            AbstractErrorGenerator::class,
-            [$this->container]
-        );
         $this->errorGenerator->triggerErrorEvent();
         $html = $this->errorGenerator->render($this->errorGenerator->getViewModel());
         $this->assertStringContainsString('An error was encountered', $html);
 
-        $this->errorGenerator = $this->getMockForAbstractClass(
-            AbstractErrorGenerator::class,
-            [$this->container]
-        );
         $exception = new ErrorException('Exception error', 0, 0, 0, 0);
         $this->errorGenerator->triggerErrorEvent($exception);
         $html = $this->errorGenerator->render($this->errorGenerator->getViewModel());
@@ -98,10 +82,6 @@ class AbstractErrorGeneratorTest extends TestCase
 
     public function testRenderExceptionsWhenDevelopmentModeOff()
     {
-        $this->errorGenerator = $this->getMockForAbstractClass(
-            AbstractErrorGenerator::class,
-            [$this->container]
-        );
         $config = $this->container->get('config');
         $config['view_manager']['display_exceptions'] = false;
         $this->container->setService('config', $config);
