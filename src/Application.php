@@ -147,15 +147,11 @@ class Application
         //
         $routeResult = $this->events->triggerEvent($this->event);
 
-        // trigger error handlers event
+        // trigger error handler
         //
-        $this->event->setName(PageEvent::EVENT_ERROR_HANDLERS);
-        $errorResult = $this->events->triggerEvent($this->event);
-        $errorHandlers = $errorResult->last();
-
-        // set error generator handler
-        //
-        $this->app->pipe($errorHandlers['error_generator']);
+        $this->event->setName(PageEvent::EVENT_ERROR_HANDLER);
+        $this->event->setParam('app', $this->app);
+        $this->events->triggerEvent($this->event);
 
         // trigger middlewares event
         //
@@ -165,9 +161,11 @@ class Application
         $this->event->setParam('route_result', $routeResult->last());
         $this->events->triggerEvent($this->event);
 
-        // set not found handler
+        // trigger not found handler
         //
-        $this->app->pipe($errorHandlers['error_404']);
+        $this->event->setName(PageEvent::EVENT_NOT_FOUND_HANDLER);
+        $this->event->setParam('app', $this->app);
+        $this->events->triggerEvent($this->event);
 
         // trigger bootstrap event
         //

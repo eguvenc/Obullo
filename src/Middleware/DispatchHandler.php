@@ -12,7 +12,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class PageHandlerMiddleware implements MiddlewareInterface, ContainerAwareInterface
+final class DispatchHandler implements MiddlewareInterface, ContainerAwareInterface
 {
     use ContainerAwareTrait;
 

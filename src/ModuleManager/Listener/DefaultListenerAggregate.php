@@ -8,7 +8,6 @@ use Laminas\ModuleManager\ModuleEvent;
 use Laminas\ModuleManager\Listener\AbstractListener;
 use Laminas\ModuleManager\Listener\ConfigListener;
 use Laminas\ModuleManager\Listener\ConfigMergerInterface;
-use Laminas\ModuleManager\Listener\LocatorRegistrationListener;
 use Laminas\ModuleManager\Listener\ModuleLoaderListener;
 use Laminas\ModuleManager\Listener\ModuleResolverListener;
 use Laminas\ModuleManager\Listener\AutoloaderListener;
@@ -75,6 +74,8 @@ class DefaultListenerAggregate extends AbstractListener implements
 
         $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new InitTrigger($options));
         $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new OnBootstrapListener($options));
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new OnErrorHandlerListener($options));
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, new OnNotFoundHandlerListener($options));
 
         $locatorRegistrationListener->attach($events);
         $configListener->attach($events);

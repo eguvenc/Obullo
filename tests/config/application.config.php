@@ -7,8 +7,6 @@ return [
     // Modules
     'modules' => [
         'Laminas\I18n',
-        'Laminas\Db',
-        'Laminas\Session',
     ],
 
     // Middlewares

@@ -86,5 +86,4 @@ class ApplicationTest extends TestCase
     
         $this->assertInstanceOf('Obullo\PageEvent', $pageEvent);
     }
-
 }

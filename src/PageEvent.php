@@ -9,6 +9,7 @@ use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Laminas\View\Model\ModelInterface as Model;
 use Laminas\View\Model\ViewModel;
+use Laminas\View\View;
 
 class PageEvent extends Event
 {
@@ -18,11 +19,10 @@ class PageEvent extends Event
     const EVENT_BOOTSTRAP       = 'bootstrap';
     const EVENT_ROUTE           = 'route.match';
     const EVENT_MIDDLEWARES     = 'middlewares';
-    const EVENT_ERROR_HANDLERS  = 'error.handlers';
+    const EVENT_ERROR_HANDLER   = 'error.handler';
+    const EVENT_NOT_FOUND_HANDLER = 'notFound.handler';
     const EVENT_DISPATCH_PAGE   = 'dispatch.page';
     const EVENT_DISPATCH_PARTIAL_PAGE = 'dispatch.partial';
-    const EVENT_NOT_FOUND       = 'not.found';
-    const EVENT_EXCEPTION_ERROR = 'exception.error';
 
     /**
      * @var Application

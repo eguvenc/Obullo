@@ -8,7 +8,7 @@ use ReflectionMethod;
 use Laminas\Diactoros\Stream;
 use Obullo\Error\ErrorHandlerManager;
 use Obullo\Router\RouteInterface;
-use Obullo\Middleware\PageHandlerMiddleware;
+use Obullo\Middleware\DispatchHandler;
 use Obullo\Exception\InvalidPageResponseException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -27,31 +27,9 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        $this->listeners[] = $events->attach(PageEvent::EVENT_ERROR_HANDLERS, [$this, 'onErrorHandlers']);
         $this->listeners[] = $events->attach(PageEvent::EVENT_MIDDLEWARES, [$this, 'onMiddlewares']);
         $this->listeners[] = $events->attach(PageEvent::EVENT_DISPATCH_PAGE, [$this, 'onDispatchPage']);
         $this->listeners[] = $events->attach(PageEvent::EVENT_DISPATCH_PARTIAL_PAGE, [$this, 'onDispatchPartialPage']);
-    }
-
-    /**
-     * Dispatch error handlers
-     *
-     * Returns to configured error handlers of current module,
-     * if there is no configuration App module handlers are the default
-     *
-     * @param  PageEvent $e object
-     * @return array
-     */
-    public function onErrorHandlers(PageEvent $e) : array
-    {
-        $application = $e->getApplication();
-
-        $errorManager = new ErrorHandlerManager;
-        $errorManager->setConfig($application->getConfig());
-        $errorManager->setContainer($application->getContainer());
-        $errorManager->setResolvedModule($e->getResolvedModuleName()); // App, Blog, Forum etc..
-
-        return $errorManager->getErrorHandlers();
     }
 
     /**
@@ -77,7 +55,7 @@ class DispatchListener extends AbstractListenerAggregate
             foreach ($routeMiddlewares as $routeMiddleware) {
                 $app->pipe($container->build($routeMiddleware));
             }
-            $app->pipe($container->get(PageHandlerMiddleware::class));
+            $app->pipe($container->get(DispatchHandler::class));
         }
     }
 

@@ -20,7 +20,7 @@ class LazyDefaultFactory extends ReflectionBasedAbstractFactory
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $condition1 = Parent::canCreate($container, $requestedName);
-        $condition2 = (strstr($requestedName, 'Pages\\') !== false OR strstr($requestedName, 'Middleware\\') !== false);
+        $condition2 = (strstr($requestedName, '\Pages\\') !== false or strstr($requestedName, '\Middleware\\') !== false);
 
         return $condition1 && $condition2;
     }

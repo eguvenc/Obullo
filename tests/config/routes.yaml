@@ -12,6 +12,9 @@
     handler: App\Pages\TestModel
     middleware: App\Middleware\AuthMiddleware@onPost
 
+/test_error:
+    handler: App\Pages\TestErrorModel
+
 /test_view:
     handler: App\Pages\TestViewModel
 
