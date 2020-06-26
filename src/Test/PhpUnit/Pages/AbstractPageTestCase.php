@@ -239,7 +239,7 @@ abstract class AbstractPageTestCase extends TestCase
 
     /**
      * Get the application request object
-     * @return \Laminas\Stdlib\RequestInterface
+     * @return Psr\Http\Message\ServerRequestInterface
      */
     public function getRequest()
     {
@@ -252,7 +252,24 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function getResponse()
     {
-        return $this->getApplication()->getMvcEvent()->getResponse();
+        return $this->getApplication()->getPageEvent()->getResponse();
+    }
+
+    /**
+     * Returns to view model of requested handler
+     *
+     * @param  string $handler fully qualified page model name
+     * @return ViewModel
+     */
+    public function getViewModel($handler)
+    {
+        $pageModel = $this->getApplication()->getPageEvent()->getPageModel($handler);
+        if (! $pageModel) {
+            throw new ExpectationFailedException($this->createFailureMessage(
+                sprintf('The "%s" handler cannot resolved', $handler)
+            ));
+        }
+        return $pageModel->getViewModel();
     }
 
     /**
@@ -395,7 +412,7 @@ abstract class AbstractPageTestCase extends TestCase
     /**
      * Trigger an application event
      *
-     * @param  string                                $eventName
+     * @param  string $eventName
      * @return \Laminas\EventManager\ResponseCollection
      */
     public function triggerApplicationEvent($eventName)
@@ -533,7 +550,7 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertApplicationException($type, $message = null)
     {
-        $exception = $this->getApplication()->getMvcEvent()->getParam('exception');
+        $exception = $this->getApplication()->getPageEvent()->getParam('exception');
         if (! $exception) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 'Failed asserting application exception, param "exception" does not exist'
@@ -541,7 +558,7 @@ abstract class AbstractPageTestCase extends TestCase
         }
         if (true === $this->traceError) {
             // set exception as null because we know and have assert the exception
-            $this->getApplication()->getMvcEvent()->setParam('exception', null);
+            $this->getApplication()->getPageEvent()->setParam('exception', null);
         }
 
         if (! method_exists($this, 'expectException')) {
@@ -558,21 +575,31 @@ abstract class AbstractPageTestCase extends TestCase
     }
 
     /**
-     * Get the full current controller class name
+     * Get the full page model class name
      *
      * @return string
      */
-    protected function getControllerFullClassName()
+    protected function getPageModelFullClassName()
     {
-        $routeMatch           = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $controllerIdentifier = $routeMatch->getParam('controller');
-        $controllerManager    = $this->getApplicationServiceLocator()->get('ControllerManager');
-        $controllerClass      = $controllerManager->get($controllerIdentifier);
+        return $route->getHandler();
+    }
 
-        return get_class($controllerClass);
+    /**
+     * Get resolved module name
+     *
+     * @return string
+     */
+    protected function getResolvedModuleName()
+    {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
+            throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
+        }
+        return $this->getApplication()->getPageEvent()->getResolvedModuleName();
     }
 
     /**
@@ -582,10 +609,7 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertModuleName($module)
     {
-        $controllerClass = $this->getControllerFullClassName();
-        $match           = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-        $match           = strtolower($match);
-        $module          = strtolower($module);
+        $match = $this->getResolvedModuleName();
         if ($module != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf('Failed asserting module name "%s", actual module name is "%s"', $module, $match)
@@ -601,10 +625,7 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertNotModuleName($module)
     {
-        $controllerClass = $this->getControllerFullClassName();
-        $match           = substr($controllerClass, 0, strpos($controllerClass, '\\'));
-        $match           = strtolower($match);
-        $module          = strtolower($module);
+        $match = $this->getResolvedModuleName();
         if ($module == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf('Failed asserting module was NOT "%s"', $module)
@@ -614,194 +635,121 @@ abstract class AbstractPageTestCase extends TestCase
     }
 
     /**
-     * Assert that the application route match used the given controller class
+     * Assert that the application route match used the given page model
      *
-     * @param string $controller
+     * @param string $pageModel
      */
-    public function assertControllerClass($controller)
+    public function assertPageModel($model)
     {
-        $controllerClass = $this->getControllerFullClassName();
-        $match           = substr($controllerClass, strrpos($controllerClass, '\\') + 1);
-        $match           = strtolower($match);
-        $controller      = strtolower($controller);
-        if ($controller != $match) {
+        $match = $this->getPageModelFullClassName();
+        $match = substr($match, strrpos($match, '\\') + 1);
+        if ($model != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting controller class "%s", actual controller class is "%s"', $controller, $match)
+                sprintf('Failed asserting page model "%s", actual page model is "%s"', $model, $match)
             ));
         }
-        $this->assertEquals($controller, $match);
+        $this->assertEquals($model, $match);
     }
 
     /**
-     * Assert that the application route match used NOT the given controller class
+     * Assert that the application route match used NOT the given page model
      *
-     * @param string $controller
+     * @param string $model
      */
-    public function assertNotControllerClass($controller)
+    public function assertNotPageModel($model)
     {
-        $controllerClass = $this->getControllerFullClassName();
-        $match           = substr($controllerClass, strrpos($controllerClass, '\\') + 1);
-        $match           = strtolower($match);
-        $controller      = strtolower($controller);
-        if ($controller == $match) {
+        $match = $this->getPageModelFullClassName();
+        $match = substr($model, strrpos($model, '\\') + 1);
+        if ($model == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting controller class was NOT "%s"', $controller)
+                sprintf('Failed asserting page model was NOT "%s"', $model)
             ));
         }
-        $this->assertNotEquals($controller, $match);
+        $this->assertNotEquals($model, $match);
     }
 
     /**
-     * Assert that the application route match used the given controller name
+     * Assert that the application route match used the given page model name
      *
-     * @param string $controller
+     * @param string $model
      */
-    public function assertControllerName($controller)
+    public function assertPageModelName($model)
     {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match      = $routeMatch->getParam('controller');
-        $match      = strtolower($match);
-        $controller = strtolower($controller);
-        if ($controller != $match) {
+        $match = $route->getHandler();
+        if ($model != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting controller name "%s", actual controller name is "%s"', $controller, $match)
+                sprintf('Failed asserting model name "%s", actual model name is "%s"', $model, $match)
             ));
         }
-        $this->assertEquals($controller, $match);
+        $this->assertEquals($model, $match);
     }
 
     /**
-     * Assert that the application route match used NOT the given controller name
+     * Assert that the application route match used NOT the given page model name
      *
-     * @param string $controller
+     * @param string $model
      */
-    public function assertNotControllerName($controller)
+    public function assertNotPageModelName($model)
     {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match      = $routeMatch->getParam('controller');
-        $match      = strtolower($match);
-        $controller = strtolower($controller);
-        if ($controller == $match) {
+        $match = $route->getHandler();
+        if ($model == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting controller name was NOT "%s"', $controller)
+                sprintf('Failed asserting model name was NOT "%s"', $model)
             ));
         }
-        $this->assertNotEquals($controller, $match);
+        $this->assertNotEquals($model, $match);
     }
 
     /**
-     * Assert that the application route match used the given action
+     * Assert that the application route match used the given route path
      *
-     * @param string $action
+     * @param string $path
      */
-    public function assertActionName($action)
+    public function assertMatchedRoutePath($path)
     {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match      = $routeMatch->getParam('action');
-        $match      = strtolower($match);
-        $action     = strtolower($action);
-        if ($action != $match) {
-            throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting action name "%s", actual action name is "%s"', $action, $match)
-            ));
-        }
-        $this->assertEquals($action, $match);
-    }
-
-    /**
-     * Assert that the application route match used NOT the given action
-     *
-     * @param string $action
-     */
-    public function assertNotActionName($action)
-    {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
-            throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
-        }
-        $match      = $routeMatch->getParam('action');
-        $match      = strtolower($match);
-        $action     = strtolower($action);
-        if ($action == $match) {
-            throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting action name was NOT "%s"', $action)
-            ));
-        }
-        $this->assertNotEquals($action, $match);
-    }
-
-    /**
-     * Assert that the application route match used the given route name
-     *
-     * @param string $route
-     */
-    public function assertMatchedRouteName($route)
-    {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
-            throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
-        }
-        $match      = $routeMatch->getMatchedRouteName();
-        $match      = strtolower($match);
-        $route      = strtolower($route);
-        if ($route != $match) {
+        $match = $route->getPath();
+        if ($path != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf(
-                    'Failed asserting matched route name was "%s", actual matched route name is "%s"',
-                    $route,
+                    'Failed asserting matched route path was "%s", actual matched route path is "%s"',
+                    $path,
                     $match
                 )
             ));
         }
-        $this->assertEquals($route, $match);
+        $this->assertEquals($path, $match);
     }
 
     /**
-     * Assert that the application route match used NOT the given route name
+     * Assert that the application route match used NOT the given route path
      *
-     * @param string $route
+     * @param string $path
      */
-    public function assertNotMatchedRouteName($route)
+    public function assertNotMatchedRoutePath($path)
     {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if (! $routeMatch) {
+        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
+        if (! $route) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match      = $routeMatch->getMatchedRouteName();
-        $match      = strtolower($match);
-        $route      = strtolower($route);
-        if ($route == $match) {
+        $match = $route->getPath();
+        if ($path == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting route matched was NOT "%s"', $route)
+                sprintf('Failed asserting route path matched was NOT "%s"', $path)
             ));
         }
-        $this->assertNotEquals($route, $match);
-    }
-
-    /**
-     * Assert that the application did not match any route
-     */
-    public function assertNoMatchedRoute()
-    {
-        $routeMatch = $this->getApplication()->getMvcEvent()->getRouteMatch();
-        if ($routeMatch) {
-            $match      = $routeMatch->getMatchedRouteName();
-            $match      = strtolower($match);
-            throw new ExpectationFailedException($this->createFailureMessage(sprintf(
-                'Failed asserting that no route matched, actual matched route name is "%s"',
-                $match
-            )));
-        }
-        $this->assertNull($routeMatch);
+        $this->assertNotEquals($path, $match);
     }
 
     /**
@@ -810,9 +758,14 @@ abstract class AbstractPageTestCase extends TestCase
      *
      * @param string $templateName
      */
-    public function assertTemplateName($templateName)
+    public function assertTemplateName($templateName, $handler = null)
     {
-        $viewModel = $this->getApplication()->getMvcEvent()->getViewModel();
+        if ($handler) {
+            $viewModel = $this->getViewModel(str_replace('/', '\\', $handler));
+        } else {
+            $handler = str_replace('/', '\\', $templateName).'Model';
+            $viewModel = $this->getViewModel($handler);
+        }
         $this->assertTrue($this->searchTemplates($viewModel, $templateName));
     }
 
@@ -822,9 +775,14 @@ abstract class AbstractPageTestCase extends TestCase
      *
      * @param string $templateName
      */
-    public function assertNotTemplateName($templateName)
+    public function assertNotTemplateName($templateName, $handler = null)
     {
-        $viewModel = $this->getApplication()->getMvcEvent()->getViewModel();
+        if ($handler) {
+            $viewModel = $this->getViewModel(str_replace('/', '\\', $handler));
+        } else {
+            $handler = str_replace('/', '\\', $templateName).'Model';
+            $viewModel = $this->getViewModel($handler);
+        }
         $this->assertFalse($this->searchTemplates($viewModel, $templateName));
     }
 
@@ -843,7 +801,6 @@ abstract class AbstractPageTestCase extends TestCase
         foreach ($viewModel->getChildren() as $child) {
             return $this->searchTemplates($child, $templateName);
         }
-
         return false;
     }
 }

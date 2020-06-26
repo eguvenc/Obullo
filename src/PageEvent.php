@@ -7,9 +7,6 @@ use Obullo\Router\RouteInterface as Route;
 use Laminas\EventManager\Event;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Laminas\View\Model\ModelInterface as Model;
-use Laminas\View\Model\ViewModel;
-use Laminas\View\View;
 
 class PageEvent extends Event
 {
@@ -35,14 +32,14 @@ class PageEvent extends Event
     protected $result;
 
     /**
-     * @var RouteStackInterface
+     * @var Router
      */
     protected $router;
 
     /**
-     * @var Model
+     * @var Route
      */
-    protected $viewModel;
+    protected $route;
 
     /**
      * @var Resolved module name
@@ -53,6 +50,11 @@ class PageEvent extends Event
      * @var Response
      */
     protected $response;
+
+    /**
+     * @var Model
+     */
+    protected $pageModel = array();
 
     /**
      * Set application instance
@@ -215,27 +217,25 @@ class PageEvent extends Event
     }
 
     /**
-     * Set the view model
-     *
-     * @param  Model $viewModel
-     * @return PageEvent
+     * Set page model
+     * 
+     * @param string $handler page handler
+     * @param $model object
      */
-    public function setViewModel(Model $viewModel)
+    public function setPageModel(string $handler, $model)
     {
-        $this->viewModel = $viewModel;
+        $this->pageModel[$handler] = $model;
         return $this;
     }
 
     /**
-     * Get the view model
-     *
-     * @return Model
+     * Returns to requested page model
+     * 
+     * @param  string $handler full class name of page model
+     * @return object|false
      */
-    public function getViewModel()
+    public function getPageModel(string $handler)
     {
-        if (null === $this->viewModel) {
-            $this->setViewModel(new ViewModel());
-        }
-        return $this->viewModel;
+        return isset($this->pageModel[$handler]) ? $this->pageModel[$handler] : false;
     }
 }

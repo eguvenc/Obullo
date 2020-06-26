@@ -69,14 +69,16 @@ class DispatchListener extends AbstractListenerAggregate
     {
         $route = $e->getRouter()->getMatchedRoute();
         $request = $e->getRequest();
-        $handlerClass = $route->getHandler();
+        $handler = $route->getHandler();
         $application  = $e->getApplication();
         $events = $application->getEventManager();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handlerClass);
+        $pageModel = $container->build($handler);
         $pageModel->setView($container->get(View::class));
         $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+
+        $e->setPageModel($handler, $pageModel);
 
         $reflection = new ReflectionClass($pageModel);
         $method = $request->getMethod();
@@ -111,7 +113,7 @@ class DispatchListener extends AbstractListenerAggregate
             throw new InvalidPageResponseException(
                 sprintf(
                     'Return value of %s method must be an instance of Psr\Http\Message\ResponseInterface, Laminas\Diactoros\Stream returned.',
-                    $handlerClass.'::onGet'
+                    $handler.'::onGet'
                 )
             );
         }
@@ -126,13 +128,15 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function onDispatchPartialPage(PageEvent $e)
     {
-        $handlerClass = $e->getHandler();
+        $handler = $e->getHandler();
         $application  = $e->getApplication();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handlerClass);
+        $pageModel = $container->build($handler);
         $pageModel->setView($container->get(View::class));
         $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+
+        $e->setPageModel($handler, $pageModel);
 
         $dispatcher = new Dispatcher;
         $dispatcher->setContainer($container);

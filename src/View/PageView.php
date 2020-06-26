@@ -33,6 +33,8 @@ class PageView extends AbstractPageView
         $this->reflection = new ReflectionClass($this);
         $namespace = $this->reflection->getNamespaceName();
 
+        // Template path separator must be forward slash "/" for OS compability
+
         $module = strstr($namespace, '\Pages', true);
         $module = str_replace('\\', '/', $module);
 
@@ -63,6 +65,8 @@ class PageView extends AbstractPageView
         $class = str_replace('\\', '/', $class);
         $templateName = substr($class, 0, -5); // remove "Model" word from the end
 
+        // Template path separator must be forward slash "/" for OS compability
+
         if ($this->_queryMethod) {  // change template name for method queries
             $namespaceArray = explode('/', $class);
             array_pop($namespaceArray);
@@ -70,7 +74,7 @@ class PageView extends AbstractPageView
         }
         $model->setOption('has_parent', true);
 
-        if (false == ($model instanceof LayoutModelInterface)) { // if developer don't want to use layout
+        if (false == ($model instanceof LayoutModelInterface)) { // if user don't want to use layout
             $this->view->setTemplate($templateName);
             return $this->getView()->render($model);
         }

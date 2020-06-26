@@ -57,6 +57,16 @@ abstract class AbstractPageView
     }
 
     /**
+     * Returns to view model
+     * 
+     * @return object laminas view model
+     */
+    public function getViewModel() : ModelInterface
+    {
+        return $this->view;
+    }
+
+    /**
      * Set php renderer
      * 
      * @param PhpRenderer $viewPhpRenderer php renderer
