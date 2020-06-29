@@ -17,7 +17,6 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stdlib\ArrayUtils;
 
 use Obullo\Container\ContainerAwareInterface;
-use Obullo\Factory\LazyDefaultFactory;
 use Obullo\Factory\ServiceListenerFactory;
 
 class ServiceManagerConfig extends Config
@@ -31,9 +30,7 @@ class ServiceManagerConfig extends Config
      * @var array
      */
     protected $config = [
-        'abstract_factories' => [
-            LazyDefaultFactory::class,
-        ],
+        'abstract_factories' => [],
         'aliases' => [
             'EventManagerInterface'            => EventManager::class,
             EventManagerInterface::class       => 'EventManager',

@@ -21,6 +21,7 @@ class NotFoundHandlerTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
+        $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
 
         // load app modules
         //

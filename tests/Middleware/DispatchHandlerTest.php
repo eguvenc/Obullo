@@ -5,7 +5,7 @@ use Laminas\Diactoros\Uri;
 use Obullo\Http\ServerRequest;
 use Laminas\ServiceManager\ServiceManager;
 
-class PageHandlerMiddlewareTest extends TestCase
+class DispatchHandlerTest extends TestCase
 {
     public function setUp() : void
     {
@@ -18,6 +18,9 @@ class PageHandlerMiddlewareTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
+        $this->container->addAbstractFactory(new Obullo\Factory\LazyPageFactory);
+        $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
+
 
         // load app modules
         //

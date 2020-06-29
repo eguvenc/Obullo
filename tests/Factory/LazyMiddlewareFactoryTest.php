@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Obullo\Container\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
 
-class LazyDefaultFactoryTest extends TestCase
+class LazyMiddlewareFactoryTest extends TestCase
 {
     public function setUp() : void
     {
@@ -17,6 +17,7 @@ class LazyDefaultFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
+        $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
 
         // load modules
         // 

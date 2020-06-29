@@ -6,7 +6,7 @@ use ReflectionClass;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
-class LazyDefaultFactory extends ReflectionBasedAbstractFactory
+class LazyPageFactory extends ReflectionBasedAbstractFactory
 {
     /**
      * Determine if we can create a service with name
@@ -20,7 +20,7 @@ class LazyDefaultFactory extends ReflectionBasedAbstractFactory
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $condition1 = Parent::canCreate($container, $requestedName);
-        $condition2 = (strstr($requestedName, '\Pages\\') !== false or strstr($requestedName, '\Middleware\\') !== false);
+        $condition2 = (strstr($requestedName, '\Pages\\') !== false);
 
         return $condition1 && $condition2;
     }

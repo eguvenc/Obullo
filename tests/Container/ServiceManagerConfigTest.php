@@ -52,9 +52,5 @@ class ServiceManagerConfigTest extends TestCase
          * Shared events
          */
         $this->assertFalse($smConfig['shared']['EventManager']);
-        /**
-         * Abstract factories
-         */
-        $this->assertEquals('Obullo\Factory\LazyDefaultFactory', $abstract_factories[0]);
     }
 }
