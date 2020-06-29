@@ -86,18 +86,11 @@ class PageEventTest extends TestCase
         $this->assertInstanceOf('Psr\Http\Message\ResponseInterface', $event->getResponse());
     }
 
-    public function testGetViewModel()
+    public function testGetPageModel()
     {
         $event = new PageEvent;
-        $event->setViewModel(new ViewModel);
+        $event->setPageModel('Test\Handler', new StdClass);
 
-        $this->assertInstanceOf('Laminas\View\Model\ModelInterface', $event->getViewModel());
-    }
-
-    public function testGetViewModelWithoutSet()
-    {
-        $event = new PageEvent;
-
-        $this->assertInstanceOf('Laminas\View\Model\ModelInterface', $event->getViewModel());
+        $this->assertInstanceOf('stdClass', $event->getPageModel('Test\Handler'));
     }
 }

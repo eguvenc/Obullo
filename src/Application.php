@@ -9,7 +9,6 @@ use Laminas\ServiceManager\ServiceManager;
 use Laminas\Stratigility\MiddlewarePipe;
 
 use Throwable;
-use Obullo\Router\Router;
 use Laminas\Diactoros\ResponseFactory;
 use Laminas\Stratigility\MiddlewarePipeInterface;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -75,11 +74,6 @@ class Application
     protected $event;
 
     /**
-     * @var Router
-     */
-    protected $router;
-
-    /**
      * @var Request
      */
     protected $request;
@@ -95,17 +89,14 @@ class Application
      * @param ServiceManager        $serviceManager container
      * @param EventManagerInterface $events         events
      * @param Request               $request        request
-     * @param Router                $router         router
      */
     public function __construct(
         ServiceManager $serviceManager,
         EventManagerInterface $events,
-        Request $request,
-        Router $router
+        Request $request
     ) {
         $this->serviceManager = $serviceManager;
         $this->setEventManager($events);
-        $this->router = $router;
         $this->setRequest($request);
         $this->event = new PageEvent;
         $this->app = new MiddlewarePipe;
@@ -121,7 +112,7 @@ class Application
     {
         return $this->serviceManager->get('config');
     }
-
+    
     /**
      * Bootstrap app and attach listeners
      *
@@ -133,9 +124,8 @@ class Application
         $this->event->setTarget($this);
         $this->event->setApplication($this);
         $this->event->setRequest($this->request);
-        $this->event->setRouter($this->router);
-        $this->event->setName(PageEvent::EVENT_ROUTE);
-        $this->event->stopPropagation(false); // Clear before triggering
+        $this->event->setParam('app', $this->app);
+        $this->event->setParam('middlewares', $this->appConfig['middlewares']);
 
         // setup default listeners
         //
@@ -143,29 +133,27 @@ class Application
         foreach ($listeners as $listener) {
             $this->serviceManager->get($listener)->attach($this->events);
         }
-        // trigger route event
-        //
-        $routeResult = $this->events->triggerEvent($this->event);
-
         // trigger error handler
         //
         $this->event->setName(PageEvent::EVENT_ERROR_HANDLER);
-        $this->event->setParam('app', $this->app);
-        $this->events->triggerEvent($this->event);
+        $result = $this->events->triggerEvent($this->event);
+        $errorHandler = $result->last();
+        $this->app->pipe($errorHandler);
+
+        $this->event->setName(PageEvent::EVENT_ROUTE);
+        $routeResult = $this->events->triggerEvent($this->event);  
 
         // trigger middlewares event
         //
         $this->event->setName(PageEvent::EVENT_MIDDLEWARES);
-        $this->event->setParam('middlewares', $this->appConfig['middlewares']);
-        $this->event->setParam('app', $this->app);
-        $this->event->setParam('route_result', $routeResult->last());
         $this->events->triggerEvent($this->event);
 
         // trigger not found handler
         //
         $this->event->setName(PageEvent::EVENT_NOT_FOUND_HANDLER);
-        $this->event->setParam('app', $this->app);
-        $this->events->triggerEvent($this->event);
+        $result = $this->events->triggerEvent($this->event);
+        $notFoundHandler = $result->last();
+        $this->app->pipe($notFoundHandler);
 
         // trigger bootstrap event
         //

@@ -2,7 +2,6 @@
 
 namespace Obullo\Factory;
 
-use Obullo\Router\Pattern;
 use Obullo\Router\RequestContext;
 use Obullo\Router\Builder;
 use Obullo\Router\Router;
@@ -23,12 +22,10 @@ class RouterFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('Config');
-
-        $pattern = new Pattern($config['router']['types']);
         $context = new RequestContext;
         $context->fromRequest($container->get('Request'));
 
-        $collection = $container->build(RouteCollectionInterface::class, ['pattern' => $pattern, 'config' => $config]);
+        $collection = $container->build(RouteCollectionInterface::class, ['config' => $config]);
         $collection->setContext($context);
 
         $builder = new Builder($collection);

@@ -16,18 +16,4 @@ class Module
             'service_manager' => [],
         ];
     }
-
-    public function onErrorHandler(PageEvent $e)
-    {
-        if ($e->getResolvedModuleName() == 'Test') {
-            throw new \Exception('Fail');
-        }
-    }
-
-    public function onNotFoundMiddleware(PageEvent $e)
-    {
-        if ($e->getResolvedModuleName() == 'Test') {
-            throw new \Exception('Fail');
-        }
-    }
 }

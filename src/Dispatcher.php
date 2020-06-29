@@ -4,6 +4,7 @@ namespace Obullo;
 
 use ReflectionClass;
 use ReflectionParameter;
+use Obullo\Router\Router;
 use Psr\Http\Message\ResponseInterface;
 use Interop\Container\ContainerInterface;
 use Obullo\Exception\PageMethodNotExistsException;
@@ -13,32 +14,29 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 final class Dispatcher
 {
     /**
-     * The method name to execute
-     *
-     * @var string
+     * @var string model method name
      */
     private $method;
 
     /**
-     * Set page model object (handler)
-     *
-     * @var object
+     * @var model
      */
-    private $pageModel;
+    private $model;
 
     /**
-     * Set reflection object
-     *
-     * @var object
+     * @var ReflectionClass
      */
     private $reflection;
 
     /**
-     * Set service manager
-     *
-     * @var container
+     * @var Laminas\ServiceManager\ServiceManager
      */
     private $container;
+
+    /**
+     * @var Obullo\Router\Router
+     */
+    private $router;
 
     /**
      * Dispatch options
@@ -78,6 +76,26 @@ final class Dispatcher
     }
 
     /**
+     * Set router
+     *
+     * @param Router $router router
+     */
+    public function setRouter(Router $router)
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * Returns to router
+     *
+     * @return Obullo\Router\Router
+     */
+    public function getRouter() : Router
+    {
+        return $this->router;
+    }
+
+    /**
      * Set service manager
      *
      * @param string $container service manager
@@ -100,21 +118,21 @@ final class Dispatcher
     /**
      * Set page model
      *
-     * @param object $pageModel page handler
+     * @param object $model page handler
      */
-    public function setPageModel($pageModel)
+    public function setPageModel($model)
     {
-        $this->pageModel = $pageModel;
+        $this->model = $model;
     }
 
     /**
      * Returns to page model
-     * 
+     *
      * @return object
      */
     public function getPageModel()
     {
-        return $this->pageModel;
+        return $this->model;
     }
 
     /**
@@ -134,7 +152,7 @@ final class Dispatcher
      */
     public function getReflectionClass() : ReflectionClass
     {
-        $reflection = ($this->reflection) ? $this->reflection : new ReflectionClass($this->pageModel);
+        $reflection = ($this->reflection) ? $this->reflection : new ReflectionClass($this->getPageModel());
 
         return $reflection;
     }
@@ -155,13 +173,13 @@ final class Dispatcher
         if ($reflection->hasMethod($methodName)) {
             $reflectionParameters = $reflection->getMethod($methodName)->getParameters();
             if (empty($reflectionParameters)) {
-                $response = $this->pageModel->$methodName();
+                $response = $this->getPageModel()->$methodName();
                 $this->isResponse($response, $requestedName);
                 return $response;
             }
             $resolver = $this->resolveParameterWithConfigService($container, $requestedName);
             $parameters = array_map($resolver, $reflectionParameters);
-            $response = $this->pageModel->$methodName(...$parameters);
+            $response = $this->getPageModel()->$methodName(...$parameters);
             $this->isResponse($response, $requestedName);
             return $response;
         }
@@ -240,12 +258,18 @@ final class Dispatcher
         }
 
         if (! $parameter->getClass()) {
+            $name = $parameter->getName();
+            $args = $this->getRouter()->getMatchedRoute()->getArguments();
+
+            if (array_key_exists($name, $args)) {
+                return $args[$name];
+            }
             if (! $parameter->isDefaultValueAvailable()) {
                 throw new ServiceNotFoundException(sprintf(
                     'Unable to create service "%s"; unable to resolve parameter "%s" '
                     . 'to a class, interface, or array type',
                     $requestedName,
-                    $parameter->getName()
+                    $name
                 ));
             }
 

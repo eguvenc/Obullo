@@ -1,16 +1,19 @@
 
-
-# /: 
-#     method: GET
-#     handler: App\Pages\WelcomeModel
+# routes.yaml
+#
 
 /: 
     handler: App\Pages\WelcomeModel
-    # middleware: Obullo\Middleware\SetLocaleMiddleware@onGet
 
 /test:
     handler: App\Pages\TestModel
     middleware: App\Middleware\AuthMiddleware@onPost
+
+/test_args/<int:id>:
+    handler: App\Pages\TestArgsModel
+
+/test_args/<int:id>/<int:number>:
+    handler: App\Pages\TestArgsModel
 
 /test_error:
     handler: App\Pages\TestErrorModel

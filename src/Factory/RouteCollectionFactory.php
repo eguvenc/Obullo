@@ -19,11 +19,11 @@ class RouteCollectionFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $config = $options['config'];
-    
-        if ($config['router']['translatable_routes']) {
-            return new TranslatableRouteCollection($options['pattern']);            
+        $config = $options['config']['router'];
+        
+        if ($config['translatable_routes']) {
+            return new TranslatableRouteCollection($config);
         }
-        return new RouteCollection($options['pattern']);
+        return new RouteCollection($config);
     }
 }

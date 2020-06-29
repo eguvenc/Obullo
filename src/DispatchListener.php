@@ -4,7 +4,6 @@ namespace Obullo;
 
 use ReflectionClass;
 use ReflectionMethod;
-
 use Laminas\Diactoros\Stream;
 use Obullo\Error\ErrorHandlerManager;
 use Obullo\Router\RouteInterface;
@@ -43,11 +42,10 @@ class DispatchListener extends AbstractListenerAggregate
         $application = $e->getApplication();
         $container = $application->getContainer();
         $params = $e->getParams();
+        $router = $container->get('Router');
         $app = $params['app'];
 
-        // check route match & assign middlewares
-        //
-        if ($params['route_result'] instanceof RouteInterface) {
+        if ($router->hasMatch()) {
             foreach ((array)$params['middlewares'] as $appMiddleware) {
                 $app->pipe($container->build($appMiddleware));
             }
@@ -105,6 +103,7 @@ class DispatchListener extends AbstractListenerAggregate
         $dispatcher = new Dispatcher;
         $dispatcher->setContainer($container);
         $dispatcher->setMethod($methodName);
+        $dispatcher->setRouter($container->get('Router'));
         $dispatcher->setPageModel($pageModel);
         $dispatcher->setReflectionClass($reflection);
         $response = $dispatcher->dispatch();
@@ -141,6 +140,7 @@ class DispatchListener extends AbstractListenerAggregate
         $dispatcher = new Dispatcher;
         $dispatcher->setContainer($container);
         $dispatcher->setMethod('onGet');
+        $dispatcher->setRouter($container->get('Router'));
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
     

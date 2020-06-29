@@ -7,6 +7,7 @@ return [
     // Modules
     'modules' => [
         'Laminas\I18n',
+        'App',
     ],
 
     // Middlewares

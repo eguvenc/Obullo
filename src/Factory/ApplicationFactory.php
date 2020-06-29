@@ -24,8 +24,7 @@ class ApplicationFactory implements FactoryInterface
         return new Application(
             $container,
             $container->get('EventManager'),
-            $container->get('Request'),
-            $container->get('Router')
+            $container->get('Request')
         );
     }
 }

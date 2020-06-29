@@ -70,7 +70,7 @@ class ServiceManagerConfig extends Config
      * @param  array $config
      */
     public function __construct(array $config = [])
-    {
+    {   
         $this->config['initializers']['ContainerAwareInitializer'] = function ($container, $instance) {
             if ($instance instanceof ContainerAwareInterface) {
                 $instance->setContainer($container);

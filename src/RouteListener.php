@@ -3,7 +3,6 @@
 namespace Obullo;
 
 use Obullo\PageEvent;
-use Obullo\Router\Router;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 
@@ -30,15 +29,14 @@ class RouteListener extends AbstractListenerAggregate
     public function onRoute(PageEvent $event)
     {
         $request = $event->getRequest();
-        $router  = $event->getRouter();
+        $router  = $event->getApplication()->getContainer()->get('Router');
         $route   = $router->matchRequest();
-
-        if ($route) {
-            $event->setMatchedRoute($route);
-            $event->setHandler($route->getHandler());
-            $event->setResolvedModuleName();
-            return $route;
+        if (false == $route) {
+            return false;
         }
-        return false;
+        $event->setRouter($router);
+        $event->setMatchedRoute($route);
+        $event->setHandler($route->getHandler());
+        $event->setResolvedModuleName();
     }
 }

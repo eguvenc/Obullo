@@ -1,8 +1,10 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Obullo\Dispatcher;
 use Laminas\View\View;
+use Obullo\Dispatcher;
+use Obullo\Http\ServerRequest;
+use Laminas\Diactoros\Uri;
 use Laminas\ServiceManager\ServiceManager;
 
 class DispatcherTest extends TestCase
@@ -138,5 +140,31 @@ class DispatcherTest extends TestCase
             $message = $e->getMessage();
         }
         $this->assertEquals('The method onUndefinedMethod does not exists in App\Pages\TestModel.', $message);
+    }
+
+    public function testPageArguments()
+    {
+        $request = new ServerRequest();
+        $request = $request->withUri(new Uri('http://example.com/test_args/1001'));
+        $this->container->setService('Request', $request);
+
+        $application = $this->container->get('Application');
+        $application->bootstrap();
+        $response = $application->runWithoutEmit();
+
+        $this->assertEquals('1001', $response->getBody());
+    }
+
+    public function testPageOptionalArgument()
+    {
+        $request = new ServerRequest();
+        $request = $request->withUri(new Uri('http://example.com/test_args/1001/1002'));
+        $this->container->setService('Request', $request);
+
+        $application = $this->container->get('Application');
+        $application->bootstrap();
+        $response = $application->runWithoutEmit();
+
+        $this->assertEquals('10011002', $response->getBody());
     }
 }

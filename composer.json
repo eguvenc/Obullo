@@ -33,7 +33,7 @@
     "require": {
         "php": "^7.1",
         "symfony/yaml": "^3.4",
-        "obullo/router": "^1.7",
+        "obullo/router": "^1.8",
         "laminas/laminas-diactoros": "^2.2",
         "laminas/laminas-stratigility": "^3.2",
         "laminas/laminas-http": "^2.11",

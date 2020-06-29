@@ -7,7 +7,7 @@ namespace App;
 use Obullo\PageEvent;
 use Laminas\Diactoros\Response;
 use Obullo\Middleware\NotFoundHandler;
-use Laminas\Stratigility\Middleware\ErrorHandler;
+use Obullo\Middleware\ErrorHandler;
 use Laminas\ModuleManager\ModuleManager;
 
 class Module
@@ -41,10 +41,7 @@ class Module
 
     public function onErrorHandler(PageEvent $e)
     {
-        $app = $e->getParam('app');
-        $application = $e->getApplication();
-        $container = $application->getContainer();
-        $events = $application->getEventManager();
+        $container = $e->getApplication()->getContainer();
 
         $errorHandler = new ErrorHandler(
             function () {
@@ -52,12 +49,11 @@ class Module
             },
             $container->get('App\Middleware\ErrorResponseGenerator')
         );
-        $app->pipe($errorHandler);
+        return $errorHandler;
     }
 
     public function onNotFoundHandler(PageEvent $e)
     {
-        $app = $e->getParam('app');
         $container = $e->getApplication()->getContainer();
 
         $notFoundHandler = new NotFoundHandler(
@@ -66,6 +62,6 @@ class Module
             },
             $container->get('App\Middleware\NotFoundResponseGenerator')
         );
-        $app->pipe($notFoundHandler);
+        return $notFoundHandler;
     }
 }

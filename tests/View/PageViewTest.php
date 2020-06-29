@@ -3,6 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use Laminas\Diactoros\Uri;
 use Obullo\Http\ServerRequest;
+use Obullo\PageEvent;
+use Obullo\View\PageView;
 use Laminas\ServiceManager\ServiceManager;
 
 class PageViewTest extends TestCase
@@ -128,5 +130,12 @@ class PageViewTest extends TestCase
         $response = $application->runWithoutEmit();
 
         $this->assertEquals('Header', $response->getBody());
+    }
+
+    public function testGetViewModel()
+    {
+        $view = new PageView;
+        
+        $this->assertInstanceOf('Laminas\View\Model\ModelInterface', $view->getViewModel());
     }
 }
