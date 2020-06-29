@@ -95,11 +95,12 @@ class ErrorHandler implements MiddlewareInterface
      * @param null|callable $responseGenerator Callback that will generate the final
      *     error response; if none is provided, ErrorResponseGenerator is used.
      */
-    public function __construct(callable $responseFactory, callable $responseGenerator)
+    public function __construct(ServerRequestInterface $request, callable $responseFactory, callable $responseGenerator)
     {
         set_error_handler($this->createErrorHandler());
         set_exception_handler(array($this, 'handleThrowable'));
-        
+
+        $this->request = $request;
         $this->responseFactory = function () use ($responseFactory) : ResponseInterface {
             return $responseFactory();
         };
@@ -144,11 +145,13 @@ class ErrorHandler implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
         $this->request = $request;
-        $response = $handler->handle($request);
-
-        restore_error_handler();
         restore_exception_handler();
-
+        try {
+            $response = $handler->handle($request);
+        } catch (Throwable $e) {
+            $response = $this->handleThrowable($e);
+        }
+        restore_error_handler();
         return $response;
     }
 
@@ -165,9 +168,16 @@ class ErrorHandler implements MiddlewareInterface
         $response = $generator($e, $this->request, ($this->responseFactory)());
         $this->triggerListeners($e, $this->request, $response);
 
-        $emitter = new SapiEmitter;
-        $emitter->emit($response);
-        return;
+        /**
+         * Here we need emit response for top level exceptions like routing 
+         * that's why we set exception handler in construct method.
+         */
+        if (! defined('STDIN')) { // Let's make test compability ..
+            $emitter = new SapiEmitter;
+            $emitter->emit($response);
+            die;
+        }
+        return $response;
     }
 
     /**

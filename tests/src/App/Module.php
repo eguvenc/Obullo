@@ -44,6 +44,7 @@ class Module
         $container = $e->getApplication()->getContainer();
 
         $errorHandler = new ErrorHandler(
+            $container->get('Request'),
             function () {
                 return new Response;
             },
