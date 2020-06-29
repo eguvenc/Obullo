@@ -8,6 +8,8 @@ use Laminas\ServiceManager\ServiceManager;
 use Obullo\Http\ServerRequest;
 use Obullo\Container\ServiceManagerConfig;
 use Obullo\PageEvent;
+use Obullo\Factory\LazyPageFactory;
+use Obullo\Factory\LazyMiddlewareFactory;
 use Laminas\Stdlib\Exception\LogicException;
 use Laminas\Stdlib\ResponseInterface;
 use Laminas\Test\PHPUnit\TestCaseTrait;
@@ -201,6 +203,8 @@ abstract class AbstractPageTestCase extends TestCase
         $this->container = new ServiceManager();
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
+        $this->container->addAbstractFactory(new LazyPageFactory);
+        $this->container->addAbstractFactory(new LazyMiddlewareFactory);
         $this->container->setAllowOverride(true);
 
         return $this->container;
@@ -217,7 +221,7 @@ abstract class AbstractPageTestCase extends TestCase
         }
         Console::overrideIsConsole($this->getUseConsoleRequest());
         $serviceManager = $this->getContainer();
-
+    
         // load modules -- which will provide services, configuration, and more
         $serviceManager->get('ModuleManager')->loadModules();
 
