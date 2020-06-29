@@ -32,7 +32,7 @@ class RouteListener extends AbstractListenerAggregate
         $router  = $event->getApplication()->getContainer()->get('Router');
         $route   = $router->matchRequest();
         if (false == $route) {
-            return false;
+            return;
         }
         $event->setRouter($router);
         $event->setMatchedRoute($route);

@@ -15,7 +15,7 @@ class ServiceListenerFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
-        // $this->container->setFactory('ServiceListener', 'Obullo\Factory\ServiceListenerFactory');
+        $this->container->setFactory('ServiceListener', 'Obullo\Factory\ServiceListenerFactory');
     }
 
     public function testFactory()

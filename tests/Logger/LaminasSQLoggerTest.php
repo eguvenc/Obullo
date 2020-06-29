@@ -12,8 +12,8 @@ class LaminasSQLLoggerTest extends TestCase
 {
     public function setUp() : void
     {
-        $appConfig = require __DIR__ . '/../config/application.config.php';
-        $this->root = $appConfig['root'];
+        $config = require __DIR__ . '/../config/autoload/global.php';
+        $this->root = $config['root'];
         
         $this->file = $this->root.DIRECTORY_SEPARATOR.'data'.DIRECTORY_SEPARATOR.'log'.DIRECTORY_SEPARATOR.'debug.log';
         $logger = new Logger('tests');

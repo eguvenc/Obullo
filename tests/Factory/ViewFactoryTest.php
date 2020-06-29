@@ -17,9 +17,8 @@ class ViewFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
-        $this->container->setFactory(View::class, 'Obullo\Factory\ViewFactory');
-        $this->container->setFactory('ViewPhpRenderer', 'Obullo\Factory\ViewPhpRendererFactory');
-        $this->container->setFactory('ViewHelperManager', 'Obullo\Factory\ViewHelperManagerFactory');
+
+        $this->container->get('ModuleManager')->loadModules();
     }
 
     public function testFactory()

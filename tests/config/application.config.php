@@ -2,13 +2,14 @@
 
 return [
 
-    'root' =>  dirname(__DIR__),
-
     // Modules
     'modules' => [
         'Laminas\I18n',
         'App',
     ],
+
+    // Services
+    'service_manager' => [],
 
     // Middlewares
     'middlewares' => [

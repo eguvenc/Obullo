@@ -23,10 +23,10 @@ class SQLDevelopmentLoggerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $appConfig = $container->get('appConfig');
+        $config = $container->get('config');
 
         $logger = new Logger('database');
-        $logger->pushHandler(new StreamHandler($appConfig['root'] .'/data/log/debug.log', Logger::DEBUG, true, 0666));
+        $logger->pushHandler(new StreamHandler($config['root'] .'/data/log/debug.log', Logger::DEBUG, true, 0666));
 
         return new LaminasSQLLogger($logger);
     }

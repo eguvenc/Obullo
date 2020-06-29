@@ -11,6 +11,7 @@ use Obullo\Router\Types\{
 use Symfony\Component\Yaml\Yaml;
 
 return [
+    'root' =>  dirname(dirname(__DIR__)),
 
     'view_manager' => [
         'display_exceptions' => true,

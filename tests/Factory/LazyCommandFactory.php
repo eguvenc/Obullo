@@ -1,10 +1,12 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Laminas\ServiceManager\ServiceManager;
-use Obullo\Container\ServiceManagerConfig;
 
-class ApplicationFactoryTest extends TestCase
+use Psr\Http\Message\ServerRequestInterface;
+use Obullo\Container\ServiceManagerConfig;
+use Laminas\ServiceManager\ServiceManager;
+
+class LazyCommandFactoryTest extends TestCase
 {
     public function setUp() : void
     {
@@ -15,14 +17,19 @@ class ApplicationFactoryTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
+        $this->container->addAbstractFactory(new Obullo\Factory\LazyCommandFactory);
 
+        // load modules
+        //
         $this->container->get('ModuleManager')->loadModules();
     }
 
     public function testFactory()
     {
-        $instance = $this->container->get('Application');
-        
-        $this->assertInstanceOf('Obullo\Application', $instance);
+        $instance = $this->container->build('App\Command\ClearCache');
+        $this->assertInstanceOf('App\Command\ClearCache', $instance);
+
+        $config = $instance->getConfig();
+        $this->assertTrue($config['view_manager']['display_exceptions']);
     }
 }

@@ -20,10 +20,10 @@ class ViewPhpRendererFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $appConfig = $container->get('appConfig');
+        $config = $container->get('config');
 
         $resolver = new TemplatePathStack(array(
-            'script_paths' => [$appConfig['root'].'/src'],
+            'script_paths' => [$config['root'].'/src'],
         ));
         $phpRenderer = new PhpRenderer;
         $phpRenderer->setResolver($resolver);

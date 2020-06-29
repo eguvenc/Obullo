@@ -17,6 +17,8 @@ class SQLDevelopmentLoggerFactoryTest extends TestCase
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
         $this->container->setFactory('SQLDevelopmentLogger', 'Obullo\Factory\SQLDevelopmentLoggerFactory');
+        
+        $this->container->get('ModuleManager')->loadModules();
     }
 
     public function testFactory()

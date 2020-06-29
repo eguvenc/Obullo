@@ -3,12 +3,7 @@
 use PHPUnit\Framework\TestCase;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Obullo\Application;
-use Obullo\Http\ServerRequest;
 use Obullo\Container\ServiceManagerConfig;
-
-use Laminas\Config\Config;
-use Laminas\ModuleManager\ModuleManager;
 use Laminas\ServiceManager\ServiceManager;
 
 class LazyDefaultFactoryTest extends TestCase

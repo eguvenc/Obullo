@@ -7,10 +7,10 @@ class AssetHelperTest extends TestCase
 {
     public function setUp() : void
     {
-        $appConfig = require __DIR__ . '/../../config/application.config.php';
+        $config = require __DIR__ . '/../../config/autoload/global.php';
 
         $this->asset = new Asset;
-        $this->asset->setPath($appConfig['root'] . '/Resources/');
+        $this->asset->setPath($config['root'] . '/Resources/');
     }
 
     public function testAsset()

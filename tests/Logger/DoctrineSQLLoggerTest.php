@@ -9,8 +9,8 @@ class DoctrineSQLLoggerTest extends TestCase
 {
     public function setUp() : void
     {
-        $appConfig = require __DIR__ . '/../config/application.config.php';
-        $this->root = $appConfig['root'];
+        $config = require __DIR__ . '/../config/autoload/global.php';
+        $this->root = $config['root'];
 
         if (file_exists($this->root .'/data/log/debug.log')) {
             unlink($this->root .'/data/log/debug.log');
