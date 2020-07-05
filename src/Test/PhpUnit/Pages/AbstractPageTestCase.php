@@ -306,6 +306,7 @@ abstract class AbstractPageTestCase extends TestCase
         }
         switch ($method) {
             case ServerRequest::METHOD_POST:
+            case ServerRequest::METHOD_OPTIONS:
                 $request = new ServerRequest(
                     $serverParams = [],
                     $uploadedFiles = [],
@@ -319,8 +320,12 @@ abstract class AbstractPageTestCase extends TestCase
                     $protocol = '1.1'
                 );
                 break;
+            case ServerRequest::METHOD_HEAD:
             case ServerRequest::METHOD_GET:
+            case ServerRequest::METHOD_TRACE:
+            case ServerRequest::METHOD_CONNECT:
             case ServerRequest::METHOD_DELETE:
+            case ServerRequest::METHOD_PROPFIND:
                 $request = new ServerRequest(
                     $serverParams = [],
                     $uploadedFiles = [],

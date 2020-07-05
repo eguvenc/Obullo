@@ -10,14 +10,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestModel extends PageView
 {
-    public function __construct(Request $request)
+    public function onGet(Request $request, Router $router)
     {
         $this->view = new ViewModel;
         $this->view->setTemplate('App/Pages/Test');
-    }
 
-    public function onGet(Request $request, Router $router)
-    {
         return new HtmlResponse($this->render($this->view));
     }
 

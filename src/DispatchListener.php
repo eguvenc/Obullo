@@ -8,6 +8,7 @@ use Laminas\Diactoros\Stream;
 use Obullo\Error\ErrorHandlerManager;
 use Obullo\Router\RouteInterface;
 use Obullo\Middleware\DispatchHandler;
+use Obullo\View\AbstractPageView;
 use Obullo\Exception\InvalidPageResponseException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -72,10 +73,11 @@ class DispatchListener extends AbstractListenerAggregate
         $events = $application->getEventManager();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handler);
-        $pageModel->setView($container->get(View::class));
-        $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
-
+        $pageModel = new $handler;
+        if ($pageModel instanceof AbstractPageView) {
+            $pageModel->setView($container->get(View::class));
+            $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+        }
         $e->setPageModel($handler, $pageModel);
 
         $reflection = new ReflectionClass($pageModel);
@@ -102,7 +104,8 @@ class DispatchListener extends AbstractListenerAggregate
         }
         $dispatcher = new Dispatcher;
         $dispatcher->setContainer($container);
-        $dispatcher->setMethod($methodName);
+        $dispatcher->setRequest($request);
+        $dispatcher->setPageMethod($methodName);
         $dispatcher->setRouter($container->get('Router'));
         $dispatcher->setPageModel($pageModel);
         $dispatcher->setReflectionClass($reflection);
@@ -128,18 +131,21 @@ class DispatchListener extends AbstractListenerAggregate
     public function onDispatchPartialPage(PageEvent $e)
     {
         $handler = $e->getHandler();
+        $request = $e->getRequest();
         $application  = $e->getApplication();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handler);
-        $pageModel->setView($container->get(View::class));
-        $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
-
+        $pageModel = new $handler;
+        if ($pageModel instanceof AbstractPageView) {
+            $pageModel->setView($container->get(View::class));
+            $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+        }
         $e->setPageModel($handler, $pageModel);
 
-        $dispatcher = new Dispatcher;
+        $dispatcher = new Dispatcher(['partival_view' => true]);
         $dispatcher->setContainer($container);
-        $dispatcher->setMethod('onGet');
+        $dispatcher->setRequest($request);
+        $dispatcher->setPageMethod('onGet');
         $dispatcher->setRouter($container->get('Router'));
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();

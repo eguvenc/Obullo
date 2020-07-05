@@ -28,8 +28,6 @@ class ModuleManagerFactoryTest extends TestCase
         $this->container->setFactory(ModuleManager::class, 'Obullo\Factory\ModuleManagerFactory');
         $this->container->setFactory(Application::class, 'Obullo\Factory\ApplicationFactory');
         $this->container->setFactory('EventManager', 'Obullo\Factory\EventManagerFactory');
-        // $this->container->setFactory('Request', 'Obullo\Factory\RequestFactory');
-        // $this->container->setFactory('Router', 'Obullo\Factory\RouterFactory');
     }
 
     public function testFactory()

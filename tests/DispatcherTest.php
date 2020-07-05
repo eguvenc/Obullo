@@ -20,7 +20,6 @@ class DispatcherTest extends TestCase
         $this->container = new ServiceManager;
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
-        $this->container->addAbstractFactory(new Obullo\Factory\LazyPageFactory);
         $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
 
         // load app modules
@@ -29,19 +28,29 @@ class DispatcherTest extends TestCase
         $this->container->setAllowOverride(true);
     }
 
-    public function testGetMethod()
+    public function testGetRequest()
     {
         $dispatcher = new Dispatcher;
-        $dispatcher->setMethod('onGet');
+        $dispatcher->setRequest($this->container->get('Request'));
 
-        $this->assertEquals('onGet', $dispatcher->getMethod());
+        $this->assertInstanceOf('Psr\Http\Message\ServerRequestInterface', $dispatcher->getRequest());
+    }
+
+    public function testGetPageMethod()
+    {
+        $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
+        $dispatcher->setPageMethod('onPost');
+
+        $this->assertEquals('onPost', $dispatcher->getPageMethod());
     }
 
     public function testGetReflectionClass()
     {
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setReflectionClass(new ReflectionClass($this->container->build('App\Pages\TestModel')));
+        $dispatcher->setReflectionClass(new ReflectionClass(new App\Pages\TestModel));
         $reflectionClass = $dispatcher->getReflectionClass();
 
         $this->assertEquals('App\Pages\TestModel', $reflectionClass->getName());
@@ -49,9 +58,10 @@ class DispatcherTest extends TestCase
 
     public function testGetReflectionClassWithoutSet()
     {
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
 
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
         $dispatcher->setPageModel($pageModel);
         $reflectionClass = $dispatcher->getReflectionClass();
@@ -61,11 +71,12 @@ class DispatcherTest extends TestCase
 
     public function testGetPageModel()
     {
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
 
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setMethod('onGet');
+        $dispatcher->setPageMethod('onGet');
         $dispatcher->setPageModel($pageModel);
 
         $this->assertInstanceOf('App\Pages\TestModel', $dispatcher->getPageModel());
@@ -73,14 +84,15 @@ class DispatcherTest extends TestCase
 
     public function testDispatch()
     {
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
 
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setMethod('onGet');
+        $dispatcher->setPageMethod('onGet');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
 
@@ -89,14 +101,15 @@ class DispatcherTest extends TestCase
 
     public function testWithQueryMethod()
     {
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
         
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setMethod('onQueryMethod');
+        $dispatcher->setPageMethod('onQueryMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
 
@@ -109,14 +122,15 @@ class DispatcherTest extends TestCase
         $config['view_manager']['display_exceptions'] = true;
         $this->container->setService('config', $config);
 
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
         
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setMethod('onUndefinedMethod');
+        $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
 
@@ -125,14 +139,15 @@ class DispatcherTest extends TestCase
 
     public function testPageMethodNotExistsExceptionOnPartialView()
     {
-        $pageModel = $this->container->build('App\Pages\TestModel');
+        $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
         
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher(['partial_view' => true]);
+        $dispatcher->setRequest($this->container->get('Request'));
         $dispatcher->setContainer($this->container);
-        $dispatcher->setMethod('onUndefinedMethod');
+        $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
 
         $message = '';
@@ -168,5 +183,91 @@ class DispatcherTest extends TestCase
         $response = $application->runWithoutEmit();
 
         $this->assertEquals('10011002', $response->getBody());
+    }
+
+    public function createRequest($method, $queryParams = [], $parsedBody = [])
+    {
+        $pageModel = new App\Pages\TestHttpModel;
+        $pageModel->setView($this->container->get(View::class));
+        $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/'),
+            strtoupper($method),
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams,
+            $parsedBody,
+            $protocol = '1.1'
+        );
+        $reflection = new ReflectionClass($pageModel);
+        $dispatcher = new Dispatcher;
+        $dispatcher->setRequest($request);
+        $dispatcher->setContainer($this->container);
+        $dispatcher->setPageMethod('on'.ucfirst(strtolower($method)));
+        $dispatcher->setPageModel($pageModel);
+        return $dispatcher->dispatch();
+    }
+
+    public function testHttpMethodOnPostData()
+    {
+        $response = $this->createRequest('post', $get = [], $post = ['test' => 'onPost']);
+        $this->assertEquals('onPost', $response->getBody());
+    }
+
+    public function testHttpMethodOnPutData()
+    {
+        $response = $this->createRequest('put', $get = [], $post = ['test' => 'onPut']);
+        $this->assertEquals('onPut', $response->getBody());
+    }
+
+    public function testHttpMethodOnPatchData()
+    {
+        $response = $this->createRequest('patch', $get = [], $post = ['test' => 'onPatch']);
+        $this->assertEquals('onPatch', $response->getBody());
+    }
+
+    public function testHttpMethodOnOptionsData()
+    {
+        $response = $this->createRequest('options', $get = [], $post = ['test' => 'onOptions']);
+        $this->assertEquals('onOptions', $response->getBody());
+    }
+
+    public function testHttpMethodOnHeadData()
+    {
+        $response = $this->createRequest('head', $get = ['test' => 'onHead'], $post = []);
+        $this->assertEquals('onHead', $response->getBody());
+    }
+
+    public function testHttpMethodOnGetData()
+    {
+        $response = $this->createRequest('get', $get = ['test' => 'onGet'], $post = []);
+        $this->assertEquals('onGet', $response->getBody());
+    }
+
+    public function testHttpMethodOnTraceData()
+    {
+        $response = $this->createRequest('trace', $get = ['test' => 'onTrace'], $post = []);
+        $this->assertEquals('onTrace', $response->getBody());
+    }
+
+    public function testHttpMethodOnConnectData()
+    {
+        $response = $this->createRequest('connect', $get = ['test' => 'onConnect'], $post = []);
+        $this->assertEquals('onConnect', $response->getBody());
+    }
+
+    public function testHttpMethodOnDeleteData()
+    {
+        $response = $this->createRequest('delete', $get = ['test' => 'onDelete'], $post = []);
+        $this->assertEquals('onDelete', $response->getBody());
+    }
+
+    public function testHttpMethodOnPropfindData()
+    {
+        $response = $this->createRequest('propfind', $get = ['test' => 'onPropfind'], $post = []);
+        $this->assertEquals('onPropfind', $response->getBody());
     }
 }

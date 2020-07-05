@@ -5,7 +5,9 @@ namespace Obullo;
 use ReflectionClass;
 use ReflectionParameter;
 use Obullo\Router\Router;
+use Obullo\Http\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface as Request;
 use Interop\Container\ContainerInterface;
 use Obullo\Exception\PageMethodNotExistsException;
 use Obullo\Exception\InvalidPageResponseException;
@@ -14,14 +16,19 @@ use Laminas\ServiceManager\Exception\ServiceNotFoundException;
 final class Dispatcher
 {
     /**
-     * @var string model method name
+     * @var object
      */
-    private $method;
+    private $request;
 
     /**
      * @var model
      */
     private $model;
+
+    /**
+     * @var string page method
+     */
+    private $method;
 
     /**
      * @var ReflectionClass
@@ -56,23 +63,23 @@ final class Dispatcher
     }
 
     /**
-     * Set method name
+     * Set request object
      *
-     * @param string $method name
+     * @param request object
      */
-    public function setMethod($method)
+    public function setRequest(Request $request)
     {
-        $this->method = $method;
+        $this->request = $request;
     }
 
     /**
-     * Returns to method name
+     * Returns to request object
      *
-     * @return string
+     * @return object
      */
-    public function getMethod() : string
+    public function getRequest()
     {
-        return $this->method;
+        return $this->request;
     }
 
     /**
@@ -136,6 +143,26 @@ final class Dispatcher
     }
 
     /**
+     * Set page method
+     *
+     * @param string $method
+     */
+    public function setPageMethod($method)
+    {
+        $this->method = $method;
+    }
+
+    /**
+     * Returns to page method (onGet, onPost ..)
+     *
+     * @return string
+     */
+    public function getPageMethod()
+    {
+        return $this->method;
+    }
+
+    /**
      * Set reflection object
      *
      * @param ReflectionClass $reflection reflection class
@@ -165,7 +192,8 @@ final class Dispatcher
      */
     public function dispatch()
     {
-        $methodName = $this->getMethod();
+        $request = $this->getRequest();
+        $methodName = $this->getPageMethod();
         $container  = $this->getContainer();
         $reflection = $this->getReflectionClass();
         $requestedName = $reflection->getName();
@@ -177,13 +205,13 @@ final class Dispatcher
                 $this->isResponse($response, $requestedName);
                 return $response;
             }
-            $resolver = $this->resolveParameterWithConfigService($container, $requestedName);
+            $resolver = $this->resolveParameterWithArrays($request, $container, $requestedName);
             $parameters = array_map($resolver, $reflectionParameters);
             $response = $this->getPageModel()->$methodName(...$parameters);
             $this->isResponse($response, $requestedName);
             return $response;
         }
-        if (isset($this->options['partial_view'])) {
+        if (! empty($this->options['partial_view'])) {
             throw new PageMethodNotExistsException(
                 sprintf(
                     'The method %s does not exists in %s.',
@@ -216,16 +244,19 @@ final class Dispatcher
     }
 
     /**
-     * Returns a callback for resolving a parameter to a value, including mapping 'config' arguments.
+     * Returns a callback for resolving a parameter to a value, including mapping 'config' and http raw body data.
      *
      * Unlike resolveParameter(), this version will detect `$config` array
      * arguments and have them return the 'config' service.
      *
+     * Extra we add http data to requested method.
+     *
+     * @param Psr\Http\Message\ServerRequestInferface $request
      * @param ContainerInterface $container
      * @param string $requestedName
      * @return callable
      */
-    private function resolveParameterWithConfigService(ContainerInterface $container, $requestedName)
+    private function resolveParameterWithArrays(Request $request, ContainerInterface $container, $requestedName)
     {
         /**
          * @param ReflectionParameter $parameter
@@ -233,9 +264,50 @@ final class Dispatcher
          * @throws ServiceNotFoundException If type-hinted parameter cannot be
          *   resolved to a service in the container.
          */
-        return function (ReflectionParameter $parameter) use ($container, $requestedName) {
-            if ($parameter->isArray() && $parameter->getName() === 'config') {
-                return $container->get('config');
+        return function (ReflectionParameter $parameter) use ($request, $container, $requestedName) {
+            $parameterName = $parameter->getName();
+            if ($parameter->isArray()) {
+                if ($parameterName === 'config') {
+                    return $container->get('config');
+                }
+                // https://tools.ietf.org/html/rfc7231
+                // 
+                switch ($request->getMethod()) {
+                    case ServerRequest::METHOD_POST:
+                    case ServerRequest::METHOD_PUT:
+                    case ServerRequest::METHOD_PATCH:
+                    case ServerRequest::METHOD_OPTIONS:
+                        $parameterData = $request->getParsedBody();
+                        break;
+                    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
+                    // 
+                    case ServerRequest::METHOD_HEAD:
+                    case ServerRequest::METHOD_GET:
+                    case ServerRequest::METHOD_TRACE:
+                    case ServerRequest::METHOD_CONNECT:
+                    case ServerRequest::METHOD_DELETE:
+                    // PROPFIND — used to retrieve properties, stored as XML, from a web resource.
+                    case ServerRequest::METHOD_PROPFIND:
+                        $parameterData = $request->getQueryParams();
+                        break;
+                    default:
+                        $parameterData = array();
+                        break;
+                }
+                if (in_array($parameterName, [
+                        'options',
+                        'get',
+                        'head',
+                        'post',
+                        'put',
+                        'delete',
+                        'trace',
+                        'connect',
+                        'patch',
+                        'propfind'
+                    ])) {
+                    return $parameterData;
+                }
             }
             return $this->resolveParameter($parameter, $container, $requestedName);
         };
@@ -260,7 +332,9 @@ final class Dispatcher
         if (! $parameter->getClass()) {
             $name = $parameter->getName();
             $args = $this->getRouter()->getMatchedRoute()->getArguments();
-
+            /**
+             * Bind route arguments
+             */
             if (array_key_exists($name, $args)) {
                 return $args[$name];
             }

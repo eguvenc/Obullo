@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestArgsModel extends PageView
 {
-    public function onGet(Request $request, Router $router, int $id, int $number = null)
+    public function onGet(array $get, Request $request, Router $router, int $id, int $number = null)
     {
         return new HtmlResponse((string)$id.(string)$number);
     }

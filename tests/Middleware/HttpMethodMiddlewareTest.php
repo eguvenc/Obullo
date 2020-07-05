@@ -20,7 +20,6 @@ class HttpMethodMiddlewareTest extends TestCase
         $this->container->setService('appConfig', $appConfig);
         $this->container->addAbstractFactory(new Obullo\Factory\LazyMiddlewareFactory);
 
-
         // load app modules
         //
         $this->container->get('ModuleManager')->loadModules();
