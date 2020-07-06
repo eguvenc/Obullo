@@ -2,13 +2,11 @@
 
 namespace Obullo\Test\PHPUnit\Pages;
 
-use Laminas\Console\Console;
 use Laminas\EventManager\StaticEventManager;
 use Laminas\ServiceManager\ServiceManager;
+use Obullo\PageEvent;
 use Obullo\Http\ServerRequest;
 use Obullo\Container\ServiceManagerConfig;
-use Obullo\PageEvent;
-use Obullo\Factory\LazyPageFactory;
 use Obullo\Factory\LazyMiddlewareFactory;
 use Laminas\Stdlib\Exception\LogicException;
 use Laminas\Stdlib\ResponseInterface;
@@ -37,18 +35,6 @@ abstract class AbstractPageTestCase extends TestCase
     protected $applicationConfig;
 
     /**
-     * Flag to use console router or not
-     * @var bool
-     */
-    protected $useConsoleRequest = false;
-
-    /**
-     * Flag console used before tests
-     * @var bool
-     */
-    protected $usedConsoleBackup;
-
-    /**
      * Trace error when exception is throwed in application
      * @var bool
      */
@@ -61,7 +47,6 @@ abstract class AbstractPageTestCase extends TestCase
      */
     protected function setUpCompat()
     {
-        $this->usedConsoleBackup = Console::isConsole();
         $this->reset();
     }
 
@@ -72,8 +57,6 @@ abstract class AbstractPageTestCase extends TestCase
      */
     protected function tearDownCompat()
     {
-        Console::overrideIsConsole($this->usedConsoleBackup);
-
         // Prevent memory leak
         $this->reset();
     }
@@ -133,27 +116,6 @@ abstract class AbstractPageTestCase extends TestCase
     }
 
     /**
-     * Get the usage of the console router or not
-     * @return bool $boolean
-     */
-    public function getUseConsoleRequest()
-    {
-        return $this->useConsoleRequest;
-    }
-
-    /**
-     * Set the usage of the console router or not
-     * @param  bool                       $boolean
-     * @return AbstractControllerTestCase
-     */
-    public function setUseConsoleRequest($boolean)
-    {
-        $this->useConsoleRequest = (bool) $boolean;
-
-        return $this;
-    }
-
-    /**
      * Get the application config
      * @return array the application config
      */
@@ -203,7 +165,6 @@ abstract class AbstractPageTestCase extends TestCase
         $this->container = new ServiceManager();
         $smConfig->configureServiceManager($this->container);
         $this->container->setService('appConfig', $appConfig);
-        $this->container->addAbstractFactory(new LazyPageFactory);
         $this->container->addAbstractFactory(new LazyMiddlewareFactory);
         $this->container->setAllowOverride(true);
 
@@ -219,7 +180,6 @@ abstract class AbstractPageTestCase extends TestCase
         if ($this->application) {
             return $this->application;
         }
-        Console::overrideIsConsole($this->getUseConsoleRequest());
         $serviceManager = $this->getContainer();
     
         // load modules -- which will provide services, configuration, and more
@@ -286,24 +246,6 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function url($url, $method = ServerRequest::METHOD_GET, $params = [], $isXmlHttpRequest = false)
     {
-        if ($this->useConsoleRequest) {
-            preg_match_all('/(--\S+[= ]"[^\s"]*\s*[^\s"]*")|(\S+)/', $url, $matches);
-            $params = str_replace([' "', '"'], ['=', ''], $matches[0]);
-            $request = new ServerRequest(
-                $serverParams = [],
-                $uploadedFiles = [],
-                new Uri($url),
-                $method,
-                $body = 'php://input',
-                $headers = [],
-                $cookies = [],
-                $queryParams = $params,
-                $parsedBody = [],
-                $protocol = '1.1'
-            );
-            $this->getContainer()->setService('Request', $request);
-            return $this;
-        }
         switch ($method) {
             case ServerRequest::METHOD_POST:
             case ServerRequest::METHOD_OPTIONS:
@@ -370,8 +312,7 @@ abstract class AbstractPageTestCase extends TestCase
     }
 
     /**
-     * Dispatch the MVC with a URL
-     * Accept a HTTP (simulate a customer action) or console route.
+     * Dispatch the pages with a URL
      *
      * The URL provided set the request URI in the request object.
      *

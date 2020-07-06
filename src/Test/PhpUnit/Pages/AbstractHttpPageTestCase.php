@@ -8,12 +8,6 @@ use PHPUnit\Framework\ExpectationFailedException;
 abstract class AbstractHttpPageTestCase extends AbstractPageTestCase
 {
     /**
-     * HTTP controller must not use the console request
-     * @var bool
-     */
-    protected $useConsoleRequest = false;
-
-    /**
      * XPath namespaces
      * @var array
      */
