@@ -24,13 +24,15 @@ class PartialView extends AbstractPageView
      */
     public function render(ModelInterface $model)
     {
+        $defaultTemplate = $this->view->getTemplate();
         $class = get_class($this);
         $class = str_replace('\\', '/', $class);
         $templateName = substr($class, 0, -5); // Remove "Model" word from end
 
         $model->setOption('has_parent', true);
-        $this->view->setTemplate($templateName);
-
+        if ($defaultTemplate == '') {
+            $this->view->setTemplate($templateName);
+        }
         return $this->getView()->render($model);
     }
 }

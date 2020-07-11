@@ -266,6 +266,9 @@ final class Dispatcher
          */
         return function (ReflectionParameter $parameter) use ($request, $container, $requestedName) {
             $parameterName = $parameter->getName();
+            if ($parameterName === 'request') {
+                return $request;
+            }
             if ($parameter->isArray()) {
                 if ($parameterName === 'config') {
                     return $container->get('config');

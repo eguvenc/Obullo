@@ -61,6 +61,7 @@ class PageView extends AbstractPageView
      */
     public function render(ModelInterface $model)
     {
+        $defaultTemplate = $this->view->getTemplate();
         $class = get_class($this);
         $class = str_replace('\\', '/', $class);
         $templateName = substr($class, 0, -5); // remove "Model" word from the end
@@ -74,13 +75,14 @@ class PageView extends AbstractPageView
         }
         $model->setOption('has_parent', true);
 
-        if (false == ($model instanceof LayoutModelInterface)) { // if user don't want to use layout
+        if ($defaultTemplate == '') {
             $this->view->setTemplate($templateName);
+        }
+        if (false == ($model instanceof LayoutModelInterface)) { // if user don't want to use layout
             return $this->getView()->render($model);
         }
         $this->view->setOption('has_parent', true);
-        $this->view->setTemplate($templateName);
-
+        
         $plugin = $this->getViewPhpRenderer()->getHelperPluginManager();
         $viewModel = $plugin->get('view_model');
         $viewModel->setRoot($model);
