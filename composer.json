@@ -13,12 +13,6 @@
     ],
     "homepage": "http://obullo.com",
     "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Ersin Guvenc",
-            "email": "eguvenc@gmail.com"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Obullo\\": "src/"
@@ -32,7 +26,6 @@
     },
     "require": {
         "php": "^7.1",
-        "symfony/yaml": "^3.4",
         "obullo/router": "^1.8",
         "laminas/laminas-diactoros": "^2.2",
         "laminas/laminas-stratigility": "^3.2",
