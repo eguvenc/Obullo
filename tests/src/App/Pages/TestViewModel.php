@@ -2,12 +2,12 @@
 
 namespace App\Pages;
 
-use Obullo\View\PageView;
+use Obullo\View\View;
 use Laminas\View\Model\ViewModel;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class TestViewModel extends PageView
+class TestViewModel extends View
 {
     public function onGet(Request $request)
     {
