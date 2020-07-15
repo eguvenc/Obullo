@@ -37,15 +37,16 @@ class HttpMethodMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
     {
-        $allowedMethods = $this->router->getMatchedRoute()
-            ->getMethods();
-
-        if (! in_array($request->getMethod(), $allowedMethods)) {
-            $message = sprintf(
-                'Only Http %s Methods Allowed',
-                implode(', ', $allowedMethods)
-            );
-            return new TextResponse($message, 405);
+        if ($this->router->hasMatch()) {
+            $allowedMethods = $this->router->getMatchedRoute()
+                ->getMethods();
+            if (! in_array($request->getMethod(), $allowedMethods)) {
+                $message = sprintf(
+                    'Only Http %s Methods Allowed',
+                    implode(', ', $allowedMethods)
+                );
+                return new TextResponse($message, 405);
+            }
         }
         return $handler->handle($request);
     }

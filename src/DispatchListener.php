@@ -46,10 +46,10 @@ class DispatchListener extends AbstractListenerAggregate
         $router = $container->get('Router');
         $app = $params['app'];
 
+        foreach ((array)$params['middlewares'] as $appMiddleware) {
+            $app->pipe($container->build($appMiddleware));
+        }
         if ($router->hasMatch()) {
-            foreach ((array)$params['middlewares'] as $appMiddleware) {
-                $app->pipe($container->build($appMiddleware));
-            }
             $routeMiddlewares = Self::parseRouteMiddlewares($e);
             foreach ($routeMiddlewares as $routeMiddleware) {
                 $app->pipe($container->build($routeMiddleware));
@@ -115,7 +115,7 @@ class DispatchListener extends AbstractListenerAggregate
             throw new InvalidPageResponseException(
                 sprintf(
                     'Return value of %s method must be an instance of Psr\Http\Message\ResponseInterface, Laminas\Diactoros\Stream returned.',
-                    $handler.'::onGet'
+                    $handler.'::'.$methodName
                 )
             );
         }
