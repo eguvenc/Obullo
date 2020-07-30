@@ -433,17 +433,7 @@ abstract class AbstractPageTestCase extends TestCase
      */
     protected function getResponseStatusCode()
     {
-        $response = $this->getResponse();
-        if (! $this->useConsoleRequest) {
-            return $response->getStatusCode();
-        }
-
-        $match = $response->getErrorLevel();
-        if (null === $match) {
-            $match = 0;
-        }
-
-        return $match;
+        return $this->getResponse()->getStatusCode();
     }
 
     /**
@@ -453,13 +443,6 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertResponseStatusCode($code)
     {
-        if ($this->useConsoleRequest) {
-            if (! in_array($code, [0, 1])) {
-                throw new ExpectationFailedException($this->createFailureMessage(
-                    'Console status code assert value must be O (valid) or 1 (error)'
-                ));
-            }
-        }
         $match = $this->getResponseStatusCode();
         if ($code != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
@@ -476,13 +459,6 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertNotResponseStatusCode($code)
     {
-        if ($this->useConsoleRequest) {
-            if (! in_array($code, [0, 1])) {
-                throw new ExpectationFailedException($this->createFailureMessage(
-                    'Console status code assert value must be O (valid) or 1 (error)'
-                ));
-            }
-        }
         $match = $this->getResponseStatusCode();
         if ($code == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
