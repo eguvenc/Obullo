@@ -35,7 +35,7 @@ class SetLocaleMiddlewareTest extends TestCase
         $config = $this->container->get('config');
 
         $config['translator'] = [
-            'locale' => 'en_US',
+            'locale' => 'en',
             'translation_file_patterns' => [
                 [
                     'type'     => 'phparray',
@@ -43,13 +43,7 @@ class SetLocaleMiddlewareTest extends TestCase
                     'pattern'  => '%s/messages.php',
                 ],
             ],
-            'allowed_languages' => [
-                'en' => 'en_US',
-                'de' => 'de_DE',
-                'es' => 'es_ES',
-                'fr' => 'fr_FR',
-                'tr' => 'tr_TR',
-            ],
+            'allowed_languages' => ['en','de','es','fr','tr'],
         ];
         $this->container->setService('config', $config);
         $this->container->setService('Config', $config);
@@ -59,6 +53,6 @@ class SetLocaleMiddlewareTest extends TestCase
         $application->bootstrap();
         $response = $application->runWithoutEmit();
 
-        $this->assertEquals('es_ES', $response->getBody());
+        $this->assertEquals('es', $response->getBody());
     }
 }

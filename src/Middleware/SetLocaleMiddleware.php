@@ -38,8 +38,8 @@ class SetLocaleMiddleware implements MiddlewareInterface
     {
         $locale = substr($request->getUri()->getHost(), 0, 2);
 
-        if (array_key_exists($locale, $this->allowedLanguages)) {
-            $this->translator->setLocale($this->allowedLanguages[$locale]);
+        if (in_array($locale, $this->allowedLanguages)) {
+            $this->translator->setLocale($locale);
         }
         return $handler->handle($request);
     }
