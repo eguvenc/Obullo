@@ -5,10 +5,10 @@ namespace Obullo;
 use ReflectionClass;
 use ReflectionMethod;
 use Laminas\Diactoros\Stream;
+use Obullo\View\AbstractView;
 use Obullo\Error\ErrorHandlerManager;
 use Obullo\Router\RouteInterface;
 use Obullo\Middleware\DispatchHandler;
-use Obullo\View\AbstractPageView;
 use Obullo\Exception\InvalidPageResponseException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -74,7 +74,7 @@ class DispatchListener extends AbstractListenerAggregate
         $container = $application->getContainer();
 
         $pageModel = new $handler;
-        if ($pageModel instanceof AbstractPageView) {
+        if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
         }
@@ -136,7 +136,7 @@ class DispatchListener extends AbstractListenerAggregate
         $container = $application->getContainer();
 
         $pageModel = new $handler;
-        if ($pageModel instanceof AbstractPageView) {
+        if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
         }

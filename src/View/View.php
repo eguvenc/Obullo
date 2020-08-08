@@ -7,7 +7,7 @@ use Obullo\View\ViewModel;
 use Obullo\View\LayoutModel;
 use Laminas\View\Model\ModelInterface;
 
-class View extends AbstractPageView
+class View extends AbstractView
 {
     /**
      * Reserved for user layout model (view model object for layout)

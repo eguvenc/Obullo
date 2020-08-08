@@ -6,7 +6,7 @@ use Obullo\View\ViewModel;
 use Laminas\View\Model\ModelInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 
-class PartialView extends AbstractPageView
+class PartialView extends AbstractView
 {
     /**
      * Constructor

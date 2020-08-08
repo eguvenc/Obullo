@@ -6,7 +6,7 @@ use Laminas\View\View;
 use Laminas\View\Model\ModelInterface;
 use Laminas\View\Renderer\PhpRenderer;
 
-abstract class AbstractPageView
+abstract class AbstractView
 {
     /**
      * Reserved for user view model
