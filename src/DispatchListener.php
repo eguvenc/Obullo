@@ -73,10 +73,11 @@ class DispatchListener extends AbstractListenerAggregate
         $events = $application->getEventManager();
         $container = $application->getContainer();
 
-        $pageModel = new $handler;
+        $pageModel = $container->build($handler);
         if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+            $pageModel->init();
         }
         $e->setPageModel($handler, $pageModel);
 
@@ -103,7 +104,6 @@ class DispatchListener extends AbstractListenerAggregate
             $pageModel->setQueryMethod($queryMethod);
         }
         $dispatcher = new Dispatcher;
-        $dispatcher->setContainer($container);
         $dispatcher->setRequest($request);
         $dispatcher->setPageMethod($methodName);
         $dispatcher->setRouter($container->get('Router'));
@@ -135,15 +135,15 @@ class DispatchListener extends AbstractListenerAggregate
         $application  = $e->getApplication();
         $container = $application->getContainer();
 
-        $pageModel = new $handler;
+        $pageModel = $container->build($handler);
         if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
+            $pageModel->init();
         }
         $e->setPageModel($handler, $pageModel);
 
         $dispatcher = new Dispatcher(['partival_view' => true]);
-        $dispatcher->setContainer($container);
         $dispatcher->setRequest($request);
         $dispatcher->setPageMethod('onGet');
         $dispatcher->setRouter($container->get('Router'));

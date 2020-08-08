@@ -3,32 +3,32 @@
 namespace App\Pages;
 
 use Obullo\View\View;
-use Laminas\View\Model\ViewModel;
 use Laminas\Diactoros\Response\HtmlResponse;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 class TestViewModel extends View
 {
-    public function onGet(Request $request)
+    public function onGet()
     {
         $this->view->view = $this->view;
 
         return new HtmlResponse($this->render($this->view));
     }
 
-    public function onPageLayout(Request $request)
+    public function onPageLayout()
     {
+        $this->layout->setTemplate('App/Pages/Templates/TestLayout');
+
         return new HtmlResponse($this->layout->getTemplate());
     }
 
-    public function onMethodQuery(Request $request)
+    public function onMethodQuery()
     {
         $this->view->view = $this->view;
 
         return new HtmlResponse($this->render($this->view));
     }
 
-    public function onPlugin(Request $request)
+    public function onPlugin()
     {
         $url = $this->plugin('url');
         $result = $url('/test_view');
@@ -36,7 +36,7 @@ class TestViewModel extends View
         return new HtmlResponse($result);
     }
 
-    public function onModel(Request $request)
+    public function onModel()
     {
         return $this->model('App\Pages\Templates\HeaderModel');
     }

@@ -4,6 +4,7 @@ use PHPUnit\Framework\TestCase;
 use Obullo\PageEvent;
 use Obullo\View\View;
 use Laminas\Diactoros\Uri;
+use Laminas\View\Model\ViewModel;
 use Obullo\Http\ServerRequest;
 use Laminas\ServiceManager\ServiceManager;
 
@@ -60,8 +61,8 @@ class ViewTest extends TestCase
         $application = $this->container->get('Application');
         $application->bootstrap();
         $response = $application->runWithoutEmit();
-        
-        $this->assertEquals('App/Pages/Templates/DefaultLayout', $response->getBody());
+
+        $this->assertEquals('App/Pages/Templates/TestLayout', $response->getBody());
     }
 
     public function testMethodQuery()
@@ -136,6 +137,7 @@ class ViewTest extends TestCase
     public function testGetViewModel()
     {
         $view = new View;
+        $view->view = new ViewModel;
         
         $this->assertInstanceOf('Laminas\View\Model\ModelInterface', $view->getViewModel());
     }

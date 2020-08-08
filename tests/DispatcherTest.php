@@ -49,7 +49,6 @@ class DispatcherTest extends TestCase
     {
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
         $dispatcher->setReflectionClass(new ReflectionClass(new App\Pages\TestModel));
         $reflectionClass = $dispatcher->getReflectionClass();
 
@@ -59,10 +58,10 @@ class DispatcherTest extends TestCase
     public function testGetReflectionClassWithoutSet()
     {
         $pageModel = new App\Pages\TestModel;
+        $pageModel->init();
 
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
         $dispatcher->setPageModel($pageModel);
         $reflectionClass = $dispatcher->getReflectionClass();
 
@@ -72,10 +71,10 @@ class DispatcherTest extends TestCase
     public function testGetPageModel()
     {
         $pageModel = new App\Pages\TestModel;
+        $pageModel->init();
 
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
         $dispatcher->setPageMethod('onGet');
         $dispatcher->setPageModel($pageModel);
 
@@ -87,11 +86,12 @@ class DispatcherTest extends TestCase
         $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
+        $pageModel->init();
 
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
+        $dispatcher->setRouter($this->container->get('Router'));
         $dispatcher->setPageMethod('onGet');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -104,11 +104,23 @@ class DispatcherTest extends TestCase
         $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
-        
+        $pageModel->init();
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com'),
+            'GET',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = ['test' => 'Ok'],
+            $parsedBody = [],
+            $protocol = '1.1'
+        );
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
-        $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
+        $dispatcher->setRequest($request);
+        $dispatcher->setRouter($this->container->get('Router'));
         $dispatcher->setPageMethod('onQueryMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -125,11 +137,12 @@ class DispatcherTest extends TestCase
         $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
+        $pageModel->init();
         
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
+        $dispatcher->setRouter($this->container->get('Router'));
         $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -142,11 +155,12 @@ class DispatcherTest extends TestCase
         $pageModel = new App\Pages\TestModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
-        
+        $pageModel->init();
+
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher(['partial_view' => true]);
         $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setContainer($this->container);
+        $dispatcher->setRouter($this->container->get('Router'));
         $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
 
@@ -168,7 +182,7 @@ class DispatcherTest extends TestCase
         $application = $this->container->get('Application');
         $application->bootstrap();
         $response = $application->runWithoutEmit();
-
+        
         $this->assertEquals('1001', $response->getBody());
     }
 
@@ -190,6 +204,7 @@ class DispatcherTest extends TestCase
         $pageModel = new App\Pages\TestHttpModel;
         $pageModel->setView($this->container->get(View::class));
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
+        // $pageModel->init();
         $request = new ServerRequest(
             $serverParams = [],
             $uploadedFiles = [],
@@ -205,7 +220,6 @@ class DispatcherTest extends TestCase
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($request);
-        $dispatcher->setContainer($this->container);
         $dispatcher->setPageMethod('on'.ucfirst(strtolower($method)));
         $dispatcher->setPageModel($pageModel);
         return $dispatcher->dispatch();

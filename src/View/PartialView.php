@@ -9,9 +9,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 class PartialView extends AbstractView
 {
     /**
-     * Constructor
+     * Initialize view model
      */
-    public function __construct()
+    public function init()
     {
         $this->view = new ViewModel;
     }

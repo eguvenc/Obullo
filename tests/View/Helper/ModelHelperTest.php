@@ -38,7 +38,7 @@ class ModelHelperTest extends TestCase
         $application = $this->container->get('Application');
         $application->bootstrap();
         $response = $application->runWithoutEmit();
-
+        
         $this->assertEquals('Header', $response->getBody());
     }
 }

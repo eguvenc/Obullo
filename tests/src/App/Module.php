@@ -9,13 +9,30 @@ use Laminas\Diactoros\Response;
 use Obullo\Middleware\NotFoundHandler;
 use Obullo\Middleware\ErrorHandler;
 use Laminas\ModuleManager\ModuleManager;
+use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
 class Module
 {
     public function getConfig() : array
     {
         return [
-            'service_manager' => [],
+            'service_manager' => [
+                'factories' => [
+                    'App\Pages\PluginModel' => InvokableFactory::class,
+                    'App\Pages\SetLocaleModel' => ReflectionBasedAbstractFactory::class,
+                    'App\Pages\TestArgsModel' => InvokableFactory::class,
+                    'App\Pages\TestErrorModel' => InvokableFactory::class,
+                    'App\Pages\TestHttpModel' => InvokableFactory::class,
+                    'App\Pages\TestModel' => InvokableFactory::class,
+                    'App\Pages\TestErrorModel' => InvokableFactory::class,
+                    'App\Pages\TestPartialViewModel' => InvokableFactory::class,
+                    'App\Pages\TestViewModel' => InvokableFactory::class,
+                    'App\Pages\WelcomeModel' => InvokableFactory::class,
+                    'App\Pages\Templates\HeaderModel' => InvokableFactory::class,
+                    'App\Pages\TestPartialViewModel' => InvokableFactory::class,
+                ]
+            ],
         ];
     }
 

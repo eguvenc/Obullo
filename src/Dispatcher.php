@@ -36,11 +36,6 @@ final class Dispatcher
     private $reflection;
 
     /**
-     * @var Laminas\ServiceManager\ServiceManager
-     */
-    private $container;
-
-    /**
      * @var Obullo\Router\Router
      */
     private $router;
@@ -97,29 +92,9 @@ final class Dispatcher
      *
      * @return Obullo\Router\Router
      */
-    public function getRouter() : Router
+    public function getRouter()
     {
         return $this->router;
-    }
-
-    /**
-     * Set service manager
-     *
-     * @param string $container service manager
-     */
-    public function setContainer($container)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * Returns to container
-     *
-     * @return object
-     */
-    private function getContainer()
-    {
-        return $this->container;
     }
 
     /**
@@ -194,7 +169,6 @@ final class Dispatcher
     {
         $request = $this->getRequest();
         $methodName = $this->getPageMethod();
-        $container  = $this->getContainer();
         $reflection = $this->getReflectionClass();
         $requestedName = $reflection->getName();
 
@@ -205,7 +179,7 @@ final class Dispatcher
                 $this->isResponse($response, $requestedName);
                 return $response;
             }
-            $resolver = $this->resolveParameterWithArrays($request, $container, $requestedName);
+            $resolver = $this->resolveParameters($request, $requestedName);
             $parameters = array_map($resolver, $reflectionParameters);
             $response = $this->getPageModel()->$methodName(...$parameters);
             $this->isResponse($response, $requestedName);
@@ -244,35 +218,26 @@ final class Dispatcher
     }
 
     /**
-     * Returns a callback for resolving a parameter to a value, including mapping 'config' and http raw body data.
-     *
-     * Unlike resolveParameter(), this version will detect `$config` array
-     * arguments and have them return the 'config' service.
-     *
-     * Extra we add http data to requested method.
+     * Returns a callback for resolving a parameter from matched route arguments, including http raw body data.
      *
      * @param Psr\Http\Message\ServerRequestInferface $request
-     * @param ContainerInterface $container
-     * @param string $requestedName
      * @return callable
      */
-    private function resolveParameterWithArrays(Request $request, ContainerInterface $container, $requestedName)
+    private function resolveParameters(Request $request, $requestedName)
     {
         /**
          * @param ReflectionParameter $parameter
          * @return mixed
          * @throws ServiceNotFoundException If type-hinted parameter cannot be
-         *   resolved to a service in the container.
+         *   resolved to a argument name in the matched route.
          */
-        return function (ReflectionParameter $parameter) use ($request, $container, $requestedName) {
+        return function (ReflectionParameter $parameter) use ($request, $requestedName) {
+
             $parameterName = $parameter->getName();
-            if ($parameterName === 'request') {
-                return $request;
-            }
+            $router = $this->getRouter();
+
             if ($parameter->isArray()) {
-                if ($parameterName === 'config') {
-                    return $container->get('config');
-                }
+
                 // https://tools.ietf.org/html/rfc7231
                 // 
                 switch ($request->getMethod()) {
@@ -311,66 +276,47 @@ final class Dispatcher
                     ])) {
                     return $parameterData;
                 }
+                return [];  // default array
             }
-            return $this->resolveParameter($parameter, $container, $requestedName);
+
+            // on query method support without no parameters
+            // 
+            if (false == $router->hasMatch()) {
+                return [];
+            }
+            return $this->resolveRouteParameter($parameter, $router, $requestedName);
         };
     }
 
     /**
-     * Logic common to all parameter resolution.
+     * Logic common to route parameter resolution.
      *
      * @param ReflectionParameter $parameter
-     * @param ContainerInterface $container
-     * @param string $requestedName
+     * @param Obullo\Router\Router $router
+     * @param string $requestName class name
      * @return mixed
      * @throws ServiceNotFoundException If type-hinted parameter cannot be
-     *   resolved to a service in the container.
+     *   resolved to a argument name in the matched route.
      */
-    private function resolveParameter(ReflectionParameter $parameter, ContainerInterface $container, $requestedName)
+    private function resolveRouteParameter(ReflectionParameter $parameter, $router, $requestedName)
     {
-        if ($parameter->isArray()) {
-            return [];
+        $name = $parameter->getName();
+        $args = $router->getMatchedRoute()->getArguments();
+        /**
+         * Bind route arguments
+         */
+        if (array_key_exists($name, $args)) {
+            return $args[$name];
         }
 
-        if (! $parameter->getClass()) {
-            $name = $parameter->getName();
-            $args = $this->getRouter()->getMatchedRoute()->getArguments();
-            /**
-             * Bind route arguments
-             */
-            if (array_key_exists($name, $args)) {
-                return $args[$name];
-            }
-            if (! $parameter->isDefaultValueAvailable()) {
-                throw new ServiceNotFoundException(sprintf(
-                    'Unable to create service "%s"; unable to resolve parameter "%s" '
-                    . 'to a class, interface, or array type',
-                    $requestedName,
-                    $name
-                ));
-            }
-
-            return $parameter->getDefaultValue();
-        }
-
-        $type = $parameter->getClass()->getName();
-        $type = isset($this->aliases[$type]) ? $this->aliases[$type] : $type;
-
-        if ($container->has($type)) {
-            return $container->get($type);
-        }
-
-        if (! $parameter->isOptional()) {
+        if (! $parameter->isDefaultValueAvailable()) {
             throw new ServiceNotFoundException(sprintf(
-                'Unable to create service "%s"; unable to resolve parameter "%s" using type hint "%s"',
+                'Unable to create service "%s"; unable to resolve default value of route parameter "%s"',
                 $requestedName,
-                $parameter->getName(),
-                $type
+                $name
             ));
         }
 
-        // Type not available in container, but the value is optional and has a
-        // default defined.
         return $parameter->getDefaultValue();
     }
 }

@@ -18,34 +18,23 @@ class View extends AbstractView
 
     /**
      * Request query method
-     * 
+     *
      * @var string
      */
     private $_queryMethod;
 
     /**
-     * Constructor
+     * Initialize view models
      */
-    public function __construct()
+    public function init()
     {
         $this->view = new ViewModel;
         $this->layout = new LayoutModel;
-        $this->reflection = new ReflectionClass($this);
-        $namespace = $this->reflection->getNamespaceName();
-
-        // Template path separator must be forward slash "/" for OS compability
-
-        $module = strstr($namespace, '\Pages', true);
-        $module = str_replace('\\', '/', $module);
-
-        // let's load a default template for each module by default
-        //
-        $this->layout->setTemplate($module.'/Pages/Templates/DefaultLayout');
     }
 
     /**
      * Set query method
-     * 
+     *
      * @param string $queryMethod the method name comes with query parameters
      */
     public function setQueryMethod($queryMethod = null)
@@ -61,21 +50,16 @@ class View extends AbstractView
      */
     public function render(ModelInterface $model)
     {
-        $defaultTemplate = $this->view->getTemplate();
-        $class = get_class($this);
-        $class = str_replace('\\', '/', $class);
-        $templateName = substr($class, 0, -5); // remove "Model" word from the end
+        $defaultViewTemplate = $this->view->getTemplate();
+        $defaultLayoutTemplate = $this->layout->getTemplate();
 
-        // Template path separator must be forward slash "/" for OS compability
-
-        if ($this->_queryMethod) {  // change template name for method queries
-            $namespaceArray = explode('/', $class);
-            array_pop($namespaceArray);
-            $templateName = implode('/', $namespaceArray).'/'.substr($this->_queryMethod, 2);
+        if ($defaultLayoutTemplate == '') {
+            $this->setDefaultLayout();
         }
         $model->setOption('has_parent', true);
 
-        if ($defaultTemplate == '') {
+        if ($defaultViewTemplate == '') {
+            $templateName = $this->getTemplateName();
             $this->view->setTemplate($templateName);
         }
         if (false == ($model instanceof LayoutModelInterface)) { // if user don't want to use layout
@@ -89,5 +73,46 @@ class View extends AbstractView
 
         $model->addChild($this->view);
         return $this->getView()->render($model);
+    }
+
+    /**
+     * Returns to template nname
+     *
+     * Template path separator must be forward slash "/" for OS compability
+     *
+     * @return string fully qualified template name
+     */
+    private function getTemplateName()
+    {
+        $class = get_class($this);
+        $class = str_replace('\\', '/', $class);
+        $templateName = substr($class, 0, -5); // remove "Model" word from the end
+
+        // change template name for method queries
+        //
+        if ($this->_queryMethod) {
+            $namespaceArray = explode('/', $class);
+            array_pop($namespaceArray);
+            $templateName = implode('/', $namespaceArray).'/'.substr($this->_queryMethod, 2);
+        }
+        return $templateName;
+    }
+
+    /**
+     * Set default layout template
+     *
+     * @return void
+     */
+    private function setDefaultLayout() : void
+    {
+        $this->reflection = new ReflectionClass($this);
+        $namespace = $this->reflection->getNamespaceName();
+
+        $module = strstr($namespace, '\Pages', true);
+        $module = str_replace('\\', '/', $module);
+
+        // let's load a default template for each module by default
+        //
+        $this->layout->setTemplate($module.'/Pages/Templates/DefaultLayout');
     }
 }
