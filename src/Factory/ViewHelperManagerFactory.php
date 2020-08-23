@@ -2,10 +2,9 @@
 
 namespace Obullo\Factory;
 
-use Obullo\Router\Router;
 use Interop\Container\ContainerInterface;
-use Obullo\View\Helper as ObulloViewHelper;
-use Laminas\View\Helper as LaminasViewHelper;
+use Obullo\View\Helper as ViewHelperForObullo;
+use Laminas\View\Helper as ViewHelper;
 use Laminas\View\HelperPluginManager;
 
 class ViewHelperManagerFactory
@@ -23,7 +22,7 @@ class ViewHelperManagerFactory
         $plugins = new HelperPluginManager($container, $options);
 
         // Override plugin factories
-        // 
+        //
         $plugins = $this->injectOverrideFactories($plugins, $container);
     
         return $plugins;
@@ -38,53 +37,33 @@ class ViewHelperManagerFactory
      */
     private function injectOverrideFactories(HelperPluginManager $plugins, ContainerInterface $services)
     {
-        // Configure to override URL view helper
-        $urlFactory = $this->createUrlHelperFactory($services);
-        $plugins->setFactory(ObulloViewHelper\Url::class, $urlFactory);
-        $plugins->setFactory('laminasviewhelperurl', $urlFactory);
-        $plugins->setAlias('url', ObulloViewHelper\Url::class);
-
-        // Configure to override asset view helper
+        // Configure to override asset helper
         $assetFactory = $this->createAssetHelperFactory($services);
-        $plugins->setFactory(ObulloViewHelper\Asset::class, $assetFactory);
+        $plugins->setFactory(ViewHelperForObullo\Asset::class, $assetFactory);
         $plugins->setFactory('laminasviewhelperasset', $assetFactory);
-        $plugins->setAlias('asset', ObulloViewHelper\Asset::class);
+        $plugins->setAlias('asset', ViewHelperForObullo\Asset::class);
 
-        // Configure model view helper
+        // Configure model helper
         $modelFactory = $this->createModelHelperFactory($services);
-        $plugins->setFactory(ObulloViewHelper\Model::class, $modelFactory);
-        $plugins->setAlias('model', ObulloViewHelper\Model::class);
+        $plugins->setFactory(ViewHelperForObullo\Model::class, $modelFactory);
+        $plugins->setAlias('model', ViewHelperForObullo\Model::class);
+
+        // Configure URL view helper
+        $urlFactory = $this->createUrlHelperFactory($services);
+        $plugins->setFactory(ViewHelper\Url::class, $urlFactory);
+        $plugins->setFactory('laminasviewhelperurl', $urlFactory);
 
         // Configure base path helper
         $basePathFactory = $this->createBasePathHelperFactory($services);
-        $plugins->setFactory(LaminasViewHelper\BasePath::class, $basePathFactory);
+        $plugins->setFactory(ViewHelper\BasePath::class, $basePathFactory);
         $plugins->setFactory('laminasviewhelperbasepath', $basePathFactory);
 
-        // Configure doctype view helper
+        // Configure doctype helper
         $doctypeFactory = $this->createDoctypeHelperFactory($services);
-        $plugins->setFactory(LaminasViewHelper\Doctype::class, $doctypeFactory);
+        $plugins->setFactory(ViewHelper\Doctype::class, $doctypeFactory);
         $plugins->setFactory('laminasviewhelperdoctype', $doctypeFactory);
 
         return $plugins;
-    }
-
-    /**
-     * Create and return a factory for creating a URL helper.
-     *
-     * Retrieves the application and router from the servicemanager,
-     * and the route match from the PageEvent composed by the application,
-     * using them to configure the helper.
-     *
-     * @param ContainerInterface $services
-     * @return callable
-     */
-    private function createUrlHelperFactory(ContainerInterface $services)
-    {
-        return function () use ($services) {
-            $url = new ObulloViewHelper\Url;
-            $url->setRouter($services->get(Router::class));
-            return $url;
-        };
     }
 
     /**
@@ -99,7 +78,7 @@ class ViewHelperManagerFactory
     {
         return function () use ($services) {
             $config = $services->get('config');
-            $asset = new ObulloViewHelper\Asset;
+            $asset = new ViewHelperForObullo\Asset;
             $asset->setPath($config['root'].'/public/');
             return $asset;
         };
@@ -118,12 +97,39 @@ class ViewHelperManagerFactory
     private function createModelHelperFactory(ContainerInterface $services)
     {
         return function () use ($services) {
-            $model = new ObulloViewHelper\Model;
+            $model = new ViewHelperForObullo\Model;
             $model->setContainer($services);
             return $model;
         };
     }
 
+    /**
+     * Create and return a factory for creating a URL helper.
+     *
+     * Retrieves the application and router from the servicemanager,
+     * and the route match from the MvcEvent composed by the application,
+     * using them to configure the helper.
+     *
+     * @param ContainerInterface $services
+     * @return callable
+     */
+    private function createUrlHelperFactory(ContainerInterface $services)
+    {
+        return function () use ($services) {
+            $helper = new ViewHelper\Url;
+            $helper->setRouter($services->get('HttpRouter'));
+
+            $match = $services->get('Application')
+                ->getPageEvent()
+                ->getRouteMatch();
+
+            if ($match instanceof RouteMatch) {
+                $helper->setRouteMatch($match);
+            }
+
+            return $helper;
+        };
+    }
 
     /**
      * Create and return a factory for creating a BasePath helper.
@@ -137,7 +143,7 @@ class ViewHelperManagerFactory
     {
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
-            $helper = new LaminasViewHelper\BasePath;
+            $helper = new ViewHelper\BasePath;
             if (isset($config['view_manager']) && isset($config['view_manager']['base_path'])) {
                 $helper->setBasePath($config['view_manager']['base_path']);
                 return $helper;
@@ -160,7 +166,7 @@ class ViewHelperManagerFactory
         return function () use ($services) {
             $config = $services->has('config') ? $services->get('config') : [];
             $config = isset($config['view_manager']) ? $config['view_manager'] : [];
-            $helper = new LaminasViewHelper\Doctype;
+            $helper = new ViewHelper\Doctype;
             if (isset($config['doctype']) && $config['doctype']) {
                 $helper->setDoctype($config['doctype']);
             }

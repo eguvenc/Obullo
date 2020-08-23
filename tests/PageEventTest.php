@@ -2,8 +2,11 @@
 
 use PHPUnit\Framework\TestCase;
 use Obullo\PageEvent;
+use Obullo\Http\ServerRequest;
+use Laminas\Diactoros\Uri;
 use Laminas\Diactoros\Response;
 use Laminas\View\Model\ViewModel;
+use Laminas\Psr7Bridge\Psr7ServerRequest;
 use Laminas\ServiceManager\ServiceManager;
 
 class PageEventTest extends TestCase
@@ -39,32 +42,43 @@ class PageEventTest extends TestCase
         $event = new PageEvent;
         $event->setRouter($this->container->get('Router'));
 
-        $this->assertInstanceOf('Obullo\Router\Router', $event->getRouter());
+        $this->assertInstanceOf('Laminas\Router\RouteStackInterface', $event->getRouter());
     }
 
-    public function testGetMatchedRoute()
+    public function testGetRouteMatch()
     {
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test'),
+            'GET',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = [],
+            $parsedBody = [],
+            $protocol = '1.1'
+        );
         $router = $this->container->get('Router');
-        $route  = $router->match('/test');
-
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
         $event = new PageEvent;
-        $event->setMatchedRoute($route);
+        $event->setRouteMatch($routeMatch);
 
-        $this->assertInstanceOf('Obullo\Router\Route', $event->getMatchedRoute());
+        $this->assertInstanceOf('Laminas\Router\RouteMatch', $event->getRouteMatch());
     }
 
-    public function testGetHandler()
+    public function testGetController()
     {
         $event = new PageEvent;
-        $event->setHandler('App\Pages\TestModel');
+        $event->setController('App\Pages\TestModel');
 
-        $this->assertEquals('App\Pages\TestModel', $event->getHandler());
+        $this->assertEquals('App\Pages\TestModel', $event->getController());
     }
 
     public function testGetResolvedModuleName()
     {
         $event = new PageEvent;
-        $event->setHandler('Test\Pages\TestModel');
+        $event->setController('Test\Pages\TestModel');
         $event->setResolvedModuleName();
 
         $this->assertEquals('Test', $event->getResolvedModuleName());

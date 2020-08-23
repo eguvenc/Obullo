@@ -14,6 +14,8 @@ class ServiceListenerConsoleFactory extends ServiceListenerFactory
      */
     protected $defaultServiceConfig = [
         'aliases' => [
+            'application'                                => 'Obullo\Application',
+            'Application'                                => 'Obullo\Application',
             'config'                                     => 'Laminas\Config\Config',
             'Config'                                     => 'Laminas\Config\Config',
             'ViewHelperManager'                          => 'Laminas\View\ViewHelperManagerFactory',
@@ -22,7 +24,7 @@ class ServiceListenerConsoleFactory extends ServiceListenerFactory
         ],
         'invokables' => [],
         'factories'  => [
-            'Application'                    => ApplicationFactory::class,
+            'Obullo\Application'             => ApplicationFactory::class,
             'Laminas\Config\Config'          => 'Obullo\Factory\ConfigFactory',
             'DatabaseLogger'                 => 'Obullo\Factory\DatabaseLoggerFactory',
             'SQLDevelopmentLogger'           => 'Obullo\Factory\SQLDevelopmentLoggerFactory',

@@ -28,6 +28,7 @@ class Module
                     'App\Pages\TestErrorModel' => InvokableFactory::class,
                     'App\Pages\TestPartialViewModel' => InvokableFactory::class,
                     'App\Pages\TestViewModel' => InvokableFactory::class,
+                    'App\Pages\UrlModel' => InvokableFactory::class,
                     'App\Pages\WelcomeModel' => InvokableFactory::class,
                     'App\Pages\Templates\HeaderModel' => InvokableFactory::class,
                     'App\Pages\TestPartialViewModel' => InvokableFactory::class,

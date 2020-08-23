@@ -4,6 +4,7 @@ return [
 
     // Modules
     'modules' => [
+        'Laminas\Router',
         'Laminas\I18n',
         'App',
     ],
@@ -13,7 +14,7 @@ return [
 
     // Middlewares
     'middlewares' => [
-        'Obullo\Middleware\HttpMethodMiddleware',
+
     ],
 
     // Configuration overrides during development mode

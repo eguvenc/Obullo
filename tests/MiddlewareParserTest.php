@@ -2,7 +2,10 @@
 
 use PHPUnit\Framework\TestCase;
 use Obullo\MiddlewareParser;
-use Obullo\Router\Router;
+use Laminas\Router\RouteMatch;
+use Laminas\Psr7Bridge\Psr7ServerRequest;
+use Obullo\Http\ServerRequest;
+use Laminas\Diactoros\Uri;
 use Obullo\Container\ServiceManagerConfig;
 use Laminas\ServiceManager\ServiceManager;
 
@@ -23,63 +26,74 @@ class MiddlewareParserTest extends TestCase
         // load app modules
         //
         $this->container->get('ModuleManager')->loadModules();
-
-        $this->collection = $this->container->get('Router')->getCollection();
     }
 
     public function testParseMiddlewareOnPost()
     {
-        $context = $this->collection->getContext();
-        $context->setMethod('POST');
-        $this->collection->setContext($context);
+        $router  = $this->container->get('Router');
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test'),
+            'POST',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = [],
+            $parsedBody = [],
+            $protocol = '1.1'
+        );
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+        $params = $routeMatch->getParams();
 
-        $router = new Router($this->collection);
-        $route = $router->match('/test');
-
-        $middlewares = MiddlewareParser::parse($router->getMiddlewares(), $context->getMethod());
-
-        $this->assertEquals($context->getMethod(), 'POST');
-        $this->assertEquals($middlewares, ['App\Middleware\AuthMiddleware']);
+        $middlewares = MiddlewareParser::parse((array)$params['middleware'], $request->getMethod());
+        $this->assertEquals($middlewares[0], 'App\Middleware\AuthMiddleware');
     }
 
     public function testParseMiddlewareOnGet()
     {
-        $context = $this->collection->getContext();
-        $context->setMethod('GET');
-        $this->collection->setContext($context);
-
-        $router = new Router($this->collection);
-        $route = $router->match('/test');
-
-        $middlewares = MiddlewareParser::parse($router->getMiddlewares(), $context->getMethod());
-
-        $this->assertEquals($context->getMethod(), 'GET');
-        $this->assertEquals($middlewares, []);
+        $middlewares = MiddlewareParser::parse(['App\Middleware\AuthMiddleware@onGet'], 'GET');
+        $this->assertEquals($middlewares[0], 'App\Middleware\AuthMiddleware');
     }
 
     public function testParseMiddlewareOnGetOrPost()
-    {
-        $context = $this->collection->getContext();
-        $context->setMethod('GET');
-        $this->collection->setContext($context);
+    {  
+        // GET
+        $router  = $this->container->get('Router');
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test_multi'),
+            'POST',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = [],
+            $parsedBody = [],
+            $protocol = '1.1'
+        );
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+        $params = $routeMatch->getParams();
+        $middlewares = MiddlewareParser::parse((array)$params['middleware'], $request->getMethod());
+        $this->assertEquals($middlewares[0], 'App\Middleware\AuthMiddleware');
 
-        $router = new Router($this->collection);
-        $route = $router->match('/test_multi');
-        
-        $middlewares = MiddlewareParser::parse($router->getMiddlewares(), $context->getMethod());
+        // POST
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test_multi'),
+            'GET',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = [],
+            $parsedBody = [],
+            $protocol = '1.1'
+        );
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+        $params = $routeMatch->getParams();
+        $middlewares = MiddlewareParser::parse((array)$params['middleware'], $request->getMethod());
 
-        $this->assertEquals($context->getMethod(), 'GET');
-        $this->assertEquals($middlewares, ['App\Middleware\AuthMiddleware']);
-
-        $context = $this->collection->getContext();
-        $context->setMethod('POST');
-        $this->collection->setContext($context);
-
-        $router = new Router($this->collection);
-        $route = $router->match('/test_multi');
-        $middlewares = MiddlewareParser::parse($router->getMiddlewares(), $context->getMethod());
-
-        $this->assertEquals($context->getMethod(), 'POST');
-        $this->assertEquals($middlewares, ['App\Middleware\AuthMiddleware']);
+        $this->assertEquals($middlewares[0], 'App\Middleware\AuthMiddleware');
     }
 }

@@ -23,20 +23,20 @@ class Model extends AbstractHelper
     }
 
     /**
-     * Set handler class to render partial view
+     * Set controller to render partial view
      *
-     * @param  string     $handlerClass partial model name
-     * @param  array|null $options      options
+     * @param  string     $controller partial model name
+     * @param  array|null $options    options
      * @return response
      */
-    public function __invoke($handlerClass, array $options = null)
+    public function __invoke(string $controller, array $options = null)
     {
         $application = $this->container->get('Application');
         $event = $application->getPageEvent();
         $events = $application->getEventManager();
 
         $event->setName(PageEvent::EVENT_DISPATCH_PARTIAL_PAGE);
-        $event->setHandler($handlerClass);
+        $event->setController($controller);
         $response = $events->triggerEvent($event)->last();
 
         return $response;

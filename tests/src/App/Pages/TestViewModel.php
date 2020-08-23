@@ -27,15 +27,7 @@ class TestViewModel extends View
 
         return new HtmlResponse($this->render($this->view));
     }
-
-    public function onPlugin()
-    {
-        $url = $this->plugin('url');
-        $result = $url('/test_view');
-
-        return new HtmlResponse($result);
-    }
-
+    
     public function onModel()
     {
         return $this->model('App\Pages\Templates\HeaderModel');

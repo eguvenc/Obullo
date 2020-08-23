@@ -124,6 +124,7 @@ class Application
         $this->event->setTarget($this);
         $this->event->setApplication($this);
         $this->event->setRequest($this->request);
+        $this->event->setRouter($this->getContainer()->get('Router'));
         $this->event->setParam('app', $this->app);
         $this->event->setParam('middlewares', $this->appConfig['middlewares']);
 
@@ -141,7 +142,7 @@ class Application
         $this->app->pipe($errorHandler);
 
         $this->event->setName(PageEvent::EVENT_ROUTE);
-        $routeResult = $this->events->triggerEvent($this->event);  
+        $routeResult = $this->events->triggerEvent($this->event);
 
         // trigger middlewares event
         //
@@ -184,7 +185,7 @@ class Application
 
     /**
      * Set request
-     * 
+     *
      * @param object $request
      */
     public function setRequest(Request $request)
@@ -194,7 +195,7 @@ class Application
 
     /**
      * Returns to request
-     * 
+     *
      * @return object
      */
     public function getRequest()

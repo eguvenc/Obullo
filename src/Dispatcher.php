@@ -4,8 +4,8 @@ namespace Obullo;
 
 use ReflectionClass;
 use ReflectionParameter;
-use Obullo\Router\Router;
 use Obullo\Http\ServerRequest;
+use Laminas\Router\RouteMatch;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface as Request;
 use Interop\Container\ContainerInterface;
@@ -36,9 +36,9 @@ final class Dispatcher
     private $reflection;
 
     /**
-     * @var Obullo\Router\Router
+     * @var RouteMatch
      */
-    private $router;
+    private $routeMatch;
 
     /**
      * Dispatch options
@@ -80,21 +80,21 @@ final class Dispatcher
     /**
      * Set router
      *
-     * @param Router $router router
+     * @param RouteMatch $routeMatch
      */
-    public function setRouter(Router $router)
+    public function setRouteMatch($routeMatch = null)
     {
-        $this->router = $router;
+        $this->routeMatch = $routeMatch;
     }
 
     /**
      * Returns to router
      *
-     * @return Obullo\Router\Router
+     * @return RouteMatch
      */
-    public function getRouter()
+    public function getRouteMatch()
     {
-        return $this->router;
+        return $this->routeMatch;
     }
 
     /**
@@ -232,14 +232,13 @@ final class Dispatcher
          *   resolved to a argument name in the matched route.
          */
         return function (ReflectionParameter $parameter) use ($request, $requestedName) {
-
             $parameterName = $parameter->getName();
-            $router = $this->getRouter();
+            $routeMatch = $this->getRouteMatch();
 
             if ($parameter->isArray()) {
 
                 // https://tools.ietf.org/html/rfc7231
-                // 
+                //
                 switch ($request->getMethod()) {
                     case ServerRequest::METHOD_POST:
                     case ServerRequest::METHOD_PUT:
@@ -248,7 +247,7 @@ final class Dispatcher
                         $parameterData = $request->getParsedBody();
                         break;
                     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
-                    // 
+                    //
                     case ServerRequest::METHOD_HEAD:
                     case ServerRequest::METHOD_GET:
                     case ServerRequest::METHOD_TRACE:
@@ -278,13 +277,10 @@ final class Dispatcher
                 }
                 return [];  // default array
             }
-
-            // on query method support without no parameters
-            // 
-            if (false == $router->hasMatch()) {
-                return [];
+            if ($routeMatch instanceof RouteMatch) {
+                return $this->resolveRouteParameter($parameter, $routeMatch, $requestedName);
             }
-            return $this->resolveRouteParameter($parameter, $router, $requestedName);
+            return [];
         };
     }
 
@@ -292,16 +288,21 @@ final class Dispatcher
      * Logic common to route parameter resolution.
      *
      * @param ReflectionParameter $parameter
-     * @param Obullo\Router\Router $router
+     * @param RouteMatch $routeMatch
      * @param string $requestName class name
      * @return mixed
      * @throws ServiceNotFoundException If type-hinted parameter cannot be
      *   resolved to a argument name in the matched route.
      */
-    private function resolveRouteParameter(ReflectionParameter $parameter, $router, $requestedName)
+    private function resolveRouteParameter(ReflectionParameter $parameter, RouteMatch $routeMatch, $requestedName)
     {
         $name = $parameter->getName();
-        $args = $router->getMatchedRoute()->getArguments();
+        $args = $routeMatch->getParams();
+        /**
+         * Reserved keys
+         */
+        unset($args['controller'], $args['middleware']);
+
         /**
          * Bind route arguments
          */
@@ -311,7 +312,7 @@ final class Dispatcher
 
         if (! $parameter->isDefaultValueAvailable()) {
             throw new ServiceNotFoundException(sprintf(
-                'Unable to create service "%s"; unable to resolve default value of route parameter "%s"',
+                'Unable to create service "%s"; unable to resolve value of route parameter "%s"',
                 $requestedName,
                 $name
             ));

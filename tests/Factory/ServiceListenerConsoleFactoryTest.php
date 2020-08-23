@@ -34,7 +34,6 @@ class ServiceListenerConsoleFactoryTest extends TestCase
         /**
          * Disabled services for console requests
          */
-        $this->assertFalse($this->container->has('Router'));
         $this->assertFalse($this->container->has('Request'));
         $this->assertFalse($this->container->has('DispatchListener'));
         $this->assertFalse($this->container->has('RouteListener'));

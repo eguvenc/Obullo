@@ -3,6 +3,8 @@
 namespace Obullo;
 
 use Obullo\PageEvent;
+use Laminas\Router\RouteMatch;
+use Laminas\Psr7Bridge\Psr7ServerRequest;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 
@@ -29,14 +31,22 @@ class RouteListener extends AbstractListenerAggregate
     public function onRoute(PageEvent $event)
     {
         $request = $event->getRequest();
-        $router  = $event->getApplication()->getContainer()->get('Router');
-        $route   = $router->matchRequest();
-        if (false == $route) {
-            return;
+        $router  = $event->getRouter();
+
+        // https://docs.laminas.dev/laminas-psr7bridge/usage-examples/
+        //
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+        $container = $event->getApplication()->getServiceManager();
+        $container->setService(RouteMatch::class, $routeMatch);
+
+        if ($routeMatch instanceof RouteMatch) {
+            $params = $routeMatch->getParams();
+            $event->setRouteMatch($routeMatch);
+            $event->setRouter($router);
+            $event->setController($params['controller']);
+            $event->setResolvedModuleName();
+            return $routeMatch;
         }
-        $event->setRouter($router);
-        $event->setMatchedRoute($route);
-        $event->setHandler($route->getHandler());
-        $event->setResolvedModuleName();
+        return $event->getParams();
     }
 }

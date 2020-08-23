@@ -29,12 +29,12 @@ class ServiceListenerFactory implements FactoryInterface
      */
     protected $defaultServiceConfig = [
         'aliases' => [
+            'application'                                => 'Obullo\Application',
+            'Application'                                => 'Obullo\Application',
             'config'                                     => 'Laminas\Config\Config',
             'Config'                                     => 'Laminas\Config\Config',
             'request'                                    => 'Obullo\Http\ServerRequest',
             'Request'                                    => 'Obullo\Http\ServerRequest',
-            'router'                                     => 'Obullo\Router\Router',
-            'Router'                                     => 'Obullo\Router\Router',
             'RouteListener'                              => 'Obullo\RouteListener',
             'Psr\Http\Message\ServerRequestInterface'    => 'Obullo\Http\ServerRequest',
             'ViewHelperManager'                          => 'Laminas\View\ViewHelperManagerFactory',
@@ -43,11 +43,9 @@ class ServiceListenerFactory implements FactoryInterface
         ],
         'invokables' => [],
         'factories'  => [
-            'Application'                    => ApplicationFactory::class,
+            'Obullo\Application'             => ApplicationFactory::class,
             'Laminas\Config\Config'          => 'Obullo\Factory\ConfigFactory',
             'Obullo\Http\ServerRequest'      => 'Obullo\Factory\RequestFactory',
-            'Obullo\Router\Router'           => 'Obullo\Factory\RouterFactory',
-            'Obullo\Router\RouteCollectionInterface' => 'Obullo\Factory\RouteCollectionFactory',
             'Obullo\RouteListener'           => InvokableFactory::class,
             'DispatchListener'               => 'Obullo\Factory\DispatchListenerFactory',
             'DatabaseLogger'                 => 'Obullo\Factory\DatabaseLoggerFactory',

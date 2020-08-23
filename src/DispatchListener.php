@@ -7,12 +7,12 @@ use ReflectionMethod;
 use Laminas\Diactoros\Stream;
 use Obullo\View\AbstractView;
 use Obullo\Error\ErrorHandlerManager;
-use Obullo\Router\RouteInterface;
 use Obullo\Middleware\DispatchHandler;
 use Obullo\Exception\InvalidPageResponseException;
 use Psr\Http\Message\ResponseInterface;
 
 use Laminas\View\View;
+use Laminas\Router\RouteMatch;
 use Laminas\EventManager\AbstractListenerAggregate;
 use Laminas\EventManager\EventManagerInterface;
 
@@ -43,14 +43,13 @@ class DispatchListener extends AbstractListenerAggregate
         $application = $e->getApplication();
         $container = $application->getContainer();
         $params = $e->getParams();
-        $router = $container->get('Router');
         $app = $params['app'];
 
         foreach ((array)$params['middlewares'] as $appMiddleware) {
             $app->pipe($container->build($appMiddleware));
         }
-        if ($router->hasMatch()) {
-            $routeMiddlewares = Self::parseRouteMiddlewares($e);
+        if ($routeMatch = $e->getRouteMatch()) {
+            $routeMiddlewares = Self::parseRouteMiddlewares($routeMatch, $e);
             foreach ($routeMiddlewares as $routeMiddleware) {
                 $app->pipe($container->build($routeMiddleware));
             }
@@ -66,20 +65,19 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function onDispatchPage(PageEvent $e)
     {
-        $route = $e->getRouter()->getMatchedRoute();
         $request = $e->getRequest();
-        $handler = $route->getHandler();
+        $controller = $e->getController();
         $application  = $e->getApplication();
         $events = $application->getEventManager();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handler);
+        $pageModel = $container->build($controller);
         if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
             $pageModel->init();
         }
-        $e->setPageModel($handler, $pageModel);
+        $e->setPageModel($controller, $pageModel);
 
         $reflection = new ReflectionClass($pageModel);
         $method = $request->getMethod();
@@ -106,7 +104,7 @@ class DispatchListener extends AbstractListenerAggregate
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($request);
         $dispatcher->setPageMethod($methodName);
-        $dispatcher->setRouter($container->get('Router'));
+        $dispatcher->setRouteMatch($e->getRouteMatch());
         $dispatcher->setPageModel($pageModel);
         $dispatcher->setReflectionClass($reflection);
         $response = $dispatcher->dispatch();
@@ -115,7 +113,7 @@ class DispatchListener extends AbstractListenerAggregate
             throw new InvalidPageResponseException(
                 sprintf(
                     'Return value of %s method must be an instance of Psr\Http\Message\ResponseInterface, Laminas\Diactoros\Stream returned.',
-                    $handler.'::'.$methodName
+                    $controller.'::'.$methodName
                 )
             );
         }
@@ -130,23 +128,23 @@ class DispatchListener extends AbstractListenerAggregate
      */
     public function onDispatchPartialPage(PageEvent $e)
     {
-        $handler = $e->getHandler();
+        $controller = $e->getController();
         $request = $e->getRequest();
         $application  = $e->getApplication();
         $container = $application->getContainer();
 
-        $pageModel = $container->build($handler);
+        $pageModel = $container->build($controller);
         if ($pageModel instanceof AbstractView) {
             $pageModel->setView($container->get(View::class));
             $pageModel->setViewPhpRenderer($container->get('ViewPhpRenderer'));
             $pageModel->init();
         }
-        $e->setPageModel($handler, $pageModel);
+        $e->setPageModel($controller, $pageModel);
 
         $dispatcher = new Dispatcher(['partival_view' => true]);
         $dispatcher->setRequest($request);
         $dispatcher->setPageMethod('onGet');
-        $dispatcher->setRouter($container->get('Router'));
+        $dispatcher->setRouteMatch($e->getRouteMatch());
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
     
@@ -156,13 +154,17 @@ class DispatchListener extends AbstractListenerAggregate
     /**
      * Parse route middlewares
      *
-     * @param  object $router Router
+     * @param  object RouteMatch
+     * @param  object PageEvent
      * @return array
      */
-    private static function parseRouteMiddlewares(PageEvent $e) : array
+    private static function parseRouteMiddlewares(RouteMatch $routeMatch, PageEvent $e) : array
     {
+        $routeParams = $routeMatch->getParams();
+        $routeMiddlewares = isset($routeParams['middleware']) ? (array)$routeParams['middleware'] : array();
+
         $middlewares = MiddlewareParser::parse(
-            $e->getRouter()->getMiddlewares(),
+            $routeMiddlewares,
             $e->getRequest()->getMethod()
         );
         return $middlewares;

@@ -2,9 +2,9 @@
 
 namespace Obullo;
 
-use Obullo\Router\Router;
-use Obullo\Router\RouteInterface as Route;
 use Laminas\EventManager\Event;
+use Laminas\Router\RouteStackInterface;
+use Laminas\Router\RouteMatch;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -22,7 +22,7 @@ class PageEvent extends Event
     const EVENT_DISPATCH_PARTIAL_PAGE = 'dispatch.partial';
 
     /**
-     * @var Application
+     * @var object Application
      */
     protected $application;
 
@@ -32,27 +32,27 @@ class PageEvent extends Event
     protected $result;
 
     /**
-     * @var Router
+     * @var object Router
      */
     protected $router;
 
     /**
-     * @var Route
+     * @var object RouteMatch
      */
-    protected $route;
+    protected $routeMatch;
 
     /**
-     * @var Resolved module name
+     * @var string resolved module name
      */
     protected $moduleName;
 
     /**
-     * @var Response
+     * @var object Response
      */
     protected $response;
 
     /**
-     * @var Model
+     * @var array model
      */
     protected $pageModel = array();
 
@@ -84,7 +84,7 @@ class PageEvent extends Event
      *
      * @return RouteStackInterface
      */
-    public function getRouter() : Router
+    public function getRouter() : RouteStackInterface
     {
         return $this->router;
     }
@@ -92,10 +92,10 @@ class PageEvent extends Event
     /**
      * Set router
      *
-     * @param Router $router
-     * @return PageEvent
+     * @param RouteStackInterface $router
+     * @return MvcEvent
      */
-    public function setRouter(Router $router)
+    public function setRouter(RouteStackInterface $router)
     {
         $this->setParam('router', $router);
         $this->router = $router;
@@ -107,46 +107,46 @@ class PageEvent extends Event
      *
      * @return null|RouteMatch
      */
-    public function getMatchedRoute()
+    public function getRouteMatch()
     {
-        return $this->route;
+        return $this->routeMatch;
     }
 
     /**
-     * Set matched route
+     * Set RouteMatch
      *
-     * @param Route
+     * @param RouteMatch matched route
      * @return PageEvent
      */
-    public function setMatchedRoute(Route $route)
+    public function setRouteMatch(RouteMatch $routeMatch)
     {
-        $this->setParam('route-match', $route->getArguments());
-        $this->route = $route;
+        $this->setParam('route-match', $routeMatch);
+        $this->routeMatch = $routeMatch;
         return $this;
     }
 
     /**
-     * Set handler class
-     *
-     * @param string $handler class name
-     */
-    public function setHandler($handler)
-    {
-        $this->setParam('handler', $handler);
-        $this->handler = $handler;
-        return $this;
-    }
-
-    /**
-     * Returns to handler
+     * Get the currently registered controller name
      *
      * @return string
      */
-    public function getHandler()
+    public function getController()
     {
-        return $this->handler;
+        return $this->getParam('controller');
     }
-    
+
+    /**
+     * Set controller name
+     *
+     * @param  string $name
+     * @return MvcEvent
+     */
+    public function setController($name)
+    {
+        $this->setParam('controller', $name);
+        return $this;
+    }
+
     /**
      * Set resolved http module name
      *
@@ -154,7 +154,7 @@ class PageEvent extends Event
      */
     public function setResolvedModuleName()
     {
-        $moduleName = explode('\\', $this->handler);  // App, Blog, Forum etc..
+        $moduleName = explode('\\', $this->getController());  // App, Blog, Forum etc..
         $this->setParam('module-name', $moduleName[0]);
         $this->moduleName = $moduleName[0];
         return $this;
@@ -218,24 +218,24 @@ class PageEvent extends Event
 
     /**
      * Set page model
-     * 
-     * @param string $handler page handler
+     *
+     * @param string $name page handler
      * @param $model object
      */
-    public function setPageModel(string $handler, $model)
+    public function setPageModel(string $name, $model)
     {
-        $this->pageModel[$handler] = $model;
+        $this->pageModel[$name] = $model;
         return $this;
     }
 
     /**
      * Returns to requested page model
-     * 
-     * @param  string $handler full class name of page model
+     *
+     * @param  string $name full class name of page model
      * @return object|false
      */
-    public function getPageModel(string $handler)
+    public function getPageModel(string $name)
     {
-        return isset($this->pageModel[$handler]) ? $this->pageModel[$handler] : false;
+        return isset($this->pageModel[$name]) ? $this->pageModel[$name] : false;
     }
 }

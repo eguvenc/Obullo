@@ -93,12 +93,12 @@ class ViewTest extends TestCase
         $request = new ServerRequest(
             $serverParams = [],
             $uploadedFiles = [],
-            new Uri('http://example.com/test_view'),
-            $method = null,
+            new Uri('http://example.com/test_plugin'),
+            'GET',
             $body = 'php://input',
             $headers = [],
             $cookies = [],
-            $queryParams = ['onPlugin' => null],
+            $queryParams = [],
             $parsedBody = null,
             $protocol = '1.1'
         );
@@ -108,7 +108,30 @@ class ViewTest extends TestCase
         $application->bootstrap();
         $response = $application->runWithoutEmit();
 
-        $this->assertEquals('/test_view', $response->getBody());
+        $this->assertEquals('$1,234.56', $response->getBody());
+    }
+
+    public function testUrl()
+    {
+        $request = new ServerRequest(
+            $serverParams = [],
+            $uploadedFiles = [],
+            new Uri('http://example.com/test_url_helper'),
+            'GET',
+            $body = 'php://input',
+            $headers = [],
+            $cookies = [],
+            $queryParams = [],
+            $parsedBody = null,
+            $protocol = '1.1'
+        );
+        $this->container->setService('Request', $request);
+
+        $application = $this->container->get('Application');
+        $application->bootstrap();
+        $response = $application->runWithoutEmit();
+        
+        $this->assertEquals('/test_args/5/1001', $response->getBody());
     }
 
     public function testModel()

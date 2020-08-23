@@ -29,9 +29,8 @@ class SetLocaleMiddlewareTest extends TestCase
     public function testSetLocale()
     {
         $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://es.example.com/set_locale'));
+        $request = $request->withUri(new Uri('http://es.example.com/test_set_locale'));
         $this->container->setService('Request', $request);
-        $config = $this->container->get('config');
         $config = $this->container->get('config');
 
         $config['translator'] = [

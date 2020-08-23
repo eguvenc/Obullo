@@ -26,8 +26,8 @@ class LazyMiddlewareFactoryTest extends TestCase
 
     public function testFactory()
     {
-        $instance = $this->container->build('Obullo\Middleware\HttpMethodMiddleware');
+        $instance = $this->container->build('Obullo\Middleware\SetLocaleMiddleware');
 
-        $this->assertInstanceOf('Obullo\Middleware\HttpMethodMiddleware', $instance);
+        $this->assertInstanceOf('Obullo\Middleware\SetLocaleMiddleware', $instance);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Pages;
 use Obullo\View\View;
 use Laminas\Diactoros\Response\HtmlResponse;
 
-class PluginModel extends View
+class UrlModel extends View
 {
     public function onGet()
     {

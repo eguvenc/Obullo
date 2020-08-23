@@ -3,6 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use Laminas\View\View;
 use Obullo\Dispatcher;
+use Laminas\Router\RouteMatch;
+use Laminas\Psr7Bridge\Psr7ServerRequest;
 use Obullo\Http\ServerRequest;
 use Laminas\Diactoros\Uri;
 use Laminas\ServiceManager\ServiceManager;
@@ -88,10 +90,14 @@ class DispatcherTest extends TestCase
         $pageModel->setViewPhpRenderer($this->container->get('ViewPhpRenderer'));
         $pageModel->init();
 
+        $router  = $this->container->get('Router');
+        $request = $this->container->get('Request');
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+
         $reflection = new ReflectionClass($pageModel);
         $dispatcher = new Dispatcher;
-        $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setRouter($this->container->get('Router'));
+        $dispatcher->setRequest($request);
+        $dispatcher->setRouteMatch($routeMatch);
         $dispatcher->setPageMethod('onGet');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -118,9 +124,13 @@ class DispatcherTest extends TestCase
             $protocol = '1.1'
         );
         $reflection = new ReflectionClass($pageModel);
+
+        $router = $this->container->get('Router');
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($request);
-        $dispatcher->setRouter($this->container->get('Router'));
+        $dispatcher->setRouteMatch($routeMatch);
         $dispatcher->setPageMethod('onQueryMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -140,9 +150,13 @@ class DispatcherTest extends TestCase
         $pageModel->init();
         
         $reflection = new ReflectionClass($pageModel);
+        $router = $this->container->get('Router');
+        $request = $this->container->get('Request');
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+
         $dispatcher = new Dispatcher;
-        $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setRouter($this->container->get('Router'));
+        $dispatcher->setRequest($request);
+        $dispatcher->setRouteMatch($routeMatch);
         $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
         $response = $dispatcher->dispatch();
@@ -158,9 +172,13 @@ class DispatcherTest extends TestCase
         $pageModel->init();
 
         $reflection = new ReflectionClass($pageModel);
+        $router = $this->container->get('Router');
+        $request = $this->container->get('Request');
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+
         $dispatcher = new Dispatcher(['partial_view' => true]);
-        $dispatcher->setRequest($this->container->get('Request'));
-        $dispatcher->setRouter($this->container->get('Router'));
+        $dispatcher->setRequest($request);
+        $dispatcher->setRouteMatch($routeMatch);
         $dispatcher->setPageMethod('onUndefinedMethod');
         $dispatcher->setPageModel($pageModel);
 
@@ -218,8 +236,12 @@ class DispatcherTest extends TestCase
             $protocol = '1.1'
         );
         $reflection = new ReflectionClass($pageModel);
+        $router = $this->container->get('Router');
+        $routeMatch = $router->match(Psr7ServerRequest::toLaminas($request, true));
+
         $dispatcher = new Dispatcher;
         $dispatcher->setRequest($request);
+        $dispatcher->setRouteMatch($routeMatch);
         $dispatcher->setPageMethod('on'.ucfirst(strtolower($method)));
         $dispatcher->setPageModel($pageModel);
         return $dispatcher->dispatch();

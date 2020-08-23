@@ -38,17 +38,4 @@ class DispatchHandlerTest extends TestCase
         
         $this->assertEquals('Test', $response->getBody());
     }
-
-    public function testPluginHelper()
-    {
-        $request = new ServerRequest();
-        $request = $request->withUri(new Uri('http://example.com/plugin_test'));
-        $this->container->setService('Request', $request);
-
-        $application = $this->container->get('Application');
-        $application->bootstrap();
-        $response = $application->runWithoutEmit();
-
-        $this->assertEquals('$1,234.56', $response->getBody());
-    }
 }
