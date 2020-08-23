@@ -4,14 +4,17 @@ namespace Obullo\Test\PHPUnit\Pages;
 
 use Laminas\EventManager\StaticEventManager;
 use Laminas\ServiceManager\ServiceManager;
+
 use Obullo\PageEvent;
 use Obullo\Http\ServerRequest;
 use Obullo\Container\ServiceManagerConfig;
 use Obullo\Factory\LazyMiddlewareFactory;
+
+use Laminas\Diactoros\Uri;
+use Laminas\Router\RouteMatch;
 use Laminas\Stdlib\Exception\LogicException;
 use Laminas\Stdlib\ResponseInterface;
 use Laminas\Test\PHPUnit\TestCaseTrait;
-use Laminas\Diactoros\Uri;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -507,11 +510,11 @@ abstract class AbstractPageTestCase extends TestCase
      */
     protected function getPageModelFullClassName()
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch instanceof RouteMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        return $route->getHandler();
+        return $routeMatch->getParam('controller');
     }
 
     /**
@@ -521,8 +524,8 @@ abstract class AbstractPageTestCase extends TestCase
      */
     protected function getResolvedModuleName()
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch instanceof RouteMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
         return $this->getApplication()->getPageEvent()->getResolvedModuleName();
@@ -601,11 +604,11 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertPageModelName($model)
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch instanceof RouteMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match = $route->getHandler();
+        $match = $routeMatch->getParam('controller');
         if ($model != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf('Failed asserting model name "%s", actual model name is "%s"', $model, $match)
@@ -621,11 +624,11 @@ abstract class AbstractPageTestCase extends TestCase
      */
     public function assertNotPageModelName($model)
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch instanceof RouteMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match = $route->getHandler();
+        $match = $routeMatch->getParam('controller');
         if ($model == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf('Failed asserting model name was NOT "%s"', $model)
@@ -635,47 +638,51 @@ abstract class AbstractPageTestCase extends TestCase
     }
 
     /**
-     * Assert that the application route match used the given route path
+     * Assert that the application route match used the given route name
      *
-     * @param string $path
+     * @param string $route
      */
-    public function assertMatchedRoutePath($path)
+    public function assertMatchedRouteName($route)
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match = $route->getPath();
-        if ($path != $match) {
+        $match      = $routeMatch->getMatchedRouteName();
+        $match      = strtolower($match);
+        $route      = strtolower($route);
+        if ($route != $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
                 sprintf(
-                    'Failed asserting matched route path was "%s", actual matched route path is "%s"',
-                    $path,
+                    'Failed asserting matched route name was "%s", actual matched route name is "%s"',
+                    $route,
                     $match
                 )
             ));
         }
-        $this->assertEquals($path, $match);
+        $this->assertEquals($route, $match);
     }
 
     /**
-     * Assert that the application route match used NOT the given route path
+     * Assert that the application route match used NOT the given route name
      *
-     * @param string $path
+     * @param string $route
      */
-    public function assertNotMatchedRoutePath($path)
+    public function assertNotMatchedRouteName($route)
     {
-        $route = $this->getApplication()->getPageEvent()->getMatchedRoute();
-        if (! $route) {
+        $routeMatch = $this->getApplication()->getPageEvent()->getRouteMatch();
+        if (! $routeMatch) {
             throw new ExpectationFailedException($this->createFailureMessage('No route matched'));
         }
-        $match = $route->getPath();
-        if ($path == $match) {
+        $match      = $routeMatch->getMatchedRouteName();
+        $match      = strtolower($match);
+        $route      = strtolower($route);
+        if ($route == $match) {
             throw new ExpectationFailedException($this->createFailureMessage(
-                sprintf('Failed asserting route path matched was NOT "%s"', $path)
+                sprintf('Failed asserting route matched was NOT "%s"', $route)
             ));
         }
-        $this->assertNotEquals($path, $match);
+        $this->assertNotEquals($route, $match);
     }
 
     /**
